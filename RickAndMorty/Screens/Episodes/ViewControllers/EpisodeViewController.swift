@@ -7,11 +7,11 @@
 
 import UIKit
 
+/// Controller to show and seach for episodes 
 final class EpisodeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.backgroundColor = .systemBackground
         title = "Episodes"
     }

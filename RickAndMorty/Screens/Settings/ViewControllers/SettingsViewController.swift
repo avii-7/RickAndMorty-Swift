@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Controller to show various app options and settings.
 class SettingsViewController: UIViewController {
 
     override func viewDidLoad() {
