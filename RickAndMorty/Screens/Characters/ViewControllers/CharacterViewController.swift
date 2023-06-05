@@ -9,7 +9,7 @@ import UIKit
 
 /// Controller to show and seach by characters
 final class CharacterViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
