@@ -19,14 +19,14 @@ final class TabBarViewController: UITabBarController {
         let tabBarItemTitles = ["Characters", "Locations", "Episodes", "Settings"]
         let tabBarIcons = ["person", "globe", "tv", "gear"]
         
-        let locationVC = LocationViewController()
         let characterVC = CharacterViewController()
+        let locationVC = LocationViewController()
         let episodesVC = EpisodeViewController()
         let settingsVC = SettingsViewController()
         
         var viewControllers: [UINavigationController] = []
 
-        for (index, vc) in [locationVC, characterVC, episodesVC, settingsVC].enumerated() {
+        for (index, vc) in [characterVC, locationVC, episodesVC, settingsVC].enumerated() {
             vc.navigationItem.largeTitleDisplayMode = .automatic
             let navigationVC = UINavigationController(rootViewController: vc)
             navigationVC.navigationBar.prefersLargeTitles  = true
