@@ -22,7 +22,7 @@ struct RMCharacter: Codable {
     let created: String
 }
 
-enum CharacterStatus: String, Codable {
+enum RMCharacterStatus: String, Codable {
     case alive = "alive"
     case dead = "dead"
     case unknown = "unknown"

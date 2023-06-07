@@ -7,12 +7,17 @@
 
 import UIKit
 
-final class CharacterListViewModel: NSObject {
+final class RMCharacterListViewModel: NSObject {
+    
+    private var model: RMAllCharacters?
+    private var characters: [RMCharacter]?
+    
     func fetchCharacters() {
         RMService.shared.execute(.listCharactersRequest, expecting: RMAllCharacters.self) { result in
             switch result {
             case .success(let model):
-                print(String(describing: model))
+                self.model = model
+                self.characters = model.results
             case .failure(let error):
                 print(String(describing: error))
             }
@@ -20,14 +25,26 @@ final class CharacterListViewModel: NSObject {
     }
 }
 
-extension CharacterListViewModel: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension RMCharacterListViewModel: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
      
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        20
+        //characters?.count ?? 0
+        1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier, for: indexPath) as? RMCharacterCollectionViewCell else {
+            fatalError("Unsupported Cell")
+        }
+        guard let characters else { return cell }
+        
+        let viewModel = RMCharacterCollectionViewCellViewModel(
+            characterName: characters[indexPath.row].name,
+            //characterStatus: characters[indexPath.row].status,
+            characterStatus: RMCharacterStatus.alive,
+            characterImageUrl: URL(string: characters[indexPath.row].image))
+        
+        cell.configure(with: viewModel)
         cell.backgroundColor = .purple
         return cell
     }
