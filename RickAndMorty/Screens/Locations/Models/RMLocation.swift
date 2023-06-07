@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Location: Codable
+struct RMLocation: Codable
 {
     let id: Int
     let name: String

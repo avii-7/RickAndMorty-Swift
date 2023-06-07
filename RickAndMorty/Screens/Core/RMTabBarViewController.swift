@@ -8,7 +8,7 @@
 import UIKit
 
 /// Controllers to house tabs and root tab controllers
-final class TabBarViewController: UITabBarController {
+final class RMTabBarViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,10 +19,10 @@ final class TabBarViewController: UITabBarController {
         let tabBarItemTitles = ["Characters", "Locations", "Episodes", "Settings"]
         let tabBarIcons = ["person", "globe", "tv", "gear"]
         
-        let characterVC = CharacterViewController()
-        let locationVC = LocationViewController()
-        let episodesVC = EpisodeViewController()
-        let settingsVC = SettingsViewController()
+        let characterVC = RMCharacterViewController()
+        let locationVC = RMLocationViewController()
+        let episodesVC = RMEpisodeViewController()
+        let settingsVC = RMSettingsViewController()
         
         var viewControllers: [UINavigationController] = []
 
