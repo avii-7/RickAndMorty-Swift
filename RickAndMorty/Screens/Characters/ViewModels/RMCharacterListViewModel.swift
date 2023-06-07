@@ -7,17 +7,35 @@
 
 import UIKit
 
+
+protocol RMCharacterListViewModelDelegate: AnyObject {
+    func didLoadInitialCharacters()
+}
+
 final class RMCharacterListViewModel: NSObject {
     
-    private var model: RMAllCharacters?
-    private var characters: [RMCharacter]?
+    private var characters: [RMCharacter] = [] {
+        didSet {
+            for character in characters {
+                let cellViewModel = RMCharacterCollectionViewCellViewModel(name: character.name, status: character.status, imageUrlString: character.url)
+                cellViewModels.append(cellViewModel)
+            }
+        }
+    }
+    
+    private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
+    
+    public weak var delegate: RMCharacterListViewModelDelegate?
     
     func fetchCharacters() {
-        RMService.shared.execute(.listCharactersRequest, expecting: RMAllCharacters.self) { result in
+        RMService.shared.execute(.listCharactersRequest, expecting: RMAllCharacters.self) { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let model):
-                self.model = model
                 self.characters = model.results
+                DispatchQueue.main.async {
+                    self.delegate?.didLoadInitialCharacters()
+                }
             case .failure(let error):
                 print(String(describing: error))
             }
@@ -28,24 +46,16 @@ final class RMCharacterListViewModel: NSObject {
 extension RMCharacterListViewModel: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
      
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //characters?.count ?? 0
-        1
+        cellViewModels.count
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier, for: indexPath) as? RMCharacterCollectionViewCell else {
             fatalError("Unsupported Cell")
         }
-        guard let characters else { return cell }
         
-        let viewModel = RMCharacterCollectionViewCellViewModel(
-            characterName: characters[indexPath.row].name,
-            //characterStatus: characters[indexPath.row].status,
-            characterStatus: RMCharacterStatus.alive,
-            characterImageUrl: URL(string: characters[indexPath.row].image))
-        
-        cell.configure(with: viewModel)
-        cell.backgroundColor = .purple
+        cell.configure(with: cellViewModels[indexPath.row])
         return cell
     }
     

@@ -10,12 +10,12 @@ import Foundation
 struct RMCharacter: Codable {
     let id: Int
     let name: String
-    let status: String
+    let status: RMCharacterStatus
     let species: String
     let type: String
-    let gender: String
-    let origin: CharacterOrigin
-    let location: CharacterLocation
+    let gender: RMCharacterGender
+    let origin: RMCharacterOrigin
+    let location: RMCharacterLocation
     let image: String
     let episode: [String]
     let url: String
@@ -23,24 +23,33 @@ struct RMCharacter: Codable {
 }
 
 enum RMCharacterStatus: String, Codable {
-    case alive = "alive"
-    case dead = "dead"
+    case alive = "Alive"
+    case dead = "Dead"
     case unknown = "unknown"
+    
+    var text: String {
+        switch self {
+        case .alive, .dead:
+            return rawValue
+        case .unknown:
+            return "Unknown"
+        }
+    }
 }
 
-enum CharacterGender: String, Codable {
+enum RMCharacterGender: String, Codable {
     case female = "Female"
     case male = "Male"
     case genderless = "Genderless"
-    case unknown = " unkown"
+    case unknown = "unknown"
 }
 
-struct CharacterOrigin: Codable {
+struct RMCharacterOrigin: Codable {
     let name: String
     let url: String
 }
 
-struct CharacterLocation: Codable {
+struct RMCharacterLocation: Codable {
     let name: String
     let url: String
 }

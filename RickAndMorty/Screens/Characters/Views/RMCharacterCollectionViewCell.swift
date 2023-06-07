@@ -42,6 +42,8 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
         contentView.backgroundColor = .secondarySystemBackground
         contentView.addSubviews(imageView, nameLabel, statusLabel)
         addConstraints()
+        
+        contentView.layer.cornerRadius = 8
     }
     
     required init?(coder: NSCoder) {
@@ -75,8 +77,8 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(with viewModel: RMCharacterCollectionViewCellViewModel) {
-        nameLabel.text = viewModel.characterName
-        statusLabel.text = viewModel.characterStatusText
+        nameLabel.text = viewModel.name
+        statusLabel.text = viewModel.statusText
         
         viewModel.fetchImage { [weak self] result in
             guard let self else { return }

@@ -8,24 +8,28 @@
 import Foundation
 
 struct RMCharacterCollectionViewCellViewModel {
-    public let characterName: String
-    public let characterImageUrl: URL?
+    public let name: String
     
-    private let characterStatus: RMCharacterStatus
-    public var characterStatusText: String {
-        characterStatus.rawValue
+    private let imageUrlString: String
+    public var imageUrl: URL? {
+        URL(string: imageUrlString)
+    }
+    
+    private let status: RMCharacterStatus
+    public var statusText: String {
+        "Status: \(status.text)"
     }
     
     // MARK: - Init
     
-    init(characterName: String, characterStatus: RMCharacterStatus, characterImageUrl: URL?) {
-        self.characterName = characterName
-        self.characterStatus = characterStatus
-        self.characterImageUrl = characterImageUrl
+    init(name: String, status: RMCharacterStatus, imageUrlString: String) {
+        self.name = name
+        self.status = status
+        self.imageUrlString = imageUrlString
     }
     
     public func fetchImage(completion: @escaping (Result<Data, Error>) -> Void) {
-        guard let url = characterImageUrl else {
+        guard let url = imageUrl else {
             completion(.failure(URLError(.badURL)))
             return
         }
