@@ -7,111 +7,63 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "038AEC96-963E-493E-9B3E-25230CFBCC47"
+            uuid = "D1683474-8BB1-4062-946B-82EBEB3684EB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "RickAndMorty/Screens/Locations/Models/Location.swift"
+            filePath = "RickAndMorty/Screens/Characters/ViewModels/RMCharacterCollectionViewCellViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "5"
-            endingLineNumber = "5"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "2932E4DA-5607-430A-8DEF-5DD21637F33B"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "RickAndMorty/Screens/Characters/ViewControllers/CharacterViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "20"
-            endingLineNumber = "20"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "fetchImage(completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "76691CB5-37CB-4123-AB05-31D4B7DF645A"
+            uuid = "15B5C745-CE57-41D8-A65C-492F071E06C9"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "RickAndMorty/Screens/Characters/Views/RMCharacterCollectionViewCell.swift"
+            filePath = "RickAndMorty/Screens/Characters/ViewModels/RMCharacterCollectionViewCellViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
-            landmarkName = "configure(with:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "8727751A-C793-4C9D-9EEB-12D54842CB0D"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "RickAndMorty/Screens/Characters/Views/RMCharacterCollectionViewCell.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
-            landmarkName = "configure(with:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A49A76CF-02A5-4B49-BC1C-830A76AFCE16"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "RickAndMorty/Screens/Characters/Views/RMCharacterCollectionViewCell.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
-            landmarkName = "configure(with:)"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "fetchImage(completion:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "A49A76CF-02A5-4B49-BC1C-830A76AFCE16 - 254c4ecd28610096"
+                  uuid = "15B5C745-CE57-41D8-A65C-492F071E06C9 - 198b7d5b2ab9a9bd"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "RickAndMorty.RMCharacterCollectionViewCell.configure(with: RickAndMorty.RMCharacterCollectionViewCellViewModel) -&gt; ()"
+                  symbolName = "RickAndMorty.RMCharacterCollectionViewCellViewModel.fetchImage(completion: (Swift.Result&lt;Foundation.Data, Swift.Error&gt;) -&gt; ()) -&gt; ()"
                   moduleName = "RickAndMorty"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Characters/Views/RMCharacterCollectionViewCell.swift"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Characters/ViewModels/RMCharacterCollectionViewCellViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "81"
-                  endingLineNumber = "81"
-                  offsetFromSymbolStart = "368">
+                  startingLineNumber = "32"
+                  endingLineNumber = "32"
+                  offsetFromSymbolStart = "436">
                </Location>
                <Location
-                  uuid = "A49A76CF-02A5-4B49-BC1C-830A76AFCE16 - 33752704baf08fd1"
+                  uuid = "15B5C745-CE57-41D8-A65C-492F071E06C9 - 198b7d5b2ab9a9bd"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Result&lt;Foundation.Data, Swift.Error&gt;) -&gt; () in RickAndMorty.RMCharacterCollectionViewCell.configure(with: RickAndMorty.RMCharacterCollectionViewCellViewModel) -&gt; ()"
+                  symbolName = "RickAndMorty.RMCharacterCollectionViewCellViewModel.fetchImage(completion: (Swift.Result&lt;Foundation.Data, Swift.Error&gt;) -&gt; ()) -&gt; ()"
                   moduleName = "RickAndMorty"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Characters/Views/RMCharacterCollectionViewCell.swift"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Characters/ViewModels/RMCharacterCollectionViewCellViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "81"
-                  endingLineNumber = "81"
-                  offsetFromSymbolStart = "264">
+                  startingLineNumber = "32"
+                  endingLineNumber = "32"
+                  offsetFromSymbolStart = "496">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -119,16 +71,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B025401C-9C5F-4B07-932C-D178F07746DD"
-            shouldBeEnabled = "No"
+            uuid = "7C6F1EF5-3734-4B9F-879B-C2096EED26B5"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "RickAndMorty/Screens/Characters/Views/RMCharacterCollectionViewCell.swift"
+            filePath = "RickAndMorty/Screens/Characters/ViewModels/RMCharacterCollectionViewCellViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
-            landmarkName = "configure(with:)"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "fetchImage(completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

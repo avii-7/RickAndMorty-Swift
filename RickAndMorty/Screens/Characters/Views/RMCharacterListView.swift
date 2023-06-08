@@ -7,10 +7,16 @@
 
 import UIKit
 
+protocol RMCharacterListViewDelegate: AnyObject {
+    func rmCharacterListView(didSelectCharacter character: RMCharacter)
+}
+
 /// Custom view that showing list of characters, loader, infinite loading etc
 final class RMCharacterListView: UIView {
     
     private let viewModel = RMCharacterListViewModel()
+    
+    public weak var delegate: RMCharacterListViewDelegate?
     
     // Block pattern
     private let spinner: UIActivityIndicatorView = {
@@ -22,7 +28,7 @@ final class RMCharacterListView: UIView {
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 10)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isHidden = true
         collectionView.alpha = 0
@@ -39,7 +45,7 @@ final class RMCharacterListView: UIView {
         addConstraints()
         spinner.startAnimating()
         viewModel.delegate = self
-        viewModel.fetchCharacters()
+        viewModel.fetchInitialCharacters()
         setupCollectionView()
     }
     
@@ -68,6 +74,11 @@ final class RMCharacterListView: UIView {
 }
 
 extension RMCharacterListView: RMCharacterListViewModelDelegate {
+    
+    func didSelectCharacter(_ character: RMCharacter) {
+        delegate?.rmCharacterListView(didSelectCharacter: character)
+    }
+    
     func didLoadInitialCharacters() {
         spinner.stopAnimating()
         collectionView.isHidden = false
