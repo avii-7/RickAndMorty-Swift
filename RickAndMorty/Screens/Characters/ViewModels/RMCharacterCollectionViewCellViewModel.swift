@@ -8,6 +8,7 @@
 import Foundation
 
 struct RMCharacterCollectionViewCellViewModel {
+    public let id: Int
     public let name: String
     
     private let imageUrlString: String
@@ -22,7 +23,8 @@ struct RMCharacterCollectionViewCellViewModel {
     
     // MARK: - Init
     
-    init(name: String, status: RMCharacterStatus, imageUrlString: String) {
+    init(id: Int ,name: String, status: RMCharacterStatus, imageUrlString: String) {
+        self.id = id
         self.name = name
         self.status = status
         self.imageUrlString = imageUrlString
@@ -33,16 +35,6 @@ struct RMCharacterCollectionViewCellViewModel {
             completion(.failure(URLError(.badURL)))
             return
         }
-        let request = URLRequest(url: url)
-        
-        let task = URLSession.shared.dataTask(with: request) { data, _, error in
-            guard let data, error == nil else {
-                completion(.failure(URLError(.badServerResponse)))
-                return
-            }
-            
-            completion(.success(data))
-        }
-        task.resume()
+        RMImageManager.shared.downloadImage(from: url, completion: completion)
     }
 }

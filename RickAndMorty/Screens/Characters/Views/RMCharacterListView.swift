@@ -33,13 +33,21 @@ final class RMCharacterListView: UIView {
         collectionView.isHidden = true
         collectionView.alpha = 0
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(RMCharacterCollectionViewCell.self, forCellWithReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier)
+        collectionView.register(
+            RMCharacterCollectionViewCell.self,
+            forCellWithReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier)
+        collectionView.register(
+            RMLoadingFooterCollectionResuableView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+            withReuseIdentifier: "RMLoadingFooterCollectionResuableView"
+        )
         return collectionView
     }()
     
-    // Mark: - Int
+    // MARK: - Int
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         translatesAutoresizingMaskIntoConstraints = false
         addSubviews(collectionView, spinner)
         addConstraints()
@@ -74,6 +82,12 @@ final class RMCharacterListView: UIView {
 }
 
 extension RMCharacterListView: RMCharacterListViewModelDelegate {
+    func didLoadMoreCharacters(at indexPaths: [IndexPath]) {
+        collectionView.performBatchUpdates {
+            self.collectionView.insertItems(at: indexPaths)
+        }
+    }
+    
     
     func didSelectCharacter(_ character: RMCharacter) {
         delegate?.rmCharacterListView(didSelectCharacter: character)

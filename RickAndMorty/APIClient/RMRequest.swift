@@ -59,7 +59,7 @@ final class RMRequest {
     
     // Mark: - Public
     
-    /// Construct request
+    /// Designated initializer for construct request
     /// - Parameters:
     ///   - endpoint: Target endpoint
     ///   - pathComponents: Collection of path components
@@ -69,8 +69,53 @@ final class RMRequest {
         self.pathComponents = pathComponents
         self.queryParameters = queryParameters
     }
+    
+    convenience init?(url: URL) {
+        let urlString = url.absoluteString
+        
+        if !urlString.contains(Constants.baseUrl) {
+            print("\(urlString) does not contains \(Constants.baseUrl)")
+            return nil
+        }
+        
+        let trimmedString = urlString.replacingOccurrences(of: "\(Constants.baseUrl + Constants.pathSeprator)", with: String.empty)
+        if trimmedString.contains("/") {
+            let components = trimmedString.components(separatedBy: Constants.pathSeprator)
+            if !components.isEmpty {
+                guard let endPointString = components.first else { return nil }
+                guard let rmEndPoint = RMEndpoint(rawValue: endPointString) else { return nil }
+                self.init(endpoint: rmEndPoint)
+                return
+            }
+        }
+        else if trimmedString.contains("?") {
+            let components = trimmedString.components(separatedBy: "?")
+            if !components.isEmpty {
+                guard let endPointString = components.first else { return nil }
+                guard let rmEndPoint = RMEndpoint(rawValue: endPointString) else { return nil }
+                
+                var queryParameters: [URLQueryItem] = []
+                
+                if components.count > 1 {
+                    let queryParametersStringArray = components[1].components(separatedBy: "&")
+                    guard !queryParametersStringArray.isEmpty else { return nil }
+                    let _queryParameters: [URLQueryItem] = queryParametersStringArray.compactMap {
+                        let keyValue = $0.components(separatedBy: "=")
+                        guard !keyValue.isEmpty, keyValue.count > 1
+                        else { return nil }
+                        return URLQueryItem(name: keyValue[0], value: keyValue[1])
+                    }
+                    queryParameters.append(contentsOf: _queryParameters)
+                }
+                self.init(endpoint: rmEndPoint, queryParameters: queryParameters)
+                return
+            }
+        }
+        
+        return nil
+    }
 }
-
+ 
 extension RMRequest {
     static let listCharactersRequest = RMRequest(endpoint: .character)
 }

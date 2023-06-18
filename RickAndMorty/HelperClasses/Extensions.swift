@@ -14,3 +14,7 @@ extension UIView {
         })
     }
 }
+
+extension String {
+    static var empty = "" 
+}
