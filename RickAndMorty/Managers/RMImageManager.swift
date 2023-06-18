@@ -15,11 +15,10 @@ final class RMImageManager {
     
     private var imageDataCache = NSCache<NSString, NSData>()
     
-    
     /// Get image image from URL
     /// - Parameters:
     ///   - url: Image URL object
-    ///   - completion: callback 
+    ///   - completion: callback
     public func downloadImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void ) {
         let key = url.absoluteString as NSString
         
