@@ -66,96 +66,37 @@ final class RMCharacterDetailView: UIView {
     
     private func createSection(for sectionIndex: Int) -> NSCollectionLayoutSection {
         
-         let sections = viewModel.sections
+        let sections = viewModel.sections
         
         switch sections[sectionIndex] {
         case .photo:
-            return createPhotoSectionLayout()
+            return viewModel.createPhotoSectionLayout()
         case .information:
-            return createInformationSectionLayout()
+            return viewModel.createInformationSectionLayout()
         case .episodes:
-            return createEpisodeSectionLayout()
+            return viewModel.createEpisodeSectionLayout()
         }
-    }
-    
-    private func createPhotoSectionLayout() -> NSCollectionLayoutSection {
-        
-        let item = NSCollectionLayoutItem(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-        )
-        
-        item.contentInsets = .init(top: 0, leading: 0, bottom: 10, trailing: 0)
-        
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(150)
-            ),
-            subitems: [item]
-        )
-        
-        let section = NSCollectionLayoutSection(group: group)
-        return section
-    }
-    
-    private func createInformationSectionLayout() -> NSCollectionLayoutSection {
-        
-        let item = NSCollectionLayoutItem(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-        )
-        
-        item.contentInsets = .init(top: 0, leading: 0, bottom: 10, trailing: 0)
-        
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(150)
-            ),
-            subitems: [item]
-        )
-        
-        let section = NSCollectionLayoutSection(group: group)
-        return section
-    }
-    
-    private func createEpisodeSectionLayout() -> NSCollectionLayoutSection {
-        
-        let item = NSCollectionLayoutItem(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-        )
-        
-        item.contentInsets = .init(top: 0, leading: 0, bottom: 10, trailing: 0)
-        
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(150)
-            ),
-            subitems: [item]
-        )
-        
-        let section = NSCollectionLayoutSection(group: group)
-        return section
     }
 }
 
 // MARK: - CollectionView
+
 extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         viewModel.sections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        section == 1 ? 10 : 1
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            return 10
+        case 2:
+            return 12
+        default:
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -164,7 +105,7 @@ extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDel
             cell.backgroundColor = .black
         }
         else if indexPath.section == 1 {
-            cell.backgroundColor = .gray
+            cell.backgroundColor = .blue
         } else {
             cell.backgroundColor = .purple
         }
