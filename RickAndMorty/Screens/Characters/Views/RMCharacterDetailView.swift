@@ -9,7 +9,9 @@ import UIKit
 
 final class RMCharacterDetailView: UIView {
     
-   private var collectionView: UICollectionView!
+    private var collectionView: UICollectionView!
+    
+    private let viewModel: RMCharacterDetailViewViewModel
     
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)
@@ -20,10 +22,12 @@ final class RMCharacterDetailView: UIView {
     
     // MARK: - Int
     
-    override init(frame: CGRect) {
+    init(frame: CGRect, _ viewModel: RMCharacterDetailViewViewModel) {
+        self.viewModel = viewModel
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .purple
+        backgroundColor = .systemBackground
+        
         collectionView = createCollectionView()
         addSubviews(spinner, collectionView)
         addConstraints()
@@ -39,7 +43,10 @@ final class RMCharacterDetailView: UIView {
         }
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.delegate = self
+        collectionView.dataSource = self
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }
     
@@ -57,7 +64,110 @@ final class RMCharacterDetailView: UIView {
         ])
     }
     
-    private func createSection(for   sectionIndex: Int) -> NSCollectionLayoutSection {
+    private func createSection(for sectionIndex: Int) -> NSCollectionLayoutSection {
         
+         let sections = viewModel.sections
+        
+        switch sections[sectionIndex] {
+        case .photo:
+            return createPhotoSectionLayout()
+        case .information:
+            return createInformationSectionLayout()
+        case .episodes:
+            return createEpisodeSectionLayout()
+        }
+    }
+    
+    private func createPhotoSectionLayout() -> NSCollectionLayoutSection {
+        
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+        )
+        
+        item.contentInsets = .init(top: 0, leading: 0, bottom: 10, trailing: 0)
+        
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(150)
+            ),
+            subitems: [item]
+        )
+        
+        let section = NSCollectionLayoutSection(group: group)
+        return section
+    }
+    
+    private func createInformationSectionLayout() -> NSCollectionLayoutSection {
+        
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+        )
+        
+        item.contentInsets = .init(top: 0, leading: 0, bottom: 10, trailing: 0)
+        
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(150)
+            ),
+            subitems: [item]
+        )
+        
+        let section = NSCollectionLayoutSection(group: group)
+        return section
+    }
+    
+    private func createEpisodeSectionLayout() -> NSCollectionLayoutSection {
+        
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+        )
+        
+        item.contentInsets = .init(top: 0, leading: 0, bottom: 10, trailing: 0)
+        
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(150)
+            ),
+            subitems: [item]
+        )
+        
+        let section = NSCollectionLayoutSection(group: group)
+        return section
+    }
+}
+
+// MARK: - CollectionView
+extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDelegate {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        viewModel.sections.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        section == 1 ? 10 : 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        if indexPath.section == 0 {
+            cell.backgroundColor = .black
+        }
+        else if indexPath.section == 1 {
+            cell.backgroundColor = .gray
+        } else {
+            cell.backgroundColor = .purple
+        }
+        return cell
     }
 }

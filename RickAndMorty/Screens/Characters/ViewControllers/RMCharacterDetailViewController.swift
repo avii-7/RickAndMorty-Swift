@@ -11,11 +11,12 @@ import UIKit
 /// Controller to show detail information about single character
 final class RMCharacterDetailViewController: UIViewController {
 
-    let viewModel: RMCharacterDetailViewModel
-    let detailView = RMCharacterDetailView()
+    let viewModel: RMCharacterDetailViewViewModel
+    let detailView: RMCharacterDetailView
     
-    init(viewModel: RMCharacterDetailViewModel) {
+    init(viewModel: RMCharacterDetailViewViewModel) {
         self.viewModel = viewModel
+        detailView = RMCharacterDetailView(frame: .zero, viewModel)
         super.init(nibName: nil, bundle: nil)
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShare))
         view.addSubview(detailView)
@@ -40,11 +41,10 @@ final class RMCharacterDetailViewController: UIViewController {
         fatalError("Unsupported")
     }
     
+    /// Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = viewModel.name
     }
-    
-    
 }
