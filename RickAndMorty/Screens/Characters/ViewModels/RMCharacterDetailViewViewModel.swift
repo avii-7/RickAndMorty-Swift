@@ -28,6 +28,7 @@ final class RMCharacterDetailViewViewModel {
         character.name
     }
     
+    // MARK: - Collection View Section Layouts.
     
     func createPhotoSectionLayout() -> NSCollectionLayoutSection {
         
