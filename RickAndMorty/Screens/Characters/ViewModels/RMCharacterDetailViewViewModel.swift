@@ -11,17 +11,25 @@ final class RMCharacterDetailViewViewModel {
     
     private let character: RMCharacter
     
-    enum RMCharacterDetailSectionTypes: CaseIterable {
-        case photo, information, episodes
-    }
+    enum SectionTypes {
+        case photo(viewModel: RMCharacterPhotoCollectionViewCellViewModel)
+        case information(viewModel: [RMCharacterInfoCollectionViewCellViewModel])
+        case episodes(viewModel: [RMCharacterEpisodeCollectionViewCellViewModel])
+    } 
     
-    var sections: [RMCharacterDetailSectionTypes] {
-        RMCharacterDetailSectionTypes.allCases
-    }
-
+    var sections: [SectionTypes] = []
+    
+    // MARK: - Initializer
     
     init(_ character: RMCharacter) {
         self.character = character
+        setUpSections()
+    }
+    
+    private func setUpSections() {
+        sections.append(.photo(viewModel: .init()))
+        sections.append(.information(viewModel: [.init(), .init(), .init(), .init()]))
+        sections.append(.episodes(viewModel: [.init(), .init(), .init(), .init()]))
     }
     
     var name: String {
@@ -38,9 +46,7 @@ final class RMCharacterDetailViewViewModel {
                 heightDimension: .fractionalHeight(1.0)
             )
         )
-        
-        item.contentInsets = .init(top: 0, leading: 0, bottom: 10, trailing: 0)
-        
+
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
@@ -48,8 +54,14 @@ final class RMCharacterDetailViewViewModel {
             ),
             subitems: [item]
         )
-        
+
         let section = NSCollectionLayoutSection(group: group)
+        
+        section.contentInsets = .init(
+            top: 0, leading: 0,
+            bottom: 5, trailing: 0
+        )
+        
         return section
     }
     
@@ -62,7 +74,7 @@ final class RMCharacterDetailViewViewModel {
             )
         )
         
-        item.contentInsets = .init(top: 2, leading: 2, bottom: 2, trailing: 2)
+        item.contentInsets = .init(top: 2.5, leading: 2.5, bottom: 2.5, trailing: 2.5)
         
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
@@ -71,8 +83,9 @@ final class RMCharacterDetailViewViewModel {
             ),
             subitems: [item, item]
         )
-        
+
         let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = .init(top: 0, leading: 2.5, bottom: 0, trailing: 2.5)
         return section
     }
     
@@ -85,7 +98,7 @@ final class RMCharacterDetailViewViewModel {
             )
         )
         
-        item.contentInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
+        item.contentInsets = .init(top: 0, leading: 2.5, bottom: 0, trailing: 2.5)
         
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
@@ -96,6 +109,7 @@ final class RMCharacterDetailViewViewModel {
         )
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPaging
+        section.contentInsets = .init(top: 2.5, leading: 2.5, bottom: 2.5, trailing: 2.5)
         return section
     }
 }

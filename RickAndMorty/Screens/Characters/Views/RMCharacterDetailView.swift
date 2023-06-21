@@ -45,7 +45,9 @@ final class RMCharacterDetailView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(RMCharacterPhotoCollectionViewCell.self, forCellWithReuseIdentifier: RMCharacterPhotoCollectionViewCell.cellIndentifier)
+        collectionView.register(RMCharacterInfoCollectionViewCell.self, forCellWithReuseIdentifier: RMCharacterInfoCollectionViewCell.cellIndentifier)
+        collectionView.register(RMCharacterEpisodeCollectionViewCell.self, forCellWithReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIndentifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }
@@ -87,28 +89,37 @@ extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDel
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
+        let sectionType = viewModel.sections[section]
+        
+        switch sectionType {
+        case .photo:
             return 1
-        case 1:
-            return 10
-        case 2:
-            return 12
-        default:
-            return 0
+        case .information(let viewModels):
+            return viewModels.count
+        case .episodes(let viewModels):
+            return viewModels.count
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        if indexPath.section == 0 {
-            cell.backgroundColor = .black
-        }
-        else if indexPath.section == 1 {
-            cell.backgroundColor = .blue
-        } else {
+        let section = viewModel.sections[indexPath.section]
+        
+        switch section {
+        case .photo(let viewModel):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterPhotoCollectionViewCell.cellIndentifier, for: indexPath) as? RMCharacterPhotoCollectionViewCell else { fatalError("Supported went wrong.") }
             cell.backgroundColor = .purple
+            cell.configure(with: viewModel)
+            return cell
+        case .information(let viewModels):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterInfoCollectionViewCell.cellIndentifier, for: indexPath) as? RMCharacterInfoCollectionViewCell else { fatalError("Supported went wrong.") }
+            cell.backgroundColor = .red
+            cell.configure(with: viewModels[indexPath.row])
+            return cell
+        case .episodes(let viewModels):
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIndentifier, for: indexPath) as? RMCharacterEpisodeCollectionViewCell else { fatalError("Supported went wrong.") }
+            cell.backgroundColor = .green
+            cell.configure(with: viewModels[indexPath.row])
+            return cell
         }
-        return cell
     }
 }
