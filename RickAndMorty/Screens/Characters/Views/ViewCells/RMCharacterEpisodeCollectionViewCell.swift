@@ -13,6 +13,7 @@ final class RMCharacterEpisodeCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         //translatesAutoresizingMaskIntoConstraints = false
+        backgroundColor = .tertiarySystemGroupedBackground
         setupConstraints()
     }
     

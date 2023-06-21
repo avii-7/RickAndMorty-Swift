@@ -15,7 +15,7 @@ final class RMCharacterDetailViewViewModel {
         case photo(viewModel: RMCharacterPhotoCollectionViewCellViewModel)
         case information(viewModel: [RMCharacterInfoCollectionViewCellViewModel])
         case episodes(viewModel: [RMCharacterEpisodeCollectionViewCellViewModel])
-    } 
+    }
     
     var sections: [SectionTypes] = []
     
@@ -27,9 +27,24 @@ final class RMCharacterDetailViewViewModel {
     }
     
     private func setUpSections() {
-        sections.append(.photo(viewModel: .init()))
-        sections.append(.information(viewModel: [.init(), .init(), .init(), .init()]))
-        sections.append(.episodes(viewModel: [.init(), .init(), .init(), .init()]))
+        sections.append(.photo(
+            viewModel: .init(imageUrl: URL(string: character.image))
+        ))
+        sections.append(.information(
+            viewModel: [
+                .init(value: character.status.rawValue, title: "Status"),
+                .init(value: character.gender.rawValue, title: "Gender"),
+                .init(value: character.type, title: "Type"),
+                .init(value: character.species, title: "Species"),
+                .init(value: character.origin.name, title: "Origin"),
+                .init(value: character.location.name, title: "Location"),
+                .init(value: character.created, title: "Created"),
+                .init(value: "\(character.episode.count)", title: "Total Episodes")] ))
+        sections.append(.episodes(
+            viewModel: character.episode.compactMap({
+                RMCharacterEpisodeCollectionViewCellViewModel(episodeUrl: URL(string: $0))
+            })
+        ))
     }
     
     var name: String {
@@ -46,7 +61,7 @@ final class RMCharacterDetailViewViewModel {
                 heightDimension: .fractionalHeight(1.0)
             )
         )
-
+        
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
@@ -54,7 +69,7 @@ final class RMCharacterDetailViewViewModel {
             ),
             subitems: [item]
         )
-
+        
         let section = NSCollectionLayoutSection(group: group)
         
         section.contentInsets = .init(
@@ -83,7 +98,7 @@ final class RMCharacterDetailViewViewModel {
             ),
             subitems: [item, item]
         )
-
+        
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = .init(top: 0, leading: 2.5, bottom: 0, trailing: 2.5)
         return section

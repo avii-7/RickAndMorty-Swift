@@ -13,6 +13,8 @@ final class RMCharacterInfoCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         //translatesAutoresizingMaskIntoConstraints = false
+        backgroundColor = .tertiarySystemGroupedBackground
+        layer.cornerRadius = 8
         setUpConstraints()
     }
     

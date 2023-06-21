@@ -113,6 +113,7 @@
 		86557A912A420DC100F87B03 /* ViewCellsModels */ = {
 			isa = PBXGroup;
 			children = (
+				8618819E2A300F3400696692 /* RMCharacterCollectionViewCellViewModel.swift */,
 				86557A922A420E1E00F87B03 /* RMCharacterPhotoCollectionViewCellViewModel.swift */,
 				86557A942A420E3600F87B03 /* RMCharacterInfoCollectionViewCellViewModel.swift */,
 				86557A962A420E4800F87B03 /* RMCharacterEpisodeCollectionViewCellViewModel.swift */,
@@ -331,7 +332,6 @@
 			children = (
 				86557A912A420DC100F87B03 /* ViewCellsModels */,
 				86F78F562A2F918F002F434C /* RMCharacterListViewModel.swift */,
-				8618819E2A300F3400696692 /* RMCharacterCollectionViewCellViewModel.swift */,
 				86C60D752A316273005A1B9E /* RMCharacterDetailViewViewModel.swift */,
 			);
 			path = ViewModels;
