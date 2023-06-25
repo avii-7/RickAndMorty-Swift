@@ -20,7 +20,6 @@ final class RMCharacterInfoCollectionViewCell: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.text = "Title"
         titleLabel.font = .preferredFont(forTextStyle: .title3)
         titleLabel.textAlignment = .center
         return titleLabel
@@ -38,13 +37,13 @@ final class RMCharacterInfoCollectionViewCell: UICollectionViewCell {
     
     private let valueLabel: UILabel = {
         let valueLabel = UILabel()
+        valueLabel.numberOfLines = 0
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
-        valueLabel.text = "Value"
         return valueLabel
     }()
     
     private let iconLabel: UIImageView = {
-        let iconLabel = UIImageView(image: UIImage(systemName: "globe.asia.australia"))
+        let iconLabel = UIImageView()
         iconLabel.translatesAutoresizingMaskIntoConstraints = false
         iconLabel.contentMode = .scaleAspectFit
         return iconLabel
@@ -109,10 +108,19 @@ final class RMCharacterInfoCollectionViewCell: UICollectionViewCell {
     }
     
     public func configure(with viewModel: RMCharacterInfoCollectionViewCellViewModel) {
-        
+        titleLabel.text = viewModel.displayTitle
+        valueLabel.text = viewModel.displayValue
+        iconLabel.image = viewModel.displayImage
+        iconLabel.tintColor = viewModel.tintColor
+        titleLabel.textColor = viewModel.tintColor
     }
     
     override func prepareForReuse() {
-        
+        super.prepareForReuse()
+        titleLabel.text = nil
+        valueLabel.text = nil
+        iconLabel.image = nil
+        iconLabel.tintColor = .label
+        titleLabel.tintColor = .label
     }
 }

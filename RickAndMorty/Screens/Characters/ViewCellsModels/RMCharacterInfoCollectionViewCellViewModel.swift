@@ -5,14 +5,120 @@
 //  Created by Arun on 20/06/23.
 //
 
-import Foundation
+import UIKit
 
 final class RMCharacterInfoCollectionViewCellViewModel {
-    private let title: String
+    
+    private let type: `Type`
+    
+    public var displayTitle: String {
+        type.rawValue
+    }
+    
     private let value: String
     
-    init(value: String, title: String) {
+    public var displayValue: String {
+        if value.isEmpty { return "None"}
+        else if type == .created {
+            if let date = Self.dateFormatter.date(from: value) {
+                return date.formatted(date: .abbreviated, time: .shortened)
+            }
+        }
+        
+        return value
+    }
+    
+    public var displayImage: UIImage? {
+        return type.iconImage
+    }
+    
+    public var tintColor: UIColor {
+        return type.tintColor
+    }
+    
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSZ"
+        formatter.timeZone = .current
+        return formatter
+    }()
+    
+    enum `Type`: String {
+        case status = "STATUS"
+        case gender = "GENDER"
+        case type = "TYPE"
+        case species = "SPECIES"
+        case origin = "ORIGIN"
+        case location = "LOCATION"
+        case created = "CREATED"
+        case episodeCount = "EPISODE COUNT"
+        
+//        var displayTitle: String {
+//            switch self {
+//            case .status:
+//                return "Status"
+//            case .gender:
+//                return "Gender"
+//            case .type:
+//                return "Type"
+//            case .species:
+//                return "Species"
+//            case .origin:
+//                return "Origin"
+//            case .location:
+//                return "Location"
+//            case .created:
+//                return "Created"
+//            case .episodeCount:
+//                return "Episode Count"
+//            }
+//        }
+        
+        var iconImage: UIImage? {
+            switch self {
+            case .status:
+                return UIImage(systemName: "bell")
+            case .gender:
+                return UIImage(systemName: "bell")
+            case .type:
+                return UIImage(systemName: "bell")
+            case .species:
+                return UIImage(systemName: "bell")
+            case .origin:
+                return UIImage(systemName: "bell")
+            case .location:
+                return UIImage(systemName: "bell")
+            case .created:
+                return UIImage(systemName: "bell")
+            case .episodeCount:
+                return UIImage(systemName: "bell")
+            }
+        }
+        
+        var tintColor: UIColor {
+            switch self {
+            case .status:
+                return .systemRed
+            case .gender:
+                return .systemBlue
+            case .type:
+                return .systemYellow
+            case .species:
+                return .systemCyan
+            case .origin:
+                return .systemMint
+            case .location:
+                return .systemPink
+            case .created:
+                return .systemPurple
+            case .episodeCount:
+                return .systemTeal
+            }
+        }
+    }
+    
+    init(type: `Type`, value: String) {
+        self.type = type
         self.value = value
-        self.title = title
     }
 }
