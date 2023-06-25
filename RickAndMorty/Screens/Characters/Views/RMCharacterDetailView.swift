@@ -105,14 +105,17 @@ extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDel
         let section = viewModel.sections[indexPath.section]
         
         switch section {
+            
         case .photo(let viewModel):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterPhotoCollectionViewCell.cellIndentifier, for: indexPath) as? RMCharacterPhotoCollectionViewCell else { fatalError("Supported went wrong.") }
             cell.configure(with: viewModel)
             return cell
+            
         case .information(let viewModels):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterInfoCollectionViewCell.cellIndentifier, for: indexPath) as? RMCharacterInfoCollectionViewCell else { fatalError("Supported went wrong.") }
             cell.configure(with: viewModels[indexPath.row])
             return cell
+            
         case .episodes(let viewModels):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIndentifier, for: indexPath) as? RMCharacterEpisodeCollectionViewCell else { fatalError("Supported went wrong.") }
             cell.configure(with: viewModels[indexPath.row])

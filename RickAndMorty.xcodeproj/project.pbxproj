@@ -209,7 +209,9 @@
 		869268DC2A2B2CAD0001C1B5 /* Characters */ = {
 			isa = PBXGroup;
 			children = (
+				86557A8A2A420BFC00F87B03 /* ViewCells */,
 				86F78F582A2F9458002F434C /* Views */,
+				86557A912A420DC100F87B03 /* ViewCellsModels */,
 				86F78F552A2F916B002F434C /* ViewModels */,
 				869268EB2A2B37400001C1B5 /* Models */,
 				869268EA2A2B37310001C1B5 /* ViewControllers */,
@@ -330,7 +332,6 @@
 		86F78F552A2F916B002F434C /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				86557A912A420DC100F87B03 /* ViewCellsModels */,
 				86F78F562A2F918F002F434C /* RMCharacterListViewModel.swift */,
 				86C60D752A316273005A1B9E /* RMCharacterDetailViewViewModel.swift */,
 			);
@@ -340,7 +341,6 @@
 		86F78F582A2F9458002F434C /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				86557A8A2A420BFC00F87B03 /* ViewCells */,
 				86F78F592A2F9475002F434C /* RMCharacterListView.swift */,
 				86C60D732A31624B005A1B9E /* RMCharacterDetailView.swift */,
 				86AADA2F2A3238FD008AA14D /* RMLoadingFooterCollectionResuableView.swift */,
