@@ -53,6 +53,7 @@ final class RMCharacterPhotoCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-         
+        super.prepareForReuse()
+        imageView.image = nil
     }
 }

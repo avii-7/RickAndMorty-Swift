@@ -80,19 +80,19 @@ final class RMRequest {
         
         let trimmedString = urlString.replacingOccurrences(of: "\(Constants.baseUrl + Constants.pathSeprator)", with: String.empty)
         
+        
         if trimmedString.contains(Constants.pathSeprator) {
             var components = trimmedString.components(separatedBy: Constants.pathSeprator)
             guard !components.isEmpty else { return nil }
             let endPointString = components.first!
             
             guard let rmEndPoint = RMEndpoint(rawValue: endPointString) else { return nil }
-            let pathComponents = [String]()
-            
+
             if components.count > 1 {
                 components.removeFirst()
             }
             
-            self.init(endpoint: rmEndPoint, pathComponents: pathComponents)
+            self.init(endpoint: rmEndPoint, pathComponents: components)
         }
         else if trimmedString.contains("?") {
             let components = trimmedString.components(separatedBy: "?")

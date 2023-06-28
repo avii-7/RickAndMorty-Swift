@@ -110,7 +110,7 @@
 			path = ViewCells;
 			sourceTree = "<group>";
 		};
-		86557A912A420DC100F87B03 /* ViewCellsModels */ = {
+		86557A912A420DC100F87B03 /* ViewCellsViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				8618819E2A300F3400696692 /* RMCharacterCollectionViewCellViewModel.swift */,
@@ -118,7 +118,7 @@
 				86557A942A420E3600F87B03 /* RMCharacterInfoCollectionViewCellViewModel.swift */,
 				86557A962A420E4800F87B03 /* RMCharacterEpisodeCollectionViewCellViewModel.swift */,
 			);
-			path = ViewCellsModels;
+			path = ViewCellsViewModels;
 			sourceTree = "<group>";
 		};
 		869268B62A2B24430001C1B5 = {
@@ -211,7 +211,7 @@
 			children = (
 				86557A8A2A420BFC00F87B03 /* ViewCells */,
 				86F78F582A2F9458002F434C /* Views */,
-				86557A912A420DC100F87B03 /* ViewCellsModels */,
+				86557A912A420DC100F87B03 /* ViewCellsViewModels */,
 				86F78F552A2F916B002F434C /* ViewModels */,
 				869268EB2A2B37400001C1B5 /* Models */,
 				869268EA2A2B37310001C1B5 /* ViewControllers */,

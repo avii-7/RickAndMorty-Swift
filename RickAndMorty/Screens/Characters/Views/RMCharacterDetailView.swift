@@ -83,7 +83,8 @@ final class RMCharacterDetailView: UIView {
 
 // MARK: - CollectionView
 
-extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDelegate {
+extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDelegate{
+
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         viewModel.sections.count
     }

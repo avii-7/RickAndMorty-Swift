@@ -12,7 +12,6 @@ final class RMCharacterEpisodeCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        //translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .tertiarySystemGroupedBackground
         setupConstraints()
     }
@@ -26,10 +25,13 @@ final class RMCharacterEpisodeCollectionViewCell: UICollectionViewCell {
     }
     
     public func configure(with viewModel: RMCharacterEpisodeCollectionViewCellViewModel) {
-        
+        viewModel.registerForData { result in
+            print(result.episode)
+        }
+        viewModel.fetchEpisode()
     }
     
     override func prepareForReuse() {
-        
+        super.prepareForReuse()
     }
 }
