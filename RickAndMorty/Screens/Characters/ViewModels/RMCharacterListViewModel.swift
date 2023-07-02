@@ -158,9 +158,7 @@ extension RMCharacterListViewModel: UIScrollViewDelegate {
     }
     
     private func checkReachAtBottom(_ scrollView: UIScrollView) {
-        
         if scrollView.contentOffset.y + 1 >= (scrollView.contentSize.height - scrollView.frame.height - 120) {
-            
             guard shouldShowLoadMoreIndicator,
             fetchingMoreCharacterStatus != .inProgress,
             let urlString = allCharacterInfo?.next,

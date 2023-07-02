@@ -11,12 +11,6 @@ final class RMCharacterDetailViewViewModel {
     
     private let character: RMCharacter
     
-    enum SectionTypes {
-        case photo(viewModel: RMCharacterPhotoCollectionViewCellViewModel)
-        case information(viewModel: [RMCharacterInfoCollectionViewCellViewModel])
-        case episodes(viewModel: [RMCharacterEpisodeCollectionViewCellViewModel])
-    }
-    
     var sections: [SectionTypes] = []
     
     // MARK: - Initializer

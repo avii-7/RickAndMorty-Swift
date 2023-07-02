@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents unqiue API endpoints
-@frozen enum RMEndpoint: String {
+@frozen enum RMEndpoint: String, Hashable, CaseIterable {
     /// Endpoint to get character information
     case character
     /// Endpoint to get location information

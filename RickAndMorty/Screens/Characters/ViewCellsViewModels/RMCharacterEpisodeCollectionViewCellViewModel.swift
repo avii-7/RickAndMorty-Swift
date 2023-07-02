@@ -14,9 +14,9 @@ protocol RMEpisodeDataRenderer {
 }
 
 final class RMCharacterEpisodeCollectionViewCellViewModel {
-    private let episodeUrl: URL?
+    private(set) var episodeUrl: URL?
     private var isDataAlreadyFetched = false
-    private var dataBlock: ((RMEpisodeDataRenderer)->Void)?
+    private var dataBlock: ((RMEpisodeDataRenderer) -> Void)?
     
     private var episode: RMEpisode? {
         didSet {
@@ -47,13 +47,12 @@ final class RMCharacterEpisodeCollectionViewCellViewModel {
         guard let episodeUrl,
               let request = RMRequest(url: episodeUrl)
         else { return }
-        
-        isDataAlreadyFetched = true
-        
+
         RMService.shared.execute(request, expecting: RMEpisode.self) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let model):
+                self.isDataAlreadyFetched = true
                 DispatchQueue.main.async {
                     self.episode = model
                 }

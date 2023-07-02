@@ -7,11 +7,17 @@
 
 import UIKit
 
+protocol RMCharacterDetailViewDelegate: AnyObject  {
+    func didSelectItem(indexPath: IndexPath)
+}
+
 final class RMCharacterDetailView: UIView {
     
     private var collectionView: UICollectionView!
     
     private let viewModel: RMCharacterDetailViewViewModel
+    
+    public weak var delegate: RMCharacterDetailViewDelegate?
     
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)
@@ -27,7 +33,6 @@ final class RMCharacterDetailView: UIView {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
-        
         collectionView = createCollectionView()
         addSubviews(spinner, collectionView)
         addConstraints()
@@ -45,9 +50,19 @@ final class RMCharacterDetailView: UIView {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register(RMCharacterPhotoCollectionViewCell.self, forCellWithReuseIdentifier: RMCharacterPhotoCollectionViewCell.cellIndentifier)
-        collectionView.register(RMCharacterInfoCollectionViewCell.self, forCellWithReuseIdentifier: RMCharacterInfoCollectionViewCell.cellIndentifier)
-        collectionView.register(RMCharacterEpisodeCollectionViewCell.self, forCellWithReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIndentifier)
+        
+        collectionView.register(
+            RMCharacterPhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: RMCharacterPhotoCollectionViewCell.cellIndentifier
+        )
+        collectionView.register(
+            RMCharacterInfoCollectionViewCell.self,
+            forCellWithReuseIdentifier: RMCharacterInfoCollectionViewCell.cellIndentifier
+        )
+        collectionView.register(
+            RMCharacterEpisodeCollectionViewCell.self,
+            forCellWithReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIndentifier
+        )
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }
@@ -83,8 +98,8 @@ final class RMCharacterDetailView: UIView {
 
 // MARK: - CollectionView
 
-extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDelegate{
-
+extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDelegate {
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         viewModel.sections.count
     }
@@ -122,5 +137,9 @@ extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDel
             cell.configure(with: viewModels[indexPath.row])
             return cell
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegate?.didSelectItem(indexPath: indexPath)
     }
 }

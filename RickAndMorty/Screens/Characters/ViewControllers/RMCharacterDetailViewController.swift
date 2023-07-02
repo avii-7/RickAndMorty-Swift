@@ -18,6 +18,8 @@ final class RMCharacterDetailViewController: UIViewController {
         self.viewModel = viewModel
         detailView = RMCharacterDetailView(frame: .zero, viewModel)
         super.init(nibName: nil, bundle: nil)
+        // Why error ? when we used self before super.init call ?
+        detailView.delegate = self
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShare))
         view.addSubview(detailView)
         addConstraints()
@@ -41,10 +43,29 @@ final class RMCharacterDetailViewController: UIViewController {
         fatalError("Unsupported")
     }
     
-    /// Lifecycle methods
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = viewModel.name
+    }
+}
+
+extension RMCharacterDetailViewController: RMCharacterDetailViewDelegate {
+    func didSelectItem(indexPath: IndexPath) {
+        let sectionType = viewModel.sections[indexPath.section]
+        
+        switch sectionType {
+        case .information, .photo:
+            break
+        case .episodes(let viewModel):
+            guard let episodeUrl = viewModel[indexPath.row].episodeUrl
+            else { return }
+            
+            let viewModel = RMEpisodeDetailViewViewModel(url: episodeUrl)
+            let vc = RMEpisodeDetailViewController(viewModel: viewModel)
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
