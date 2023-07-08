@@ -14,6 +14,7 @@ final class RMCharacterViewController: UIViewController, RMCharacterListViewDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(didTapSearch))
         view.backgroundColor = .systemBackground
         title = "Characters"
         setupView()
@@ -28,6 +29,12 @@ final class RMCharacterViewController: UIViewController, RMCharacterListViewDele
             characterListView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             characterListView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    @objc
+    private func didTapSearch() {
+        let vc = RMSearchViewController(serachType: .Character)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     // MARK: - RMCharacterListViewDelegate

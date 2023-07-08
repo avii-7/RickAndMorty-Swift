@@ -20,15 +20,29 @@ enum FetchingMoreEpisodesStatus {
 /// View model to handle character list logic
 final class RMEpisodeListViewViewModel: NSObject {
     
+    private var randomColor: UIColor {
+        let red = CGFloat.random(in: 0...1)
+        let green = CGFloat.random(in: 0...1)
+        let blue = CGFloat.random(in: 0...1)
+        
+        return UIColor(
+            red: red,
+            green: green,
+            blue: blue,
+            alpha: 1
+        )
+    }
+    
     private var episodes: [RMEpisode] = [] {
         didSet {
             for episode in episodes {
                 let url = URL(string: episode.url)
-                let cellViewModel = RMEpisodeCollectionViewCellViewModel(episodeUrl: url)
-                if cellViewModels.contains(cellViewModel) {
-                    return
+                let cellViewModel = RMEpisodeCollectionViewCellViewModel(
+                    episodeUrl: url,
+                    borderColor: randomColor)
+                if !cellViewModels.contains(cellViewModel) {   
+                    cellViewModels.append(cellViewModel)
                 }
-                cellViewModels.append(cellViewModel)
             }
         }
     }
@@ -94,14 +108,14 @@ final class RMEpisodeListViewViewModel: NSObject {
     }
     
     var shouldShowLoadMoreIndicator: Bool {
-       allEpisodeInfo?.next != nil
+        allEpisodeInfo?.next != nil
     }
 }
 
 // MARK: - CollectionView
 
 extension RMEpisodeListViewViewModel: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-     
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         cellViewModels.count
     }
@@ -116,10 +130,9 @@ extension RMEpisodeListViewViewModel: UICollectionViewDataSource, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let bounds = UIScreen.main.bounds
-        let width = (bounds.width - 30) / 2
-        
-        return CGSize(width: width, height: width * 0.7)
+        let bounds = collectionView.bounds
+        let width = bounds.width - 20
+        return CGSize(width: width, height: 150)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -163,9 +176,9 @@ extension RMEpisodeListViewViewModel: UIScrollViewDelegate {
     private func checkReachAtBottom(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y + 1 >= (scrollView.contentSize.height - scrollView.frame.height - 120) {
             guard shouldShowLoadMoreIndicator,
-            fetchingMoreEpisodesStatus != .inProgress,
-            let urlString = allEpisodeInfo?.next,
-            let url = URL(string: urlString)
+                  fetchingMoreEpisodesStatus != .inProgress,
+                  let urlString = allEpisodeInfo?.next,
+                  let url = URL(string: urlString)
             else { return }
             fetchAdditionalEpisodes(url: url)
         }

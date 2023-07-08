@@ -5,7 +5,7 @@
 //  Created by Arun on 20/06/23.
 //
 
-import Foundation
+import UIKit
 
 protocol RMEpisodeDataRenderer {
     var name: String { get }
@@ -17,6 +17,7 @@ final class RMEpisodeCollectionViewCellViewModel {
     private(set) var episodeUrl: URL?
     private var isDataAlreadyFetched = false
     private var dataBlock: ((RMEpisodeDataRenderer) -> Void)?
+    let borderColor: UIColor
     
     private var episode: RMEpisode? {
         didSet {
@@ -27,8 +28,9 @@ final class RMEpisodeCollectionViewCellViewModel {
     
     // MARK: - Init
     
-    init(episodeUrl: URL?) {
+    init(episodeUrl: URL?, borderColor: UIColor = .blue) {
         self.episodeUrl = episodeUrl
+        self.borderColor = borderColor
     }
     
     // MARK: - Public function

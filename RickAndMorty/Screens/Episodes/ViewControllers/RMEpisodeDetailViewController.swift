@@ -11,6 +11,8 @@ final class RMEpisodeDetailViewController: UIViewController {
     
     private var viewModel: RMEpisodeDetailViewViewModel
     
+    private let detailView = RMEpisodeDetailView()
+    
     init(viewModel: RMEpisodeDetailViewViewModel) {
         self.viewModel = viewModel
         // Not clear why we need to call this after property initialization
@@ -20,11 +22,29 @@ final class RMEpisodeDetailViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("Unsupported !")
     }
+    
+    // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Episode Detail View Controller"
-        view.backgroundColor = .systemBackground
-        viewModel.fetchEpisodes()
+        title = "Episode"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(didTapShare))
+        view.addSubview(detailView)
+        addConstraints()
+        //viewModel.fetchEpisodes()
+    }
+    
+   private func addConstraints() {
+        NSLayoutConstraint.activate([
+            detailView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            detailView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            detailView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            detailView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
+    
+    @objc
+    private func didTapShare() {
+        
     }
 }

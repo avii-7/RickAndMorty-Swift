@@ -12,9 +12,14 @@ final class RMLocationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(didTapSearch))
         view.backgroundColor = .systemBackground
         title = "Locations"
-        
     }
-
+    
+    @objc
+    private func didTapSearch() {
+        let vc = RMSearchViewController(serachType: .Location)
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
