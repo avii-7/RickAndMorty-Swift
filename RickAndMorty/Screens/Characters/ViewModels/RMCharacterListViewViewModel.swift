@@ -18,7 +18,7 @@ enum FetchingMoreCharactersStatus {
     case notYetStarted, inProgress, finished, failed
 }
 /// View model to handle character list logic
-final class RMCharacterListViewModel: NSObject {
+final class RMCharacterListViewViewModel: NSObject {
     
     private var characters: [RMCharacter] = [] {
         didSet {
@@ -91,13 +91,13 @@ final class RMCharacterListViewModel: NSObject {
     }
     
     var shouldShowLoadMoreIndicator: Bool {
-       allCharacterInfo?.next != nil
+        allCharacterInfo?.next != nil
     }
 }
 
 // MARK: - CollectionView
 
-extension RMCharacterListViewModel: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension RMCharacterListViewViewModel: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
      
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         cellViewModels.count
@@ -145,7 +145,7 @@ extension RMCharacterListViewModel: UICollectionViewDataSource, UICollectionView
     }
 }
 
-extension RMCharacterListViewModel: UIScrollViewDelegate {
+extension RMCharacterListViewViewModel: UIScrollViewDelegate {
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate{

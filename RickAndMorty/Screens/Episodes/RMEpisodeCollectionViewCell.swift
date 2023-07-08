@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class RMCharacterEpisodeCollectionViewCell: UICollectionViewCell {
-    static let cellIndentifier = String(describing: RMCharacterEpisodeCollectionViewCell.self)
-    
+final class RMEpisodeCollectionViewCell: UICollectionViewCell {
+    static let cellIdentifier = String(describing: RMEpisodeCollectionViewCell.self)
+
     private let nameLabel: UILabel = {
         let nameLabel = UILabel()
         nameLabel.lineBreakMode = .byTruncatingTail
@@ -73,14 +73,14 @@ final class RMCharacterEpisodeCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
     }
     
-    public func configure(with viewModel: RMCharacterEpisodeCollectionViewCellViewModel) {
-        //print("Configured Function")
+    public func configure(with viewModel: RMEpisodeCollectionViewCellViewModel) {
+        print("Configured Function")
         viewModel.registerForData { [weak self] result in
             guard let self else { return }
             self.nameLabel.text = result.name
             self.episodeLabel.text = result.episode
             self.airDateLabel.text = result.air_date
-//            print("Fetching complete \(result.episode)")
+            //print("Fetching complete \(result.episode)")
         }
         viewModel.fetchEpisode()
     }

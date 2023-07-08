@@ -38,7 +38,7 @@ final class RMCharacterDetailViewViewModel {
         ))
         sections.append(.episodes(
             viewModel: character.episode.compactMap({
-                RMCharacterEpisodeCollectionViewCellViewModel(episodeUrl: URL(string: $0))
+                RMEpisodeCollectionViewCellViewModel(episodeUrl: URL(string: $0))
             })
         ))
     }
@@ -101,14 +101,12 @@ final class RMCharacterDetailViewViewModel {
     }
     
     func createEpisodeSectionLayout() -> NSCollectionLayoutSection {
-        
         let item = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .fractionalHeight(1.0)
             )
         )
-        
         item.contentInsets = .init(top: 0, leading: 2.5, bottom: 0, trailing: 2.5)
         
         let group = NSCollectionLayoutGroup.horizontal(

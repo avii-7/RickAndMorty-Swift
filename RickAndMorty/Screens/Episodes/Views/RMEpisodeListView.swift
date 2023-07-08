@@ -1,22 +1,22 @@
 //
-//  CharacterListView.swift
+//  RMEpisodeListView.swift
 //  RickAndMorty
 //
-//  Created by Arun on 06/06/23.
+//  Created by Arun on 05/07/23.
 //
 
 import UIKit
 
-protocol RMCharacterListViewDelegate: AnyObject {
-    func rmCharacterListView(didSelectCharacter character: RMCharacter)
+protocol RMEpisodeListViewDelegate: AnyObject {
+    func rmEpisodeListView(didSelectEpisode episode: RMEpisode)
 }
 
-/// Custom view that showing list of characters, loader, infinite loading etc
-final class RMCharacterListView: UIView {
+/// Custom view that showing list of episodes, loader, infinite loading etc
+final class RMEpisodeListView: UIView {
     
-    private let viewModel = RMCharacterListViewViewModel()
+    private let viewModel = RMEpisodeListViewViewModel()
     
-    public weak var delegate: RMCharacterListViewDelegate?
+    public weak var delegate: RMEpisodeListViewDelegate?
     
     // Block pattern
     private let spinner: UIActivityIndicatorView = {
@@ -34,8 +34,8 @@ final class RMCharacterListView: UIView {
         collectionView.alpha = 0
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(
-            RMCharacterCollectionViewCell.self,
-            forCellWithReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier)
+            RMEpisodeCollectionViewCell.self,
+            forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier)
         collectionView.register(
             RMLoadingFooterCollectionResuableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
@@ -47,16 +47,17 @@ final class RMCharacterListView: UIView {
     // MARK: - Int
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         translatesAutoresizingMaskIntoConstraints = false
         addSubviews(collectionView, spinner)
         addConstraints()
         spinner.startAnimating()
         viewModel.delegate = self
-        viewModel.fetchInitialCharacters()
+        viewModel.fetchInitialEpisodes()
         setupCollectionView()
     }
     
-    required init?(coder: NSCoder) { 
+    required init?(coder: NSCoder) {
         fatalError("Unsupported constructor")
     }
     
@@ -80,18 +81,8 @@ final class RMCharacterListView: UIView {
     }
 }
 
-extension RMCharacterListView: RMCharacterListViewModelDelegate {
-    func didLoadMoreCharacters(at indexPaths: [IndexPath]) {
-        collectionView.performBatchUpdates {
-            self.collectionView.insertItems(at: indexPaths)
-        }
-    }
-
-    func didSelectCharacter(_ character: RMCharacter) {
-        delegate?.rmCharacterListView(didSelectCharacter: character)
-    }
-    
-    func didLoadInitialCharacters() {
+extension RMEpisodeListView: RMEpisodeListViewModelDelegate {
+    func didLoadInitialEpisode() {
         spinner.stopAnimating()
         collectionView.isHidden = false
         collectionView.reloadData()
@@ -99,4 +90,15 @@ extension RMCharacterListView: RMCharacterListViewModelDelegate {
             self.collectionView.alpha = 1
         }
     }
+    
+    func didSelectEpisode(_ episode: RMEpisode) {
+        delegate?.rmEpisodeListView(didSelectEpisode: episode)
+    }
+    
+    func didLoadMoreEpisodes(at indexPaths: [IndexPath]) {
+        collectionView.performBatchUpdates {
+            self.collectionView.insertItems(at: indexPaths)
+        }
+    }
 }
+

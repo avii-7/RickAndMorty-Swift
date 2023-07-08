@@ -60,8 +60,8 @@ final class RMCharacterDetailView: UIView {
             forCellWithReuseIdentifier: RMCharacterInfoCollectionViewCell.cellIndentifier
         )
         collectionView.register(
-            RMCharacterEpisodeCollectionViewCell.self,
-            forCellWithReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIndentifier
+            RMEpisodeCollectionViewCell.self,
+            forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier
         )
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
@@ -133,7 +133,7 @@ extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDel
             return cell
             
         case .episodes(let viewModels):
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMCharacterEpisodeCollectionViewCell.cellIndentifier, for: indexPath) as? RMCharacterEpisodeCollectionViewCell else { fatalError("Supported went wrong.") }
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier, for: indexPath) as? RMEpisodeCollectionViewCell else { fatalError("Supported went wrong.") }
             cell.configure(with: viewModels[indexPath.row])
             return cell
         }
