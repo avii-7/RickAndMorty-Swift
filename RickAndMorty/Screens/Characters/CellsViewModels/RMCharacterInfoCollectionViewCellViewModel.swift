@@ -18,13 +18,11 @@ final class RMCharacterInfoCollectionViewCellViewModel {
     private let value: String
     
     public var displayValue: String {
-        if value.isEmpty { return "None"}
+        if value.isEmpty { return "None" }
         else if type == .created {
-            if let date = Self.dateFormatter.date(from: value) {
-                return date.formatted(date: .abbreviated, time: .shortened)
-            }
+            let formattedDate = RMDateFormatter.getFormattedDate(for: value)
+            return formattedDate
         }
-        
         return value
     }
     
@@ -36,12 +34,7 @@ final class RMCharacterInfoCollectionViewCellViewModel {
         return type.tintColor
     }
     
-    static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSZ"
-        formatter.timeZone = .current
-        return formatter
-    }()
+    
     
     enum `Type`: String {
         case status = "STATUS"
