@@ -13,6 +13,11 @@ protocol RMEpisodeDetailViewViewModelDelegate: AnyObject {
 
 final class RMEpisodeDetailViewViewModel {
     
+    enum SectionType {
+        case information(viewModel: [RMEpisodeInfoCollectionViewCellViewModel])
+        case characters(viewModel: [RMCharacterCollectionViewCellViewModel])
+    }
+    
     private let url: URL?
     
     public weak var delegate: RMEpisodeDetailViewViewModelDelegate?
@@ -22,6 +27,10 @@ final class RMEpisodeDetailViewViewModel {
             delegate?.didFetechEpisodeDetails()
         }
     }
+    
+    private(set) var sections = [SectionType]()
+    
+    // MARK: - Init
     
     init(url: URL?) {
         self.url = url
