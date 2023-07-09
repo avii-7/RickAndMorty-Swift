@@ -22,13 +22,14 @@ final class RMEpisodeDetailViewViewModel {
     
     public weak var delegate: RMEpisodeDetailViewViewModelDelegate?
     
-    private var dataTuple: (RMEpisode, [RMCharacter])? {
+    private var dataTuple: (episode: RMEpisode, characters: [RMCharacter])? {
         didSet {
+            createCellViewModels()
             delegate?.didFetechEpisodeDetails()
         }
     }
     
-    private(set) var sections = [SectionType]()
+    private(set) var cellViewModels = [SectionType]()
     
     // MARK: - Init
     
@@ -36,7 +37,7 @@ final class RMEpisodeDetailViewViewModel {
         self.url = url
     }
     
-    // MARK: - Public function
+    // MARK: - Public functions
     
     public func fetchEpisodes() {
         guard
@@ -51,6 +52,33 @@ final class RMEpisodeDetailViewViewModel {
                 break
             }
         }
+    }
+    
+    
+    // MARK: - Private functions
+    
+    private func createCellViewModels() {
+        guard let dataTuple else { return }
+        
+        let episode = dataTuple.episode
+        let characters = dataTuple.characters
+        
+        cellViewModels = [
+            .information(viewModel:[
+                .init(title: "Name", value: episode.name),
+                .init(title: "Air date", value: episode.air_date),
+                .init(title: "Episode", value: episode.episode),
+                .init(title: "Created", value: episode.created)
+            ]),
+            .characters(viewModel: characters.compactMap({
+                RMCharacterCollectionViewCellViewModel(
+                    id: $0.id,
+                    name: $0.name,
+                    status: $0.status,
+                    imageUrlString: $0.image
+                )
+            }))
+        ]
     }
     
     private func fetchRelatedCharacters(episode: RMEpisode) {
