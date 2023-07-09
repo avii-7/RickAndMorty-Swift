@@ -32,6 +32,7 @@ final class RMEpisodeDetailViewController: UIViewController {
         view.addSubview(detailView)
         addConstraints()
         viewModel.delegate = self
+        detailView.delegate = self
         viewModel.fetchEpisodes()
     }
     
@@ -50,8 +51,15 @@ final class RMEpisodeDetailViewController: UIViewController {
     }
 }
 
-extension RMEpisodeDetailViewController: RMEpisodeDetailViewViewModelDelegate {
+extension RMEpisodeDetailViewController: RMEpisodeDetailViewViewModelDelegate, RMEpisodeDetailViewDelegate {
+    
     func didFetechEpisodeDetails() {
         detailView.configure(viewModel: viewModel)
+    }
+    
+    func rmEpisodeDetailView(didSelect character: RMCharacter) {
+        let viewModel = RMCharacterDetailViewViewModel(character)
+        let vc = RMCharacterDetailViewController(viewModel: viewModel)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

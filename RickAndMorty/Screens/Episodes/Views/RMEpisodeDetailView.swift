@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol RMEpisodeDetailViewDelegate: AnyObject {
+    func rmEpisodeDetailView(didSelect character: RMCharacter)
+}
+
 final class RMEpisodeDetailView: UIView {
     
     private let spinner: UIActivityIndicatorView = {
@@ -20,6 +24,8 @@ final class RMEpisodeDetailView: UIView {
     private var collectionView: UICollectionView!
     
     private var viewModel: RMEpisodeDetailViewViewModel?
+    
+    public weak var delegate: RMEpisodeDetailViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -177,6 +183,15 @@ extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        guard let viewModel else { return }
+        let sectionType = viewModel.cellViewModels[indexPath.section]
+        switch sectionType {
+        case .characters:
+            guard let character = viewModel.character(at: indexPath.row) else { return }
+            delegate?.rmEpisodeDetailView(didSelect: character)
+            break
+        case .information:
+            break
+        }
     }
 }
