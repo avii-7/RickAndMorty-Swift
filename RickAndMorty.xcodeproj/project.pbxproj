@@ -329,7 +329,6 @@
 				862C12912A5C5FAF00359C10 /* ViewModels */,
 				869268EF2A2B37650001C1B5 /* Models */,
 				869268EE2A2B375B0001C1B5 /* ViewControllers */,
-				862C12982A5C60F200359C10 /* RMSettingOption.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -405,6 +404,7 @@
 		869268EF2A2B37650001C1B5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				862C12982A5C60F200359C10 /* RMSettingOption.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";

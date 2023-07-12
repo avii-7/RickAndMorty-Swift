@@ -19,17 +19,17 @@ struct RMSettingCellViewViewModel: Identifiable, Hashable {
         self.type = type
     }
     
-    // MARK: - Public properties
+    // MARK: - Internal properties
     
-    public var iconContainerColor: UIColor {
+    var iconContainerColor: UIColor {
         type.imageContainerColor
     }
     
-    public var image: UIImage? {
+    var image: UIImage? {
         type.displayImage
     }
     
-    public var title: String {
+    var title: String {
         type.displayTitle
     }
 }
