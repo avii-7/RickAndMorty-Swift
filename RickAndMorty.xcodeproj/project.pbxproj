@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		860D60462A5EFE6700BD27E6 /* RMSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860D60452A5EFE6700BD27E6 /* RMSettingView.swift */; };
 		861467382A593EAA0042127A /* RMSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861467372A593EAA0042127A /* RMSearchViewController.swift */; };
 		8618819B2A30036C00696692 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8618819A2A30036C00696692 /* Extensions.swift */; };
 		8618819D2A300D9900696692 /* RMCharacterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8618819C2A300D9900696692 /* RMCharacterCollectionViewCell.swift */; };
@@ -58,6 +59,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		860D60452A5EFE6700BD27E6 /* RMSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSettingView.swift; sourceTree = "<group>"; };
 		861467372A593EAA0042127A /* RMSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMSearchViewController.swift; sourceTree = "<group>"; };
 		8618819A2A30036C00696692 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8618819C2A300D9900696692 /* RMCharacterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMCharacterCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -121,6 +123,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		860D60442A5EFE2400BD27E6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				860D60452A5EFE6700BD27E6 /* RMSettingView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		861467352A593E780042127A /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -325,6 +335,7 @@
 		869268DE2A2B2D010001C1B5 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				860D60442A5EFE2400BD27E6 /* Views */,
 				862C12942A5C600200359C10 /* CellViewModels */,
 				862C12912A5C5FAF00359C10 /* ViewModels */,
 				869268EF2A2B37650001C1B5 /* Models */,
@@ -557,6 +568,7 @@
 				868DDD032A2ED8A800C79478 /* RMAllCharacters.swift in Sources */,
 				86557A932A420E1E00F87B03 /* RMCharacterPhotoCollectionViewCellViewModel.swift in Sources */,
 				86557A972A420E4800F87B03 /* RMEpisodeCollectionViewCellViewModel.swift in Sources */,
+				860D60462A5EFE6700BD27E6 /* RMSettingView.swift in Sources */,
 				861467382A593EAA0042127A /* RMSearchViewController.swift in Sources */,
 				869268C32A2B24430001C1B5 /* AppDelegate.swift in Sources */,
 				86CAA57F2A3EB88400154788 /* RMImageManager.swift in Sources */,
