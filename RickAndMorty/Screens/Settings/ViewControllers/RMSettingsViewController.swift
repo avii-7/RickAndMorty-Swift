@@ -7,19 +7,12 @@
 
 import UIKit
 import SwiftUI
+import SafariServices
 
 /// Controller to show various app options and settings.
 class RMSettingsViewController: UIViewController {
 
-    private let setttingViewController = UIHostingController(
-        rootView: RMSettingView(
-            viewModel: RMSettingViewViewModel(
-                cellViewModels: RMSettingOption.allCases.compactMap({
-                    RMSettingCellViewViewModel(type: $0)
-                })
-            )
-        )
-    )
+    private var setttingViewController: UIHostingController<RMSettingView>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +23,17 @@ class RMSettingsViewController: UIViewController {
     }
     
     private func addChildViewController() {
+        setttingViewController = UIHostingController(
+            rootView: RMSettingView(
+                viewModel: RMSettingViewViewModel(
+                    cellViewModels: RMSettingOption.allCases.compactMap({
+                        RMSettingCellViewViewModel(type: $0) { [weak self] option in
+                            self?.handleTap(for: option)
+                        }
+                    })
+                )
+            )
+        )
         addChild(setttingViewController)
         setttingViewController.didMove(toParent: self)
         view.addSubview(setttingViewController.view)
@@ -42,5 +46,19 @@ class RMSettingsViewController: UIViewController {
             settingView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             settingView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    private func handleTap(for option: RMSettingOption) {
+        if !Thread.current.isMainThread { return }
+        
+        if let url = option.targetUrl {
+            let safariVC = SFSafariViewController(url: url)
+            present(safariVC, animated: true)
+        }
+        else if option == .rateApp {
+            // Rating Propmpt
+        }
+        
+        
     }
 }
