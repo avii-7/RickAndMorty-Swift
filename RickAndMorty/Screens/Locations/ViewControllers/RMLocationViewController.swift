@@ -12,11 +12,13 @@ final class RMLocationViewController: UIViewController {
     
     private let locationListView = RMLocationListView()
     
-    private let viewModel = RMLocationViewViewModel()
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(didTapSearch))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .search,
+            target: self,
+            action: #selector(didTapSearch)
+        )
         view.backgroundColor = .systemBackground
         title = "Locations"
         view.addSubview(locationListView)

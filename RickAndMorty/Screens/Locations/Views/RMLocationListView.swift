@@ -7,7 +7,9 @@
 
 import UIKit
 
-class RMLocationListView: UIView {
+final class RMLocationListView: UIView {
+    
+    private var viewModel = RMLocationViewViewModel()
     
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()
@@ -28,17 +30,6 @@ class RMLocationListView: UIView {
         return tableView
     }()
     
-    private var viewModel: RMLocationViewViewModel? {
-        didSet {
-            spinner.stopAnimating()
-            tableView.reloadData()
-            tableView.isHidden = false
-            UIView.animate(withDuration: 0.3) {
-                self.tableView.alpha = 1
-            }
-        }
-    }
-    
     // MARK: - Init
     
     override init(frame: CGRect) {
@@ -47,13 +38,16 @@ class RMLocationListView: UIView {
         addSubviews(spinner, tableView)
         addConstraints()
         spinner.startAnimating()
+        configTableView()
+        viewModel.delegate = self
+        viewModel.fetchInitialLocations()
     }
     
     required init?(coder: NSCoder) {
         fatalError("Unsupported")
     }
     
-    func addConstraints() {
+    private func addConstraints() {
         NSLayoutConstraint.activate([
             spinner.widthAnchor.constraint(equalToConstant: 100),
             spinner.heightAnchor.constraint(equalToConstant: 100),
@@ -67,9 +61,22 @@ class RMLocationListView: UIView {
         ])
     }
     
-    func config(viewModel: RMLocationViewViewModel) {
-        self.viewModel = viewModel
-        
+    private func configTableView() {
+        tableView.dataSource = viewModel
+        tableView.delegate = viewModel
     }
-    
 }
+
+extension RMLocationListView: RMLocationViewViewModelDelegate {
+    
+    func didLoadInitialLocations() {
+        spinner.stopAnimating()
+        tableView.reloadData()
+        tableView.isHidden = false
+        UIView.animate(withDuration: 0.3) {
+            self.tableView.alpha = 1
+        }
+    }
+}
+
+
