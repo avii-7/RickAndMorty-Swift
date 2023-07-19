@@ -22,6 +22,7 @@ final class RMLocationViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Locations"
         view.addSubview(locationListView)
+        locationListView.selectionDelegate = self
         addConstraints()
     }
     
@@ -38,5 +39,14 @@ final class RMLocationViewController: UIViewController {
             locationListView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             locationListView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+}
+
+extension RMLocationViewController: SelectionDelegate {
+    
+    func didSelect<T>(with model: T) {
+        guard let model: RMLocation = model as? RMLocation else { return }
+        let vc = RMLocationDetailViewController(model: model)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

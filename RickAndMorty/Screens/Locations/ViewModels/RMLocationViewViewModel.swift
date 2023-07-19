@@ -24,7 +24,9 @@ final class RMLocationViewViewModel: NSObject {
     
     private var locationInfo: Info?
     
-    public weak var delegate: RMLocationViewViewModelDelegate?
+    weak var delegate: RMLocationViewViewModelDelegate?
+    
+    weak var selectionDelegate: SelectionDelegate?
     
     private var cellViewModels: [RMLocationCellViewViewModel] = []
     
@@ -45,13 +47,14 @@ final class RMLocationViewViewModel: NSObject {
                 }
                 
             case .failure(let failure):
-                print(failure.localizedDescription)
+                print(String(describing: failure))
             }
         }
     }
 }
 
 extension RMLocationViewViewModel: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         cellViewModels.count
     }
@@ -67,7 +70,10 @@ extension RMLocationViewViewModel: UITableViewDataSource {
 }
 
 extension RMLocationViewViewModel: UITableViewDelegate {
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // open detail view controller
+        tableView.deselectRow(at: indexPath, animated: true)
+        let locationViewModel = locations[indexPath.row]
+        selectionDelegate?.didSelect(with: locationViewModel)
     }
 }

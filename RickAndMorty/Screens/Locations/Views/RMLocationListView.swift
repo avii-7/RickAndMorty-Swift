@@ -11,6 +11,8 @@ final class RMLocationListView: UIView {
     
     private var viewModel = RMLocationViewViewModel()
     
+    weak var selectionDelegate: SelectionDelegate?
+    
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()
         spinner.hidesWhenStopped = true
@@ -19,7 +21,7 @@ final class RMLocationListView: UIView {
     }()
     
     private let tableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.alpha = 1
         tableView.isHidden = true
@@ -40,6 +42,7 @@ final class RMLocationListView: UIView {
         spinner.startAnimating()
         configTableView()
         viewModel.delegate = self
+        viewModel.selectionDelegate = self
         viewModel.fetchInitialLocations()
     }
     
@@ -79,4 +82,9 @@ extension RMLocationListView: RMLocationViewViewModelDelegate {
     }
 }
 
-
+extension RMLocationListView: SelectionDelegate {
+    
+    func didSelect<T>(with model: T) {
+        selectionDelegate?.didSelect(with: model)
+    }
+}
