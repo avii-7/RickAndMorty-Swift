@@ -7,16 +7,12 @@
 
 import UIKit
 
-protocol RMEpisodeListViewDelegate: AnyObject {
-    func rmEpisodeListView(didSelectEpisode episode: RMEpisode)
-}
-
 /// Custom view that showing list of episodes, loader, infinite loading etc
 final class RMEpisodeListView: UIView {
     
     private let viewModel = RMEpisodeListViewViewModel()
     
-    public weak var delegate: RMEpisodeListViewDelegate?
+    public weak var delegate: RMSelectionDelegate?
     
     // Block pattern
     private let spinner: UIActivityIndicatorView = {
@@ -92,7 +88,7 @@ extension RMEpisodeListView: RMEpisodeListViewModelDelegate {
     }
     
     func didSelectEpisode(_ episode: RMEpisode) {
-        delegate?.rmEpisodeListView(didSelectEpisode: episode)
+        delegate?.didSelect(with: episode)
     }
     
     func didLoadMoreEpisodes(at indexPaths: [IndexPath]) {

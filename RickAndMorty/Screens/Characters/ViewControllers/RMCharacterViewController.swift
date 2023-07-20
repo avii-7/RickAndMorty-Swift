@@ -8,7 +8,7 @@
 import UIKit
 
 /// Controller to show and seach by characters
-final class RMCharacterViewController: UIViewController, RMCharacterListViewDelegate {
+final class RMCharacterViewController: UIViewController {
     
     let characterListView = RMCharacterListView()
     
@@ -36,15 +36,16 @@ final class RMCharacterViewController: UIViewController, RMCharacterListViewDele
         let vc = RMSearchViewController(serachType: .Character)
         navigationController?.pushViewController(vc, animated: true)
     }
-    
-    // MARK: - RMCharacterListViewDelegate
-    
-    func rmCharacterListView(didSelectCharacter character: RMCharacter) {
-        // open detail view controller for that character
-        let viewModel = RMCharacterDetailViewViewModel(character)
+}
+
+extension RMCharacterViewController: RMSelectionDelegate {
+    func didSelect<T>(with model: T) {
+        
+        guard let characterModel = model as? RMCharacter else { return }
+        
+        let viewModel = RMCharacterDetailViewViewModel(characterModel)
         let vc = RMCharacterDetailViewController(viewModel: viewModel)
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }
-    
 }

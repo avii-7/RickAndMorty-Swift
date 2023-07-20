@@ -8,7 +8,7 @@
 import UIKit
 
 /// Controller to show and seach by episodes
-final class RMEpisodeViewController: UIViewController, RMEpisodeListViewDelegate {
+final class RMEpisodeViewController: UIViewController {
     
     let episodeListView = RMEpisodeListView()
     
@@ -17,6 +17,7 @@ final class RMEpisodeViewController: UIViewController, RMEpisodeListViewDelegate
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(didTapSearch))
         view.backgroundColor = .systemBackground
         title = "Episodes"
+        episodeListView.delegate = self
         setupView()
     }
     
@@ -27,7 +28,7 @@ final class RMEpisodeViewController: UIViewController, RMEpisodeListViewDelegate
     }
     
     private func setupView() {
-        episodeListView.delegate = self
+        
         view.addSubview(episodeListView)
         NSLayoutConstraint.activate([
             episodeListView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -36,12 +37,12 @@ final class RMEpisodeViewController: UIViewController, RMEpisodeListViewDelegate
             episodeListView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
-    
-    // MARK: - RMCharacterListViewDelegate
-    
-    func rmEpisodeListView(didSelectEpisode episode: RMEpisode) {
-        // open detail view controller for that episode
-        let viewModel = RMEpisodeDetailViewViewModel(url: URL(string: episode.url))
+}
+
+extension RMEpisodeViewController: RMSelectionDelegate {
+    func didSelect<T>(with model: T) {
+        guard let episodeModel = model as? RMEpisode else { return }
+        let viewModel = RMEpisodeDetailViewViewModel(url: URL(string: episodeModel.url))
         let vc = RMEpisodeDetailViewController(viewModel: viewModel)
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)

@@ -1,13 +1,13 @@
 //
-//  RMEpisodeDetailView.swift
+//  RMLocationDetailView.swift
 //  RickAndMorty
 //
-//  Created by Arun on 02/07/23.
+//  Created by Arun on 19/07/23.
 //
 
 import UIKit
 
-final class RMEpisodeDetailView: UIView {
+final class RMLocationDetailView: UIView {
     
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()
@@ -19,11 +19,11 @@ final class RMEpisodeDetailView: UIView {
     // Why i need Implicitly unwrapped optional here ?
     private var collectionView: UICollectionView!
     
-    private var viewModel: RMEpisodeDetailViewViewModel?
-    
     public weak var delegate: RMSelectionDelegate?
     
-    override init(frame: CGRect) {
+    private var viewModel: RMLocationDetailViewViewModel?
+    
+    private override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
@@ -35,19 +35,6 @@ final class RMEpisodeDetailView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("Unsupported")
-    }
-    
-    //MARK: - Public function
-    
-    public func configure(viewModel: RMEpisodeDetailViewViewModel) {
-        self.viewModel = viewModel
-        spinner.stopAnimating()
-        collectionView.isHidden = false
-        // do we actually need to reload data ?
-        collectionView.reloadData()
-        UIView.animate(withDuration: 0.5) {
-            self.collectionView.alpha = 1
-        }
     }
     
     //MARK: - Private function
@@ -81,15 +68,26 @@ final class RMEpisodeDetailView: UIView {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }
+    
+    func configure(model viewModel: RMLocationDetailViewViewModel) {
+        self.viewModel = viewModel
+        spinner.stopAnimating()
+        collectionView.isHidden = false
+        // do we actually need to reload data ?
+        collectionView.reloadData()
+        UIView.animate(withDuration: 0.5) {
+            self.collectionView.alpha = 1
+        }
+    }
 }
 
 // MARK: - Collection View Layouts
-extension RMEpisodeDetailView {
+extension RMLocationDetailView {
     
     private func getCollectionViewLayout(for section: Int) -> NSCollectionLayoutSection {
-        guard let viewModel else {
-            return getEpisodeInfoLayout()
-        }
+        
+        guard let viewModel else { return getEpisodeInfoLayout() }
+        
         let sections = viewModel.cellViewModels
         switch sections[section] {
         case .information:
@@ -137,11 +135,11 @@ extension RMEpisodeDetailView {
     
 }
 
-extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDelegate {
+extension RMLocationDetailView : UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let viewModel else { fatalError("No View Models !") }
+        guard let viewModel else { fatalError("Something wrong") }
         
         let sectionType = viewModel.cellViewModels[indexPath.section]
         
@@ -168,7 +166,9 @@ extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
         guard let viewModel else { return 0 }
+        
         let sectionType = viewModel.cellViewModels[section]
         switch sectionType {
         case .information(let viewModels):
@@ -179,7 +179,9 @@ extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         guard let viewModel else { return }
+        
         let sectionType = viewModel.cellViewModels[indexPath.section]
         switch sectionType {
         case .characters:

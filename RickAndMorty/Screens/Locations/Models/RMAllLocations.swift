@@ -8,6 +8,6 @@
 import Foundation
 
 struct RMAllLocations: Codable {
-    let info: Info
+    let info: RMInfo
     let results: [RMLocation]
 }

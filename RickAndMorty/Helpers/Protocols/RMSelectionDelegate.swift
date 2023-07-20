@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol SelectionDelegate: AnyObject {
+protocol RMSelectionDelegate: AnyObject {
     func didSelect<T>(with model: T)
 }

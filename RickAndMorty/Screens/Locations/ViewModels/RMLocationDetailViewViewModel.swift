@@ -1,24 +1,24 @@
 //
-//  RMEpisodeDetailViewViewModel.swift
+//  RMLocationDetailViewViewModel.swift
 //  RickAndMorty
 //
-//  Created by Arun on 02/07/23.
+//  Created by Arun on 19/07/23.
 //
 
 import Foundation
 
-final class RMEpisodeDetailViewViewModel {
+final class RMLocationDetailViewViewModel {
     
     enum SectionType {
         case information(viewModel: [RMBasicModel])
         case characters(viewModel: [RMCharacterCollectionViewCellViewModel])
     }
     
-    private let url: URL?
+    private let location: RMLocation
     
     public weak var delegate: RMNetworkDelegate?
     
-    private var dataTuple: (episode: RMEpisode, characters: [RMCharacter])? {
+    private var residents: [RMCharacter]? {
         didSet {
             createCellViewModels()
             delegate?.didFetchData()
@@ -28,52 +28,32 @@ final class RMEpisodeDetailViewViewModel {
     private(set) var cellViewModels = [SectionType]()
     
     func character(at index: Int) -> RMCharacter? {
-        guard let dataTuple else { return nil }
-        let character = dataTuple.characters[index]
+        guard let residents else { return nil }
+        let character = residents[index]
         return character
     }
     
     // MARK: - Init
     
-    init(url: URL?) {
-        self.url = url
-    }
-    
-    // MARK: - Public functions
-    
-    public func fetchEpisodes() {
-        guard
-            let url,
-            let request = RMRequest(url: url) else { return }
-        
-        RMService.shared.execute(request, expecting: RMEpisode.self) { [weak self] result in
-            switch result {
-            case .success(let model):
-                self?.fetchRelatedCharacters(episode: model)
-            case .failure(_):
-                break
-            }
-        }
+    init(location: RMLocation) {
+        self.location = location
     }
     
     // MARK: - Private functions
     
     private func createCellViewModels() {
-        guard let dataTuple else { return }
-        
-        let episode = dataTuple.episode
-        let characters = dataTuple.characters
-        
-        let formattedDate = RMDateFormatter.getFormattedDate(for: episode.created)
+        guard let residents else { return }
+
+        let formattedDate = RMDateFormatter.getFormattedDate(for: location.created)
         
         cellViewModels = [
             .information(viewModel:[
-                .init(title: "Name", value: episode.name),
-                .init(title: "Air date", value: episode.air_date),
-                .init(title: "Episode", value: episode.episode),
+                .init(title: "Name", value: location.name),
+                .init(title: "Type", value: location.type),
+                .init(title: "Dimension", value: location.dimension),
                 .init(title: "Created", value: formattedDate)
             ]),
-            .characters(viewModel: characters.compactMap({
+            .characters(viewModel: residents.compactMap({
                 RMCharacterCollectionViewCellViewModel(
                     id: $0.id,
                     name: $0.name,
@@ -84,13 +64,13 @@ final class RMEpisodeDetailViewViewModel {
         ]
     }
     
-    private func fetchRelatedCharacters(episode: RMEpisode) {
-        let requests: [RMRequest] = episode.characters.compactMap {
+    func fetchResidents() {
+        let requests: [RMRequest] = location.residents.compactMap {
             guard let url = URL(string: $0) else { return nil }
             return RMRequest(url: url)
         }
         
-        var relatedCharacters = [RMCharacter]()
+        var residents = [RMCharacter]()
         let group = DispatchGroup()
         
         for request in requests {
@@ -101,14 +81,14 @@ final class RMEpisodeDetailViewViewModel {
                 }
                 switch result {
                 case .success(let character):
-                    relatedCharacters.append(character)
+                    residents.append(character)
                 case .failure:
                     break
                 }
             }
         }
         group.notify(queue: .main) {
-            self.dataTuple = (episode, relatedCharacters)
+            self.residents =  residents
         }
     }
 }

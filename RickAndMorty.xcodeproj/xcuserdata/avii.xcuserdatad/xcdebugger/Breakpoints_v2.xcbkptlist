@@ -3,4 +3,145 @@
    uuid = "006F75A0-40D9-4B40-BF58-CC2E3B0B6146"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DE0B90AC-BB93-411B-A2EE-9944045874CD"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RickAndMorty/Screens/Episodes/Views/RMEpisodeDetailView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
+            landmarkName = "init(frame:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "DE0B90AC-BB93-411B-A2EE-9944045874CD - 6d1024616c0a0111"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMEpisodeDetailView.delegate.getter : Swift.Optional&lt;RickAndMorty.RMEpisodeDetailViewDelegate&gt;"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Episodes/Views/RMEpisodeDetailView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "28"
+                  endingLineNumber = "28"
+                  offsetFromSymbolStart = "104">
+               </Location>
+               <Location
+                  uuid = "DE0B90AC-BB93-411B-A2EE-9944045874CD - 6afefe56cfcb791d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMEpisodeDetailView.delegate.setter : Swift.Optional&lt;RickAndMorty.RMEpisodeDetailViewDelegate&gt;"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Episodes/Views/RMEpisodeDetailView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "28"
+                  endingLineNumber = "28"
+                  offsetFromSymbolStart = "128">
+               </Location>
+               <Location
+                  uuid = "DE0B90AC-BB93-411B-A2EE-9944045874CD - 325b3d5370f74f0e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMEpisodeDetailView.delegate.modify : Swift.Optional&lt;RickAndMorty.RMEpisodeDetailViewDelegate&gt;"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Episodes/Views/RMEpisodeDetailView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "28"
+                  endingLineNumber = "28"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "DE0B90AC-BB93-411B-A2EE-9944045874CD - 4827e8707a3722ac"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMEpisodeDetailView.delegate.modify : Swift.Optional&lt;RickAndMorty.RMEpisodeDetailViewDelegate&gt; with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Episodes/Views/RMEpisodeDetailView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "28"
+                  endingLineNumber = "28"
+                  offsetFromSymbolStart = "28">
+               </Location>
+               <Location
+                  uuid = "DE0B90AC-BB93-411B-A2EE-9944045874CD - 9e47054d4a941dc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMEpisodeDetailView.init(frame: __C.CGRect) -&gt; RickAndMorty.RMEpisodeDetailView"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Episodes/Views/RMEpisodeDetailView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "28"
+                  endingLineNumber = "28"
+                  offsetFromSymbolStart = "268">
+               </Location>
+               <Location
+                  uuid = "DE0B90AC-BB93-411B-A2EE-9944045874CD - dcda7d91af612fb5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMEpisodeDetailView.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;RickAndMorty.RMEpisodeDetailView&gt;"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Episodes/Views/RMEpisodeDetailView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "28"
+                  endingLineNumber = "28"
+                  offsetFromSymbolStart = "180">
+               </Location>
+               <Location
+                  uuid = "DE0B90AC-BB93-411B-A2EE-9944045874CD - 9e47054d4a941bd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMEpisodeDetailView.init(frame: __C.CGRect) -&gt; RickAndMorty.RMEpisodeDetailView"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Episodes/Views/RMEpisodeDetailView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "320">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3C1D0646-673E-49D4-BAC2-E2EFA90E1D7A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RickAndMorty/Screens/Episodes/Views/RMEpisodeDetailView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "getCharacterLayout()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

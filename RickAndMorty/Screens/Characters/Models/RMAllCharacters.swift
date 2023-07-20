@@ -8,6 +8,6 @@
 import Foundation
 
 struct RMAllCharacters: Codable {
-    let info: Info
+    let info: RMInfo
     let results: [RMCharacter]
 }

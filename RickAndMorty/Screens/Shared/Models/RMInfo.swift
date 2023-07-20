@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Info: Codable {
+struct RMInfo: Codable {
     let count: Int
     let pages: Int
     let next: String?

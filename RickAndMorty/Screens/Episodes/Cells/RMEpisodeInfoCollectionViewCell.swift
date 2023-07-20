@@ -98,7 +98,7 @@ final class RMEpisodeInfoCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Public function
     
-    func configure(with viewModel: RMEpisodeInfoCollectionViewCellViewModel) {
+    func configure(with viewModel: RMBasicModel) {
         titleLabel.text = viewModel.title
         valueLabel.text = viewModel.value
     }

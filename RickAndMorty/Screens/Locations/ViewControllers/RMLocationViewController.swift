@@ -42,11 +42,15 @@ final class RMLocationViewController: UIViewController {
     }
 }
 
-extension RMLocationViewController: SelectionDelegate {
+extension RMLocationViewController: RMSelectionDelegate {
     
     func didSelect<T>(with model: T) {
-        guard let model: RMLocation = model as? RMLocation else { return }
-        let vc = RMLocationDetailViewController(model: model)
+        guard let location = model as? RMLocation else { return }
+        
+        let viewModel = RMLocationDetailViewViewModel(location: location)
+        
+        let vc = RMLocationDetailViewController(model: viewModel)
+        vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }
 }

@@ -53,7 +53,7 @@ final class RMEpisodeListViewViewModel: NSObject {
     
     public weak var delegate: RMEpisodeListViewModelDelegate?
     
-    private var allEpisodeInfo: Info?
+    private var allEpisodeInfo: RMInfo?
     
     /// Fetch initial set of characters ( 20 )
     func fetchInitialEpisodes() {

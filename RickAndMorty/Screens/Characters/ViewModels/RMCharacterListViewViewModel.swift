@@ -36,7 +36,7 @@ final class RMCharacterListViewViewModel: NSObject {
     
     public weak var delegate: RMCharacterListViewModelDelegate?
     
-    private var allCharacterInfo: Info?
+    private var allCharacterInfo: RMInfo?
     
     /// Fetch initial set of characters ( 20 )
     func fetchInitialCharacters() {

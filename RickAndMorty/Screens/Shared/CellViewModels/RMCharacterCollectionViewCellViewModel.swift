@@ -17,6 +17,7 @@ struct RMCharacterCollectionViewCellViewModel {
     }
     
     private let status: RMCharacterStatus
+    
     public var statusText: String {
         "Status: \(status.text)"
     }

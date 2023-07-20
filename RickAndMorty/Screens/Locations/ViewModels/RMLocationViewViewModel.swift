@@ -22,11 +22,11 @@ final class RMLocationViewViewModel: NSObject {
         }
     }
     
-    private var locationInfo: Info?
+    private var locationInfo: RMInfo?
     
     weak var delegate: RMLocationViewViewModelDelegate?
     
-    weak var selectionDelegate: SelectionDelegate?
+    weak var selectionDelegate: RMSelectionDelegate?
     
     private var cellViewModels: [RMLocationCellViewViewModel] = []
     

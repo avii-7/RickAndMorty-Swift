@@ -11,7 +11,7 @@ final class RMLocationListView: UIView {
     
     private var viewModel = RMLocationViewViewModel()
     
-    weak var selectionDelegate: SelectionDelegate?
+    weak var selectionDelegate: RMSelectionDelegate?
     
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()
@@ -82,7 +82,7 @@ extension RMLocationListView: RMLocationViewViewModelDelegate {
     }
 }
 
-extension RMLocationListView: SelectionDelegate {
+extension RMLocationListView: RMSelectionDelegate {
     
     func didSelect<T>(with model: T) {
         selectionDelegate?.didSelect(with: model)

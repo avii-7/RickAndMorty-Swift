@@ -8,6 +8,6 @@
 import Foundation
 
 struct RMAllEpisodes: Codable {
-    let info: Info
+    let info: RMInfo
     let results: [RMEpisode]
 }

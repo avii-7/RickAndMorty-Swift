@@ -16,7 +16,7 @@ final class RMCharacterListView: UIView {
     
     private let viewModel = RMCharacterListViewViewModel()
     
-    public weak var delegate: RMCharacterListViewDelegate?
+    public weak var delegate: RMSelectionDelegate?
     
     // Block pattern
     private let spinner: UIActivityIndicatorView = {
@@ -88,7 +88,7 @@ extension RMCharacterListView: RMCharacterListViewModelDelegate {
     }
 
     func didSelectCharacter(_ character: RMCharacter) {
-        delegate?.rmCharacterListView(didSelectCharacter: character)
+        delegate?.didSelect(with: character)
     }
     
     func didLoadInitialCharacters() {

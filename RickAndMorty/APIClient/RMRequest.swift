@@ -81,7 +81,6 @@ final class RMRequest {
         
         let trimmedString = urlString.replacingOccurrences(of: "\(Constants.baseUrl + Constants.pathSeprator)", with: String.empty)
         
-        
         if trimmedString.contains(Constants.pathSeprator) {
             var components = trimmedString.components(separatedBy: Constants.pathSeprator)
             guard !components.isEmpty else { return nil }
