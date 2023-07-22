@@ -9,10 +9,21 @@ import Foundation
 
 final class RMSearchInputViewViewModel {
     
-    enum RMDynamicOptions: String {
+    enum RMDynamicOption: String {
         case status = "Status"
         case gender = "Gender"
         case locationType = "Location Type"
+        
+        var choices: [String] {
+            switch self {
+            case .status:
+                return ["alive", "dead", "unknown"]
+            case .gender:
+                return ["female", "male", "genderless", "unknown"]
+            case .locationType:
+                return ["planet", "cluster", "microverse"]
+            }
+        }
     }
     
     private let moduleType: RMModuleType
@@ -32,7 +43,7 @@ final class RMSearchInputViewViewModel {
         }
     }
     
-    public var options: [RMDynamicOptions] {
+    public var options: [RMDynamicOption] {
         switch moduleType {
         case .Character:
             return [.status, .gender]

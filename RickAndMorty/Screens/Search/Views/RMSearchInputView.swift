@@ -66,7 +66,7 @@ final class RMSearchInputView: UIStackView {
         searchBar.becomeFirstResponder()
     }
     
-    private func createOptionSelectionViews(with options: [RMSearchInputViewViewModel.RMDynamicOptions]) {
+    private func createOptionSelectionViews(with options: [RMSearchInputViewViewModel.RMDynamicOption]) {
         if !options.isEmpty {
             addArrangedSubview(subStackView)
         }
