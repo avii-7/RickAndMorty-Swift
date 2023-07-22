@@ -28,7 +28,7 @@ final class RMLocationViewController: UIViewController {
     
     @objc
     private func didTapSearch() {
-        let vc = RMSearchViewController(serachType: .Location)
+        let vc = RMSearchViewController(for: .Location)
         navigationController?.pushViewController(vc, animated: true)
     }
     

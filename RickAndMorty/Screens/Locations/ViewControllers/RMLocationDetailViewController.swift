@@ -58,7 +58,7 @@ extension RMLocationDetailViewController: RMSelectionDelegate {
     func didSelect<T>(with model: T) {
         guard let character = model as? RMCharacter else { return }
         
-        let viewModel = RMCharacterDetailViewViewModel(character)
+        let viewModel = RMCharacterDetailViewViewModel(with: character)
         let vc = RMCharacterDetailViewController(viewModel: viewModel)
         navigationController?.pushViewController(vc, animated: true)
     }

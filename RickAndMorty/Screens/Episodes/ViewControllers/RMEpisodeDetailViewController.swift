@@ -52,15 +52,15 @@ final class RMEpisodeDetailViewController: UIViewController {
 }
 
 extension RMEpisodeDetailViewController: RMNetworkDelegate, RMSelectionDelegate {
-    func didSelect<T>(with model: T) {
-        
-        guard let characterModel = model as? RMCharacter else { return }
-        let viewModel = RMCharacterDetailViewViewModel(characterModel)
-        let vc = RMCharacterDetailViewController(viewModel: viewModel)
-        navigationController?.pushViewController(vc, animated: true)
-    }
-
+    
     func didFetchData() {
         detailView.configure(viewModel: viewModel)
+    }
+    
+    func didSelect<T>(with model: T) {
+        guard let characterModel = model as? RMCharacter else { return }
+        let viewModel = RMCharacterDetailViewViewModel(with: characterModel)
+        let vc = RMCharacterDetailViewController(viewModel: viewModel)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

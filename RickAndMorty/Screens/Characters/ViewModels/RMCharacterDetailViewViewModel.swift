@@ -15,7 +15,7 @@ final class RMCharacterDetailViewViewModel {
     
     // MARK: - Initializer
     
-    init(_ character: RMCharacter) {
+    init(with character: RMCharacter) {
         self.character = character
         setUpSections()
     }

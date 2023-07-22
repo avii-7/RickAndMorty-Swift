@@ -134,7 +134,6 @@ extension RMEpisodeDetailView {
         let section = NSCollectionLayoutSection(group: group)
         return section
     }
-    
 }
 
 extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDelegate {

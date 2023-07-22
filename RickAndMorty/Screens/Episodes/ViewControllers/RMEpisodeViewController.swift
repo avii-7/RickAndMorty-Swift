@@ -23,7 +23,7 @@ final class RMEpisodeViewController: UIViewController {
     
     @objc
     private func didTapSearch() {
-        let vc = RMSearchViewController(serachType: .Episode)
+        let vc = RMSearchViewController(for: .Episode)
         navigationController?.pushViewController(vc, animated: true)
     }
     

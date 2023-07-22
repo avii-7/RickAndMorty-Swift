@@ -17,11 +17,11 @@ final class RMCharacterViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(didTapSearch))
         view.backgroundColor = .systemBackground
         title = "Characters"
+        characterListView.delegate = self
         setupView()
     }
     
     private func setupView() {
-        characterListView.delegate = self
         view.addSubview(characterListView)
         NSLayoutConstraint.activate([
             characterListView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -33,17 +33,17 @@ final class RMCharacterViewController: UIViewController {
     
     @objc
     private func didTapSearch() {
-        let vc = RMSearchViewController(serachType: .Character)
+        let vc = RMSearchViewController(for: .Character)
         navigationController?.pushViewController(vc, animated: true)
     }
 }
 
 extension RMCharacterViewController: RMSelectionDelegate {
+    
     func didSelect<T>(with model: T) {
-        
         guard let characterModel = model as? RMCharacter else { return }
         
-        let viewModel = RMCharacterDetailViewViewModel(characterModel)
+        let viewModel = RMCharacterDetailViewViewModel(with: characterModel)
         let vc = RMCharacterDetailViewController(viewModel: viewModel)
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
