@@ -10,7 +10,7 @@ import UIKit
 
 final class RMSearchViewViewModel: NSObject {
     
-    private let searchType: RMSearchType
+    public let searchType: RMSearchType
     
     init(_ searchType: RMSearchType) {
         self.searchType = searchType
@@ -32,6 +32,4 @@ extension RMSearchViewViewModel: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
         return cell
     }
-    
-    
 }

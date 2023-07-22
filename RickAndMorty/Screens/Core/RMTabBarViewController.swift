@@ -9,7 +9,7 @@ import UIKit
 
 /// Controllers to house tabs and root tab controllers
 final class RMTabBarViewController: UITabBarController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTabs()
@@ -25,15 +25,17 @@ final class RMTabBarViewController: UITabBarController {
         let settingsVC = RMSettingsViewController()
         
         var viewControllers: [UINavigationController] = []
-
+        
         for (index, vc) in [characterVC, locationVC, episodesVC, settingsVC].enumerated() {
             vc.navigationItem.largeTitleDisplayMode = .automatic
             let navigationVC = UINavigationController(rootViewController: vc)
             navigationVC.navigationBar.prefersLargeTitles  = true
-            navigationVC.tabBarItem = UITabBarItem(title: tabBarItemTitles[index], image: UIImage(systemName: tabBarIcons[index]), tag: index)
+            navigationVC.tabBarItem = UITabBarItem(
+                title: tabBarItemTitles[index],
+                image: UIImage(systemName: tabBarIcons[index]), tag: index)
             viewControllers.append(navigationVC)
         }
-
+        
         setViewControllers(viewControllers, animated: true)
     }
 }

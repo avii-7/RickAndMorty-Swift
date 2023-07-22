@@ -20,6 +20,7 @@ final class RMSearchViewController: UIViewController {
         self.viewModel = RMSearchViewViewModel(searchType)
         searchView = RMSearchView(frame: .zero, viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
+        searchView.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -41,6 +42,11 @@ final class RMSearchViewController: UIViewController {
         addConstraints()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        searchView.presentKeyboard()
+    }
+    
     @objc private func didTapExecuteSearch() {
         //viewModel.executeSearch()
     }
@@ -52,5 +58,12 @@ final class RMSearchViewController: UIViewController {
             searchView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             searchView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+}
+
+extension RMSearchViewController: RMSelectionDelegate {
+    func didSelect<T>(with model: T) {
+        guard let option = model as? RMSearchInputViewViewModel.RMDynamicOptions else { return }
+        print("Dynamic Option Clicked \(option.rawValue)!")
     }
 }
