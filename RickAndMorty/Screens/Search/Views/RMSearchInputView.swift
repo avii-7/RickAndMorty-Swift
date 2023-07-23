@@ -11,7 +11,7 @@ final class RMSearchInputView: UIStackView {
     
     private var viewModel: RMSearchInputViewViewModel? {
         didSet {
-            guard let viewModel, viewModel.hasDynamicOptions else { return }
+            guard let viewModel, !viewModel.options.isEmpty else { return }
             let options = viewModel.options
             createOptionSelectionViews(with: options)
         }
@@ -23,7 +23,7 @@ final class RMSearchInputView: UIStackView {
         return searchBar
     }()
     
-    private let subStackView: UIStackView = {
+    private let buttonsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
@@ -36,11 +36,10 @@ final class RMSearchInputView: UIStackView {
             bottom: 0,
             trailing: 10
         )
-        
         return stackView
     }()
     
-    public weak var delegate: RMSelectionDelegate?
+    weak var delegate: RMSelectionDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -57,19 +56,18 @@ final class RMSearchInputView: UIStackView {
         fatalError("Unsupported !")
     }
     
-    public func config(viewModel: RMSearchInputViewViewModel) {
+    func config(viewModel: RMSearchInputViewViewModel) {
         self.viewModel = viewModel
         searchBar.placeholder = viewModel.searchPlaceholderText
     }
     
-    public func presentKeyboard() {
+    func presentKeyboard() {
         searchBar.becomeFirstResponder()
     }
     
     private func createOptionSelectionViews(with options: [RMSearchInputViewViewModel.RMDynamicOption]) {
-        if !options.isEmpty {
-            addArrangedSubview(subStackView)
-        }
+        
+        addArrangedSubview(buttonsStackView)
         for (index, option) in options.enumerated() {
             let button = UIButton()
             button.backgroundColor = .secondarySystemFill
@@ -79,7 +77,7 @@ final class RMSearchInputView: UIStackView {
             button.addTarget(self, action: #selector(didTapButton(_:)), for: .touchUpInside)
             button.layer.cornerRadius = 6
             button.tag = index
-            subStackView.addArrangedSubview(button)
+            buttonsStackView.addArrangedSubview(button)
         }
     }
     
@@ -89,5 +87,15 @@ final class RMSearchInputView: UIStackView {
         let buttonIndex = sender.tag
         let selectedOption = options[buttonIndex]
         delegate?.didSelect(with: selectedOption)
+    }
+    
+    func update(option: RMDynamicOption, value: String) {
+        guard let buttons = buttonsStackView.arrangedSubviews as? [UIButton],
+              let allOptions = viewModel?.options,
+              let selectedOptionIndex = allOptions.firstIndex(of: option)
+        else { return }
+        let selectedButton = buttons[selectedOptionIndex]
+        selectedButton.setTitle(value.uppercased(), for: .normal)
+        selectedButton.setTitleColor(.link, for: .normal)
     }
 }

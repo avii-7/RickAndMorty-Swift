@@ -7,6 +7,8 @@
 
 import Foundation
 
+typealias RMDynamicOption = RMSearchInputViewViewModel.RMDynamicOption
+
 final class RMSearchInputViewViewModel {
     
     enum RMDynamicOption: String {
@@ -32,15 +34,6 @@ final class RMSearchInputViewViewModel {
     
     init(type: RMModuleType) {
         self.moduleType = type
-    }
-    
-    public var hasDynamicOptions: Bool {
-        switch moduleType {
-        case .Character, .Location:
-            return true
-        case .Episode:
-            return false
-        }
     }
     
     public var options: [RMDynamicOption] {
