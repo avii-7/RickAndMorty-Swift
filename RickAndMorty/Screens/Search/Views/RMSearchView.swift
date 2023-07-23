@@ -29,7 +29,6 @@ class RMSearchView: UIView {
         viewModel.registerOptionChangeBlock {[weak self] (option, value) in
             self?.searchInputView.update(option: option, value: value)
         }
-        
     }
     
     required init?(coder: NSCoder) {

@@ -26,6 +26,17 @@ final class RMSearchInputViewViewModel {
                 return ["planet", "cluster", "microverse"]
             }
         }
+        
+        var networkKey: String {
+            switch self {
+            case .gender:
+                return "gender"
+            case .status:
+                return "status"
+            case .locationType:
+                return "type"
+            }
+        }
     }
     
     private let moduleType: RMModuleType

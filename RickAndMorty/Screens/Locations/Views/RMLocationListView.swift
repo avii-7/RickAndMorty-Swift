@@ -25,6 +25,7 @@ final class RMLocationListView: UIView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.alpha = 1
         tableView.isHidden = true
+        tableView.sectionHeaderTopPadding = 0
         tableView.register(
             RMLocationTableViewCell.self,
             forCellReuseIdentifier: RMLocationTableViewCell.cellIdentifier

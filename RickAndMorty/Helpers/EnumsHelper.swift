@@ -8,5 +8,18 @@
 import Foundation
 
 enum RMModuleType {
-    case Character, Location, Episode
+    case Character
+    case Location
+    case Episode
+    
+    var endPoint: RMEndpoint {
+        switch self {
+        case .Character:
+            return .character
+        case .Location:
+            return .location
+        case .Episode:
+            return .episode
+        }
+    }
 }
