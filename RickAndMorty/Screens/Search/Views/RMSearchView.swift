@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RMSearchView: UIView {
+final class RMSearchView: UIView {
 
     private let viewModel: RMSearchViewViewModel
     
@@ -26,6 +26,7 @@ class RMSearchView: UIView {
         addconstraints()
         searchInputView.config(viewModel: .init(type: viewModel.searchType.moduleType))
         searchInputView.delegate = self
+        searchInputView.searchBarDelegate = self
         viewModel.registerOptionChangeBlock {[weak self] (option, value) in
             self?.searchInputView.update(option: option, value: value)
         }
@@ -59,5 +60,16 @@ extension RMSearchView: RMSelectionDelegate {
     
     func didSelect<T>(with model: T) {
         delegate?.didSelect(with: model)
+    }
+}
+
+extension RMSearchView: RMSearchBarDelegate {
+    
+    func rmSearchInputView(_ inputView: RMSearchInputView, didChangeSearchText text: String) {
+        viewModel.set(query: text)
+    }
+    
+    func rmSearchInputView_DidTapSearchKeyboardButton(_ inputView: RMSearchInputView) {
+        viewModel.executeSearch()
     }
 }

@@ -46,17 +46,18 @@ final class RMSearchViewViewModel: NSObject {
         var queryParameters = [URLQueryItem]()
         
         if !searchedText.isEmpty {
-            queryParameters.append(.init(name: "name", value: searchedText))
+            queryParameters.append(.init(name: "name", value: searchedText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)))
         }
         
         queryParameters.append(contentsOf: optionMap.compactMap({
             URLQueryItem(name: $0.key.networkKey, value: $0.value)
         }))
         let request = RMRequest(endpoint: searchType.moduleType.endPoint, queryParameters: queryParameters)
-        
+        print(request.url?.absoluteString)
         RMService.shared.execute(request, expecting: RMAllCharacters.self) { [weak self] result in
             switch result {
-            case .success(let success):
+            case .success(let model):
+                print(model.info.count)
                 self?.searchResultHandler?()
             case .failure:
                 break

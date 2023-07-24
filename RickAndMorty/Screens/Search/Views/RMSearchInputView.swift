@@ -7,6 +7,15 @@
 
 import UIKit
 
+protocol RMSearchBarDelegate: AnyObject {
+    func rmSearchInputView(
+        _ inputView: RMSearchInputView,
+        didChangeSearchText text: String
+    )
+    
+    func rmSearchInputView_DidTapSearchKeyboardButton(_ inputView: RMSearchInputView)
+}
+
 final class RMSearchInputView: UIStackView {
     
     private var viewModel: RMSearchInputViewViewModel? {
@@ -40,6 +49,7 @@ final class RMSearchInputView: UIStackView {
     }()
     
     weak var delegate: RMSelectionDelegate?
+    weak var searchBarDelegate: RMSearchBarDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -49,6 +59,7 @@ final class RMSearchInputView: UIStackView {
         distribution = .fillEqually
         alignment = .fill
         backgroundColor = .clear
+        searchBar.delegate = self
         addArrangedSubview(searchBar)
     }
     
@@ -97,5 +108,21 @@ final class RMSearchInputView: UIStackView {
         let selectedButton = buttons[selectedOptionIndex]
         selectedButton.setTitle(value.uppercased(), for: .normal)
         selectedButton.setTitleColor(.link, for: .normal)
+    }
+}
+
+// MARK: - UISearchBar Delegate
+extension RMSearchInputView: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchBarDelegate?.rmSearchInputView(
+            self,
+            didChangeSearchText: searchText
+        )
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        searchBarDelegate?.rmSearchInputView_DidTapSearchKeyboardButton(self)
     }
 }
