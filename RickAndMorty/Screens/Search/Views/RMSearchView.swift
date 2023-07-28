@@ -15,6 +15,8 @@ final class RMSearchView: UIView {
     
     private let searchInputView = RMSearchInputView()
     
+    private let searchResultView = RMSearchResultsView()
+    
     public weak var delegate: RMSelectionDelegate?
     
     init(frame: CGRect, viewModel: RMSearchViewViewModel) {
@@ -22,26 +24,42 @@ final class RMSearchView: UIView {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
-        addSubviews(noSearchResultView, searchInputView)
+        addSubviews(searchInputView, noSearchResultView, searchResultView)
         addconstraints()
         searchInputView.config(viewModel: .init(type: viewModel.searchType.moduleType))
         searchInputView.delegate = self
         searchInputView.searchBarDelegate = self
-        viewModel.registerOptionChangeBlock {[weak self] (option, value) in
-            self?.searchInputView.update(option: option, value: value)
-        }
-        
-        viewModel.registerSearchResultHandler { results in
-            print(results)
-        }
+        registerCompletionHandlers()
     }
     
     required init?(coder: NSCoder) {
         fatalError("Unsupported !")
     }
     
+    private func registerCompletionHandlers() {
+        
+        viewModel.registerOptionChangeBlock {[weak self] (option, value) in
+            self?.searchInputView.update(option: option, value: value)
+        }
+        
+        viewModel.registerSearchResultHandler { [weak self] results in
+            DispatchQueue.main.async {
+                self?.noSearchResultView.isHidden  = true
+                self?.searchResultView.isHidden = false
+                self?.searchResultView.configure(with: results)
+            }
+        }
+        
+        viewModel.registerNoResultsHandler { [weak self] in
+            DispatchQueue.main.async {
+                self?.noSearchResultView.isHidden  = false
+                self?.searchResultView.isHidden = true
+            }
+        }
+    }
     private func addconstraints() {
         NSLayoutConstraint.activate([
+            
             // Input search view.
             searchInputView.topAnchor.constraint(equalTo: topAnchor),
             searchInputView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -50,8 +68,14 @@ final class RMSearchView: UIView {
             // No results view.
             noSearchResultView.leadingAnchor.constraint(equalTo: leadingAnchor),
             noSearchResultView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            noSearchResultView.topAnchor.constraint(equalTo: topAnchor),
-            noSearchResultView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            noSearchResultView.topAnchor.constraint(equalTo: searchInputView.bottomAnchor, constant: 10),
+            noSearchResultView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            // Search result view.
+            searchResultView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            searchResultView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            searchResultView.topAnchor.constraint(equalTo: searchInputView.bottomAnchor, constant: 10),
+            searchResultView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }
     

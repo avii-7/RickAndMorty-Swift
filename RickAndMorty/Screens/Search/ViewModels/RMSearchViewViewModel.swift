@@ -19,6 +19,9 @@ final class RMSearchViewViewModel: NSObject {
     private var optionMap: [RMDynamicOption: String] = [:]
     
     private var searchResultHandler: ((RMSearchResultViewModel) -> Void)?
+    
+    private var noResultsHandler: (() -> Void)?
+    
     //MARK: - Init
     
     init(_ searchType: RMSearchType) {
@@ -40,6 +43,10 @@ final class RMSearchViewViewModel: NSObject {
     
     func registerSearchResultHandler(_ block: @escaping (RMSearchResultViewModel) -> Void) {
         self.searchResultHandler = block
+    }
+    
+    func registerNoResultsHandler(_ block: @escaping () -> Void) {
+        noResultsHandler = block
     }
     
     func executeSearch() {
@@ -71,12 +78,14 @@ final class RMSearchViewViewModel: NSObject {
             case .success(let model):
                 self?.processSearchResults(with: model)
             case .failure(let error):
+                self?.noResultsHandler?()
                 print(String(describing: error))
             }
         }
     }
     
     private func processSearchResults(with model: Codable) {
+        
         var searchResultsVM: RMSearchResultViewModel?
         if let characterResults = model as? RMAllCharacters {
             searchResultsVM = .characters(characterResults.results.compactMap({
@@ -103,7 +112,7 @@ final class RMSearchViewViewModel: NSObject {
             searchResultHandler?(searchResultsVM)
         }
         else {
-            // Error
+            noResultsHandler?()
         }
     }
     
