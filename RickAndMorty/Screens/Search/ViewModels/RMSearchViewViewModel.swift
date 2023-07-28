@@ -18,7 +18,7 @@ final class RMSearchViewViewModel: NSObject {
     
     private var optionMap: [RMDynamicOption: String] = [:]
     
-    private var searchResultHandler: (() -> Void)?
+    private var searchResultHandler: ((RMSearchResultViewModel) -> Void)?
     //MARK: - Init
     
     init(_ searchType: RMSearchType) {
@@ -38,7 +38,7 @@ final class RMSearchViewViewModel: NSObject {
         optionChangeBlock = block
     }
     
-    func registerSearchResultHandler(_ block: @escaping () -> Void) {
+    func registerSearchResultHandler(_ block: @escaping (RMSearchResultViewModel) -> Void) {
         self.searchResultHandler = block
     }
     
@@ -52,16 +52,58 @@ final class RMSearchViewViewModel: NSObject {
         queryParameters.append(contentsOf: optionMap.compactMap({
             URLQueryItem(name: $0.key.networkKey, value: $0.value)
         }))
+        
         let request = RMRequest(endpoint: searchType.moduleType.endPoint, queryParameters: queryParameters)
-        print(request.url?.absoluteString)
-        RMService.shared.execute(request, expecting: RMAllCharacters.self) { [weak self] result in
+        
+        switch searchType.moduleType {
+        case .Character:
+            makeSearchAPICall(for: RMAllCharacters.self, with: request)
+        case .Episode:
+            makeSearchAPICall(for: RMAllEpisodes.self, with: request)
+        case .Location:
+            makeSearchAPICall(for: RMAllLocations.self, with: request)
+        }
+    }
+    
+    private func makeSearchAPICall<T: Codable>(for type: T.Type, with request: RMRequest) {
+        RMService.shared.execute(request, expecting: type) { [weak self] result in
             switch result {
             case .success(let model):
-                print(model.info.count)
-                self?.searchResultHandler?()
-            case .failure:
-                break
+                self?.processSearchResults(with: model)
+            case .failure(let error):
+                print(String(describing: error))
             }
+        }
+    }
+    
+    private func processSearchResults(with model: Codable) {
+        var searchResultsVM: RMSearchResultViewModel?
+        if let characterResults = model as? RMAllCharacters {
+            searchResultsVM = .characters(characterResults.results.compactMap({
+                .init(
+                    id: $0.id,
+                    name: $0.name,
+                    status: $0.status,
+                    imageUrlString: $0.image
+                )
+            }))
+        }
+        else if let episodeResults = model as? RMAllEpisodes {
+            searchResultsVM = .episodes(episodeResults.results.compactMap({
+                .init(episodeUrl: URL(string: $0.url))
+            }))
+        }
+        else if let locationResults = model as? RMAllLocations {
+            searchResultsVM = .locations(locationResults.results.compactMap({
+                .init(location: $0)
+            }))
+        }
+        
+        if let searchResultsVM {
+            searchResultHandler?(searchResultsVM)
+        }
+        else {
+            // Error
         }
     }
     

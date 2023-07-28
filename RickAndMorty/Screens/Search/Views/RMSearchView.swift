@@ -30,6 +30,10 @@ final class RMSearchView: UIView {
         viewModel.registerOptionChangeBlock {[weak self] (option, value) in
             self?.searchInputView.update(option: option, value: value)
         }
+        
+        viewModel.registerSearchResultHandler { results in
+            print(results)
+        }
     }
     
     required init?(coder: NSCoder) {
