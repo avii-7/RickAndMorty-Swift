@@ -57,6 +57,7 @@ final class RMSearchView: UIView {
             }
         }
     }
+    
     private func addconstraints() {
         NSLayoutConstraint.activate([
             

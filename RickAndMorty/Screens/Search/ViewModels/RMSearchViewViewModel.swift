@@ -87,6 +87,7 @@ final class RMSearchViewViewModel: NSObject {
     private func processSearchResults(with model: Codable) {
         
         var searchResultsVM: RMSearchResultViewModel?
+        
         if let characterResults = model as? RMAllCharacters {
             searchResultsVM = .characters(characterResults.results.compactMap({
                 .init(

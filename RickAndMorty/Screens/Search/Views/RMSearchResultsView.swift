@@ -18,7 +18,8 @@ final class RMSearchResultsView: UIView {
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        tableView.register(RMLocationTableViewCell.self,
+                           forCellReuseIdentifier: RMLocationTableViewCell.cellIdentifier)
         tableView.isHidden = true
         tableView.alpha = 0
         return tableView
@@ -60,7 +61,7 @@ final class RMSearchResultsView: UIView {
     }
     
     private func setUpTableView() {
-        
+        tableView.isHidden = false
     }
     
     private func setUpCollectionView() {

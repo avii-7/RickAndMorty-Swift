@@ -20,8 +20,4 @@ struct RMSearchType {
             return "Search Episodes"
         }
     }
-    
-//    var searchResultType: T.Type {
-//        return RMAllEpisodes.self
-//    }
 }
