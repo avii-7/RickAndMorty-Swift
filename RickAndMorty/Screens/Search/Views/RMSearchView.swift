@@ -8,7 +8,7 @@
 import UIKit
 
 final class RMSearchView: UIView {
-
+    
     private let viewModel: RMSearchViewViewModel
     
     private let noSearchResultView = RMNoSearchResultView()
@@ -17,6 +17,20 @@ final class RMSearchView: UIView {
     
     private let searchResultView = RMSearchResultsView()
     
+    // For centering activity indicator between serach input view and bottom anchor of view.
+    private var opaqueBox: UILayoutGuide = {
+        let opaqueBox = UILayoutGuide()
+        return opaqueBox
+    }()
+    
+    private let spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView()
+        spinner.hidesWhenStopped = true
+        spinner.isHidden = true
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        return spinner
+    }()
+    
     public weak var delegate: RMSelectionDelegate?
     
     init(frame: CGRect, viewModel: RMSearchViewViewModel) {
@@ -24,11 +38,13 @@ final class RMSearchView: UIView {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
-        addSubviews(searchInputView, noSearchResultView, searchResultView)
+        addLayoutGuide(opaqueBox)
+        addSubviews(searchInputView, noSearchResultView, searchResultView, spinner)
         addconstraints()
         searchInputView.config(viewModel: .init(type: viewModel.searchType.moduleType))
         searchInputView.delegate = self
         searchInputView.searchBarDelegate = self
+        searchResultView.delegate = self
         registerCompletionHandlers()
     }
     
@@ -44,6 +60,7 @@ final class RMSearchView: UIView {
         
         viewModel.registerSearchResultHandler { [weak self] results in
             DispatchQueue.main.async {
+                self?.spinner.stopAnimating()
                 self?.noSearchResultView.isHidden  = true
                 self?.searchResultView.isHidden = false
                 self?.searchResultView.configure(with: results)
@@ -52,6 +69,7 @@ final class RMSearchView: UIView {
         
         viewModel.registerNoResultsHandler { [weak self] in
             DispatchQueue.main.async {
+                self?.spinner.stopAnimating()
                 self?.noSearchResultView.isHidden  = false
                 self?.searchResultView.isHidden = true
             }
@@ -77,28 +95,64 @@ final class RMSearchView: UIView {
             searchResultView.trailingAnchor.constraint(equalTo: trailingAnchor),
             searchResultView.topAnchor.constraint(equalTo: searchInputView.bottomAnchor, constant: 10),
             searchResultView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            // Opaque box
+            opaqueBox.topAnchor.constraint(equalTo: searchInputView.bottomAnchor),
+            opaqueBox.leadingAnchor.constraint(equalTo: leadingAnchor),
+            opaqueBox.trailingAnchor.constraint(equalTo: trailingAnchor),
+            opaqueBox.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            // Activity indicator
+            spinner.widthAnchor.constraint(equalToConstant: 100),
+            spinner.heightAnchor.constraint(equalToConstant: 100),
+            spinner.centerXAnchor.constraint(equalTo: opaqueBox.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: opaqueBox.centerYAnchor)
         ])
     }
     
     public func presentKeyboard() {
         searchInputView.presentKeyboard()
     }
+    
+    public func startSearching() {
+        searchResultView.isHidden = true
+        noSearchResultView.isHidden = true
+        spinner.isHidden = false
+        spinner.startAnimating()
+        viewModel.executeSearch()
+    }
 }
 
 extension RMSearchView: RMSelectionDelegate {
     
     func didSelect<T>(with model: T) {
-        delegate?.didSelect(with: model)
+        if let indexPath = model as? IndexPath {
+            guard let location = viewModel.getlocation(at: indexPath),
+                  viewModel.searchType.moduleType == .Location
+            else { return }
+            delegate?.didSelect(with: location)
+        }
+        else {
+            delegate?.didSelect(with: model)
+        }
     }
 }
 
 extension RMSearchView: RMSearchBarDelegate {
+    func rmSearchInputView_DidTapCrossButton(_ inputView: RMSearchInputView) {
+        searchResultView.isHidden = true
+        noSearchResultView.isHidden = false
+        if spinner.isAnimating {
+            spinner.stopAnimating()
+        }
+    }
     
     func rmSearchInputView(_ inputView: RMSearchInputView, didChangeSearchText text: String) {
         viewModel.set(query: text)
     }
     
     func rmSearchInputView_DidTapSearchKeyboardButton(_ inputView: RMSearchInputView) {
-        viewModel.executeSearch()
+        startSearching()
     }
 }
+

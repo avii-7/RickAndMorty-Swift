@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F82" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="RMAllCharactersEntity" representedClassName="RMAllCharactersEntity" syncable="YES" codeGenerationType="class">
+        <relationship name="info" maxCount="1" deletionRule="Cascade" destinationEntity="RMInfoEntity" inverseName="characters" inverseEntity="RMInfoEntity"/>
+        <relationship name="results" toMany="YES" deletionRule="Cascade" destinationEntity="RMCharacterEntity" inverseName="allCharacters" inverseEntity="RMCharacterEntity"/>
+    </entity>
+    <entity name="RMCharacterEntity" representedClassName="RMCharacterEntity" parentEntity="RMAllCharactersEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="gender" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="image" optional="YES" attributeType="URI"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="species" optional="YES" attributeType="String"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="URI"/>
+        <relationship name="allCharacters" toMany="YES" deletionRule="No Action" destinationEntity="RMAllCharactersEntity" inverseName="results" inverseEntity="RMAllCharactersEntity"/>
+        <relationship name="episode" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="RMCharacterEpisodeEntity" inverseName="character" inverseEntity="RMCharacterEpisodeEntity"/>
+        <relationship name="location" maxCount="1" deletionRule="Cascade" destinationEntity="RMCharacterLocationEntity" inverseName="character" inverseEntity="RMCharacterLocationEntity"/>
+        <relationship name="origin" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="RMCharacterOriginEntity" inverseName="character" inverseEntity="RMCharacterOriginEntity"/>
+    </entity>
+    <entity name="RMCharacterEpisodeEntity" representedClassName="RMCharacterEpisodeEntity" parentEntity="RMCharacterEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="episodeURL" optional="YES" attributeType="URI"/>
+        <relationship name="character" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="RMCharacterEntity" inverseName="episode" inverseEntity="RMCharacterEntity"/>
+    </entity>
+    <entity name="RMCharacterLocationEntity" representedClassName="RMCharacterLocationEntity" parentEntity="RMCharacterEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="locationName" optional="YES" attributeType="String"/>
+        <attribute name="locationUrl" optional="YES" attributeType="URI"/>
+        <relationship name="character" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="RMCharacterEntity" inverseName="location" inverseEntity="RMCharacterEntity"/>
+    </entity>
+    <entity name="RMCharacterOriginEntity" representedClassName="RMCharacterOriginEntity" parentEntity="RMCharacterEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="originName" optional="YES" attributeType="String"/>
+        <attribute name="originUrl" optional="YES" attributeType="URI"/>
+        <relationship name="character" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="RMCharacterEntity" inverseName="origin" inverseEntity="RMCharacterEntity"/>
+    </entity>
+    <entity name="RMInfoEntity" representedClassName="RMInfoEntity" parentEntity="RMAllCharactersEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="count" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="next" optional="YES" attributeType="String"/>
+        <attribute name="pages" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="prev" optional="YES" attributeType="String"/>
+        <relationship name="characters" toMany="YES" deletionRule="Deny" destinationEntity="RMAllCharactersEntity" inverseName="info" inverseEntity="RMAllCharactersEntity"/>
+    </entity>
+</model>

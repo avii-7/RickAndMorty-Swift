@@ -22,6 +22,8 @@ final class RMSearchViewViewModel: NSObject {
     
     private var noResultsHandler: (() -> Void)?
     
+    private var searchResultModel: Codable?
+    
     //MARK: - Init
     
     init(_ searchType: RMSearchType) {
@@ -86,6 +88,8 @@ final class RMSearchViewViewModel: NSObject {
     
     private func processSearchResults(with model: Codable) {
         
+        searchResultModel = model
+        
         var searchResultsVM: RMSearchResultViewModel?
         
         if let characterResults = model as? RMAllCharacters {
@@ -119,6 +123,14 @@ final class RMSearchViewViewModel: NSObject {
     
     func set(query text: String) {
         searchedText = text
+    }
+    
+    public func getlocation(at indexPath: IndexPath) -> RMLocation?  {
+        guard let locations = searchResultModel as? RMAllLocations else { return nil }
+        
+        guard let location = locations.results.elementAtOrNil(at: indexPath.row) else { return nil }
+        
+        return location
     }
 }
 

@@ -48,7 +48,7 @@ final class RMSearchViewController: UIViewController {
     }
     
     @objc private func didTapExecuteSearch() {
-        viewModel.executeSearch()
+        searchView.startSearching()
     }
     
     private func addConstraints() {
@@ -62,14 +62,31 @@ final class RMSearchViewController: UIViewController {
 }
 
 extension RMSearchViewController: RMSelectionDelegate {
-    func didSelect<T>(with model: T) {
-        guard let option = model as? RMDynamicOption else { return }
-        
-        let vc = RMSearchOptionPickerViewController(with: option) { [weak self] selection in
-            self?.viewModel.set(value: selection, for: option)
+    func didSelect<T>(with data: T) {
+        if let option = data as? RMDynamicOption {
+            let vc = RMSearchOptionPickerViewController(with: option) { [weak self] selection in
+                self?.viewModel.set(value: selection, for: option)
+            }
+            vc.sheetPresentationController?.detents = .init(arrayLiteral: .medium())
+            vc.sheetPresentationController?.prefersGrabberVisible = true
+            present(vc, animated: true)
         }
-        vc.sheetPresentationController?.detents = .init(arrayLiteral: .medium())
-        vc.sheetPresentationController?.prefersGrabberVisible = true
-        present(vc, animated: true)
+        // for cell selection
+        else if searchType.moduleType == .Location {
+            
+            guard let model = data as? RMLocation else { return }
+
+            let vc = RMLocationDetailViewController(model: .init(location: model))
+            vc.navigationItem.largeTitleDisplayMode = .never
+            navigationController?.pushViewController(vc, animated: true)
+            print("Location Hit")
+        }
+        else if searchType.moduleType == .Character {
+            
+        }
+        else if searchType.moduleType == .Episode {
+            
+        }
     }
+    
 }

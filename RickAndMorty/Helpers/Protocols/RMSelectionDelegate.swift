@@ -8,5 +8,5 @@
 import Foundation
 
 protocol RMSelectionDelegate: AnyObject {
-    func didSelect<T>(with model: T)
+    func didSelect<T>(with data: T)
 }

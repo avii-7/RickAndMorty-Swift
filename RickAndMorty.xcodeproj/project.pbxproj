@@ -379,7 +379,6 @@
 				869268DA2A2B2A7F0001C1B5 /* Storyboards */,
 				869268D92A2B2A5A0001C1B5 /* Resources */,
 				869268D82A2B2A410001C1B5 /* Applications */,
-				869268D72A2B2A2D0001C1B5 /* Database */,
 				869268D62A2B26A60001C1B5 /* Screens */,
 				861881992A30035400696692 /* Helpers */,
 				869268D02A2B24440001C1B5 /* Info.plist */,
@@ -399,13 +398,6 @@
 				869268DF2A2B2E660001C1B5 /* Core */,
 			);
 			path = Screens;
-			sourceTree = "<group>";
-		};
-		869268D72A2B2A2D0001C1B5 /* Database */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Database;
 			sourceTree = "<group>";
 		};
 		869268D82A2B2A410001C1B5 /* Applications */ = {

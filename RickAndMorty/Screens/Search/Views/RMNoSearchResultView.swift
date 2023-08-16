@@ -35,7 +35,7 @@ final class RMNoSearchResultView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        isHidden = true
+        isHidden = false
         translatesAutoresizingMaskIntoConstraints = false
         addLayoutGuide(opaqueBox)
         addSubviews(iconView, label)

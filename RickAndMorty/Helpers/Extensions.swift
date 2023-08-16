@@ -20,3 +20,17 @@ extension UIView {
 extension String {
     static var empty = "" 
 }
+
+extension Array {
+    func elementAtOrNil(at index: Index) -> Element? {
+        if self.isEmpty {
+            return nil
+        }
+        
+        if index > -1 && index < self.count {
+            return self[index]
+        }
+        
+        return nil
+    }
+}

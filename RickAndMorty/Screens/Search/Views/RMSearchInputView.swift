@@ -8,10 +8,9 @@
 import UIKit
 
 protocol RMSearchBarDelegate: AnyObject {
-    func rmSearchInputView(
-        _ inputView: RMSearchInputView,
-        didChangeSearchText text: String
-    )
+    func rmSearchInputView(_ inputView: RMSearchInputView, didChangeSearchText text: String)
+    
+    func rmSearchInputView_DidTapCrossButton(_ inputView: RMSearchInputView)
     
     func rmSearchInputView_DidTapSearchKeyboardButton(_ inputView: RMSearchInputView)
 }
@@ -60,6 +59,7 @@ final class RMSearchInputView: UIStackView {
         alignment = .fill
         backgroundColor = .clear
         searchBar.delegate = self
+        searchBar.searchTextField.delegate = self
         addArrangedSubview(searchBar)
     }
     
@@ -112,7 +112,7 @@ final class RMSearchInputView: UIStackView {
 }
 
 // MARK: - UISearchBar Delegate
-extension RMSearchInputView: UISearchBarDelegate {
+extension RMSearchInputView: UISearchBarDelegate, UITextFieldDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchBarDelegate?.rmSearchInputView(
@@ -124,5 +124,10 @@ extension RMSearchInputView: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         searchBarDelegate?.rmSearchInputView_DidTapSearchKeyboardButton(self)
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        searchBarDelegate?.rmSearchInputView_DidTapCrossButton(self)
+        return true
     }
 }
