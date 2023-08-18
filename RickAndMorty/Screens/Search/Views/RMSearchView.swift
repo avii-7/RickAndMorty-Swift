@@ -10,10 +10,10 @@ import UIKit
 final class RMSearchView: UIView {
     
     private let viewModel: RMSearchViewViewModel
+
+    private let searchInputView = RMSearchInputView()
     
     private let noSearchResultView = RMNoSearchResultView()
-    
-    private let searchInputView = RMSearchInputView()
     
     private let searchResultView = RMSearchResultsView()
     
@@ -127,10 +127,18 @@ extension RMSearchView: RMSelectionDelegate {
     
     func didSelect<T>(with model: T) {
         if let indexPath = model as? IndexPath {
-            guard let location = viewModel.getlocation(at: indexPath),
-                  viewModel.searchType.moduleType == .Location
-            else { return }
-            delegate?.didSelect(with: location)
+            switch viewModel.searchType.moduleType {
+            case .Location:
+                guard
+                    let location = viewModel.getlocation(at: indexPath) else { return }
+                delegate?.didSelect(with: location)
+            case .Character:
+                guard let character = viewModel.getCharacter(at: indexPath) else { return }
+                delegate?.didSelect(with: character)
+            case .Episode:
+                guard let episode = viewModel.getEpisode(at: indexPath) else { return }
+                delegate?.didSelect(with: episode)
+            }   
         }
         else {
             delegate?.didSelect(with: model)

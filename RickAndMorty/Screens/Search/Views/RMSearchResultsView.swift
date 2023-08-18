@@ -21,7 +21,11 @@ final class RMSearchResultsView: UIView {
         }
     }
     
-    private var collectionViewCellViewModels: [any Hashable]?
+    private var collectionViewCellViewModels: [any Hashable] = [] {
+        didSet{
+            configureCollectionView()
+        }
+    }
     
     internal weak var delegate: RMSelectionDelegate?
     
@@ -48,11 +52,6 @@ final class RMSearchResultsView: UIView {
         collectionView.register(
             RMEpisodeCollectionViewCell.self,
             forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier)
-        collectionView.register(
-            RMLoadingFooterCollectionResuableView.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-            withReuseIdentifier: "RMLoadingFooterCollectionResuableView"
-        )
         return collectionView
     }()
     
@@ -92,11 +91,11 @@ final class RMSearchResultsView: UIView {
         
         switch viewModel {
         case .characters(let viewModels):
-            configureCollectionView()
+            collectionViewCellViewModels = viewModels
         case .locations(let locationCellViewViewModels):
             self.locationCellViewViewModels = locationCellViewViewModels
         case .episodes(let viewModels):
-            configureCollectionView()
+            collectionViewCellViewModels = viewModels
         }
     }
     
@@ -104,7 +103,7 @@ final class RMSearchResultsView: UIView {
         tableView.dataSource = self
         tableView.delegate = self
     }
-
+    
     private func setUpCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -158,18 +157,49 @@ extension RMSearchResultsView : UITableViewDataSource, UITableViewDelegate {
 extension RMSearchResultsView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        fatalError()
+        guard let viewModel else { fatalError() }
+        
+        switch viewModel {
+        case .characters(let viewModels):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier, for: indexPath
+            ) as? RMCharacterCollectionViewCell else { fatalError() }
+            cell.configure(with: viewModels[indexPath.row])
+            return cell;
+        case .episodes(let viewModels):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier, for: indexPath
+            ) as? RMEpisodeCollectionViewCell else { fatalError() }
+            cell.configure(with: viewModels[indexPath.row])
+            return cell;
+        default:
+            fatalError()
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        0
+        collectionViewCellViewModels.count
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+        guard let viewModel else { return }
+        delegate?.didSelect(with: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        .zero
+        guard let viewModel else { return .zero }
+        switch viewModel {
+        case .characters:
+            let bounds = collectionView.bounds
+            let width = (bounds.width - 30) / 2
+            return CGSize(width: width, height: width * 1.5)
+        case .episodes:
+            let bounds = collectionView.bounds
+            let width = bounds.width - 20
+            return CGSize(width: width, height: 150)
+        default:
+            return .zero
+        }
     }
 }

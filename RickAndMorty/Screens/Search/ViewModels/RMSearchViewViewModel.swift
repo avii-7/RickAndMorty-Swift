@@ -127,10 +127,20 @@ final class RMSearchViewViewModel: NSObject {
     
     public func getlocation(at indexPath: IndexPath) -> RMLocation?  {
         guard let locations = searchResultModel as? RMAllLocations else { return nil }
-        
         guard let location = locations.results.elementAtOrNil(at: indexPath.row) else { return nil }
-        
         return location
+    }
+    
+    func getCharacter(at indexPath: IndexPath) -> RMCharacter? {
+        guard let characters = searchResultModel as? RMAllCharacters else { return nil }
+        guard let character = characters.results.elementAtOrNil(at: indexPath.row) else { return nil }
+        return character
+    }
+    
+    func getEpisode(at indexPath: IndexPath) -> RMEpisode? {
+        guard let episodes = searchResultModel as? RMAllEpisodes else { return nil }
+        guard let episode = episodes.results.elementAtOrNil(at: indexPath.row) else { return nil }
+        return episode
     }
 }
 

@@ -268,7 +268,6 @@
 		863CE7DF2A684364001D00EC /* CellViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				8618819E2A300F3400696692 /* RMCharacterCollectionViewCellViewModel.swift */,
 			);
 			path = CellViewModels;
 			sourceTree = "<group>";
@@ -312,6 +311,7 @@
 		86557A912A420DC100F87B03 /* CellsViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				8618819E2A300F3400696692 /* RMCharacterCollectionViewCellViewModel.swift */,
 				86557A922A420E1E00F87B03 /* RMCharacterPhotoCollectionViewCellViewModel.swift */,
 				86557A942A420E3600F87B03 /* RMCharacterInfoCollectionViewCellViewModel.swift */,
 			);

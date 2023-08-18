@@ -39,3 +39,7 @@ struct RMCharacterCollectionViewCellViewModel {
         RMImageManager.shared.downloadImage(from: url, completion: completion)
     }
 }
+
+extension RMCharacterCollectionViewCellViewModel : Equatable, Hashable {
+    
+}

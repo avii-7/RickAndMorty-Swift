@@ -72,20 +72,26 @@ extension RMSearchViewController: RMSelectionDelegate {
             present(vc, animated: true)
         }
         // for cell selection
-        else if searchType.moduleType == .Location {
+        else {
+            var vc: UIViewController?
             
-            guard let model = data as? RMLocation else { return }
-
-            let vc = RMLocationDetailViewController(model: .init(location: model))
+            if searchType.moduleType == .Location {
+                guard let model = data as? RMLocation else { return }
+                vc = RMLocationDetailViewController(model: .init(location: model))
+            }
+            else if searchType.moduleType == .Character {
+                guard let characterModel = data as? RMCharacter else { return }
+                let viewModel = RMCharacterDetailViewViewModel(with: characterModel)
+                vc = RMCharacterDetailViewController(viewModel: viewModel)
+            }
+            else if searchType.moduleType == .Episode {
+                guard let episodeModel = data as? RMEpisode else { return }
+                let viewModel = RMEpisodeDetailViewViewModel(url: URL(string: episodeModel.url))
+                vc = RMEpisodeDetailViewController(viewModel: viewModel)
+            }
+            guard let vc else { return }
             vc.navigationItem.largeTitleDisplayMode = .never
             navigationController?.pushViewController(vc, animated: true)
-            print("Location Hit")
-        }
-        else if searchType.moduleType == .Character {
-            
-        }
-        else if searchType.moduleType == .Episode {
-            
         }
     }
     
