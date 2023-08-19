@@ -23,3 +23,7 @@ enum RMModuleType {
         }
     }
 }
+
+enum RMContentStatus {
+    case notYetStarted, inProgress, finished, failed
+}

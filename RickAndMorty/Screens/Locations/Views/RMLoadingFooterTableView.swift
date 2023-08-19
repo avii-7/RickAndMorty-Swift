@@ -1,15 +1,15 @@
 //
-//  RMLoadingFooterCollectionResuableView.swift
+//  RMLoadingFooterTableView.swift
 //  RickAndMorty
 //
-//  Created by Arun on 08/06/23.
+//  Created by Arun on 19/08/23.
 //
 
 import UIKit
 
-class RMLoadingFooterCollectionResuableView: UICollectionReusableView {
+class RMLoadingFooterTableView: UITableViewHeaderFooterView {
 
-    static let cellIndentifier = String(describing: RMLoadingFooterCollectionResuableView.self)
+    static let cellIdentifier = String(describing: RMLoadingFooterTableView.self)
     
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)
@@ -17,18 +17,19 @@ class RMLoadingFooterCollectionResuableView: UICollectionReusableView {
         spinner.translatesAutoresizingMaskIntoConstraints = false
         return spinner
     }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .systemBackground
+
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        backgroundView = UIView(frame: frame)
+        backgroundView?.backgroundColor = .systemBackground
         addSubview(spinner)
         addConstraints()
     }
-    
+        
     required init?(coder: NSCoder) {
         fatalError("Unsupported")
     }
-    
+
     private func addConstraints() {
         NSLayoutConstraint.activate([
             spinner.widthAnchor.constraint(equalToConstant: 100),

@@ -3,4 +3,54 @@
    uuid = "006F75A0-40D9-4B40-BF58-CC2E3B0B6146"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CAD1AF79-2A03-4C56-8309-0621B18511D7"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RickAndMorty/Screens/Locations/ViewModels/RMLocationViewViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
+            landmarkName = "tableView(_:heightForFooterInSection:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CAD1AF79-2A03-4C56-8309-0621B18511D7 - 53b8ab3632a88b8b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMLocationViewViewModel.tableView(_: __C.UITableView, heightForFooterInSection: Swift.Int) -&gt; CoreGraphics.CGFloat"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Locations/ViewModels/RMLocationViewViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92"
+                  offsetFromSymbolStart = "36">
+               </Location>
+               <Location
+                  uuid = "CAD1AF79-2A03-4C56-8309-0621B18511D7 - 53b8ab3632a88b8b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMLocationViewViewModel.tableView(_: __C.UITableView, heightForFooterInSection: Swift.Int) -&gt; CoreGraphics.CGFloat"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Locations/ViewModels/RMLocationViewViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92"
+                  offsetFromSymbolStart = "68">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

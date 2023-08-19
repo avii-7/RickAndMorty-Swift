@@ -30,6 +30,11 @@ final class RMLocationListView: UIView {
             RMLocationTableViewCell.self,
             forCellReuseIdentifier: RMLocationTableViewCell.cellIdentifier
         )
+        tableView.register(
+            RMLocationTableViewCell.self,
+            forCellReuseIdentifier: RMLoadingFooterTableView.cellIdentifier
+        )
+        
         return tableView
     }()
     
@@ -73,6 +78,12 @@ final class RMLocationListView: UIView {
 
 extension RMLocationListView: RMLocationViewViewModelDelegate {
     
+    func didLoadMoreLocations(at indexPaths: [IndexPath]) {
+        tableView.performBatchUpdates {
+            self.tableView.insertRows(at: indexPaths, with: .automatic)
+        }
+    }
+
     func didLoadInitialLocations() {
         spinner.stopAnimating()
         tableView.reloadData()

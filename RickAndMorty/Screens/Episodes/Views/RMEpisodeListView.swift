@@ -78,6 +78,7 @@ final class RMEpisodeListView: UIView {
 }
 
 extension RMEpisodeListView: RMEpisodeListViewModelDelegate {
+    
     func didLoadInitialEpisode() {
         spinner.stopAnimating()
         collectionView.isHidden = false

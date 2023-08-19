@@ -9,6 +9,7 @@ import UIKit
 
 protocol RMLocationViewViewModelDelegate: AnyObject {
     func didLoadInitialLocations()
+    func didLoadMoreLocations(at indexPaths: [IndexPath])
 }
 
 final class RMLocationViewViewModel: NSObject {
@@ -22,7 +23,9 @@ final class RMLocationViewViewModel: NSObject {
         }
     }
     
-    private var locationInfo: RMInfo?
+    private var contentStatus: RMContentStatus = .notYetStarted
+    
+    private var allLocationInfo: RMInfo?
     
     weak var delegate: RMLocationViewViewModelDelegate?
     
@@ -40,7 +43,7 @@ final class RMLocationViewViewModel: NSObject {
             
             switch result {
             case .success(let model):
-                locationInfo = model.info
+                allLocationInfo = model.info
                 locations.append(contentsOf: model.results)
                 DispatchQueue.main.async {
                     self.delegate?.didLoadInitialLocations()
@@ -55,6 +58,10 @@ final class RMLocationViewViewModel: NSObject {
 
 extension RMLocationViewViewModel: UITableViewDataSource {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         cellViewModels.count
     }
@@ -67,13 +74,93 @@ extension RMLocationViewViewModel: UITableViewDataSource {
         cell.config(with: viewModel)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let footerView: RMLoadingFooterTableView = tableView.dequeueReusableHeaderFooterView(
+            withIdentifier: RMLoadingFooterTableView.cellIdentifier)
+        as? RMLoadingFooterTableView ?? RMLoadingFooterTableView(reuseIdentifier: RMLoadingFooterTableView.cellIdentifier)
+        
+        footerView.startAnimating()
+        return footerView
+    }
+    
+    // Make dynmaic size
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        guard shouldShowLoadMoreIndicator else {
+            return CGFloat.zero
+        }
+        return 100
+    }
 }
 
 extension RMLocationViewViewModel: UITableViewDelegate {
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let locationViewModel = locations[indexPath.row]
         selectionDelegate?.didSelect(with: locationViewModel)
+    }
+}
+
+// Pagination
+extension RMLocationViewViewModel: UIScrollViewDelegate {
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate{
+            checkReachAtBottom(scrollView)
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        checkReachAtBottom(scrollView)
+    }
+    
+    private func checkReachAtBottom(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y + 1 >= (scrollView.contentSize.height - scrollView.frame.height - 120) {
+            guard shouldShowLoadMoreIndicator,
+                  contentStatus != .inProgress,
+                  let urlString = allLocationInfo?.next,
+                  let url = URL(string: urlString)
+            else { return }
+            fetchAdditionalLocations(url: url)
+        }
+    }
+    
+    func fetchAdditionalLocations(url: URL) {
+        contentStatus = .inProgress
+        
+        guard let request = RMRequest(url: url) else {
+            contentStatus = .failed
+            return
+        }
+        
+        RMService.shared.execute(request, expecting: RMAllLocations.self) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success(let responseModel):
+                self.allLocationInfo = responseModel.info
+                
+                let startIndex = self.locations.endIndex
+                self.locations.append(contentsOf: responseModel.results)
+                let endIndex = self.locations.endIndex - 1
+                
+                let indexPathToAdd = Array(startIndex...endIndex).compactMap {
+                    IndexPath(row: $0, section: 0)
+                }
+                
+                DispatchQueue.main.async {
+                    self.delegate?.didLoadMoreLocations(at: indexPathToAdd)
+                    self.contentStatus = .finished
+                }
+            case .failure(let failure):
+                self.contentStatus = .failed
+                print(" Failed \(failure.localizedDescription)")
+            }
+        }
+    }
+    
+    var shouldShowLoadMoreIndicator: Bool {
+        allLocationInfo?.next != nil
     }
 }

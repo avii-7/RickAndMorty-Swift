@@ -14,9 +14,7 @@ protocol RMEpisodeListViewModelDelegate: AnyObject {
     func didLoadMoreEpisodes(at indexPaths: [IndexPath])
 }
 
-enum FetchingMoreEpisodesStatus {
-    case notYetStarted, inProgress, finished, failed
-}
+
 /// View model to handle character list logic
 final class RMEpisodeListViewViewModel: NSObject {
     
@@ -47,7 +45,7 @@ final class RMEpisodeListViewViewModel: NSObject {
         }
     }
     
-    private var fetchingMoreEpisodesStatus: FetchingMoreEpisodesStatus = .notYetStarted
+    private var fetchingMoreEpisodesStatus: RMContentStatus = .notYetStarted
     
     private var cellViewModels: [RMEpisodeCollectionViewCellViewModel] = []
     
@@ -153,6 +151,7 @@ extension RMEpisodeListViewViewModel: UICollectionViewDataSource, UICollectionVi
         return supplementaryFooterView
     }
     
+    // Make dynmaic size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         guard shouldShowLoadMoreIndicator else {
             return CGSize.zero

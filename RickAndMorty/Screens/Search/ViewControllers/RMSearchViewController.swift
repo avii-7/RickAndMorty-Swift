@@ -76,8 +76,9 @@ extension RMSearchViewController: RMSelectionDelegate {
             var vc: UIViewController?
             
             if searchType.moduleType == .Location {
-                guard let model = data as? RMLocation else { return }
-                vc = RMLocationDetailViewController(model: .init(location: model))
+                guard let locationModel = data as? RMLocation else { return }
+                let viewModel = RMLocationDetailViewViewModel(location: locationModel)
+                vc = RMLocationDetailViewController(model: viewModel)
             }
             else if searchType.moduleType == .Character {
                 guard let characterModel = data as? RMCharacter else { return }
