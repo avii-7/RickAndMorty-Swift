@@ -13,6 +13,7 @@ protocol RMSearchResultViewViewModelDelegate: AnyObject {
     func didSelectLocation(at indexPath: IndexPath)
     func didSelectCharacterOrEpisode(at indexPath: IndexPath)
     func didLoadMoreLocations(at indexPaths: [IndexPath])
+    func didLoadMoreCharactersOrEpisodes(at indexPaths: [IndexPath])
 }
 
 final class RMSearchResultsView: UIView {
@@ -52,6 +53,11 @@ final class RMSearchResultsView: UIView {
         collectionView.register(
             RMEpisodeCollectionViewCell.self,
             forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier
+        )
+        collectionView.register(
+            RMLoadingFooterCollectionResuableView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+            withReuseIdentifier: RMLoadingFooterCollectionResuableView.cellIndentifier
         )
         return collectionView
     }()
@@ -135,5 +141,9 @@ extension RMSearchResultsView: RMSearchResultViewViewModelDelegate {
         }
     }
     
+    func didLoadMoreCharactersOrEpisodes(at indexPaths: [IndexPath]) {
+        collectionView.performBatchUpdates {
+            self.collectionView.insertItems(at: indexPaths)
+        }
+    }
 }
-

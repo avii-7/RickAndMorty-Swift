@@ -34,3 +34,7 @@ extension Array {
         return nil
     }
 }
+
+extension UIDevice {
+    static let isIphone: Bool = UIDevice.current.userInterfaceIdiom == .phone
+}

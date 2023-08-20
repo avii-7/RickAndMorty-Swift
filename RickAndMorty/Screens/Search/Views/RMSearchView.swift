@@ -136,8 +136,7 @@ extension RMSearchView: RMSelectionDelegate {
         if let indexPath = model as? IndexPath {
             switch viewModel.searchType.moduleType {
             case .Location:
-                guard
-                    let location = viewModel.getlocation(at: indexPath) else { return }
+                guard let location = viewModel.getlocation(at: indexPath) else { return }
                 delegate?.didSelect(with: location)
             case .Character:
                 guard let character = viewModel.getCharacter(at: indexPath) else { return }

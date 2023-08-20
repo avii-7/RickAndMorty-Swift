@@ -127,7 +127,7 @@ extension RMSearchInputView: UISearchBarDelegate, UITextFieldDelegate {
     }
     
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        searchBarDelegate?.rmSearchInputView_DidTapCrossButton(self)
+        //searchBarDelegate?.rmSearchInputView_DidTapCrossButton(self)
         return true
     }
 }
