@@ -38,7 +38,7 @@ class RMLoadingFooterCollectionResuableView: UICollectionReusableView {
         ])
     }
     
-    public func startAnimating() {
+     func startAnimating() {
         spinner.startAnimating()
     }
 }

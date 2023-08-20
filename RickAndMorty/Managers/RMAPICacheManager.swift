@@ -20,9 +20,9 @@ final class RMAPICacheManager {
         setupCache()
     }
     
-    // MARK: - Public function
+    // MARK: -  function
     
-    public func setCacheResponse(endPoint: RMEndpoint, url: URL?, data: Data) {
+     func setCacheResponse(endPoint: RMEndpoint, url: URL?, data: Data) {
         guard let responseCache = cacheDictionary[endPoint] else { return }
         
         guard let url else { return }
@@ -31,7 +31,7 @@ final class RMAPICacheManager {
         responseCache.setObject(value, forKey: key)
     }
     
-    public func getCacheResponse(endPoint: RMEndpoint, for url: URL?) -> Data? {
+     func getCacheResponse(endPoint: RMEndpoint, for url: URL?) -> Data? {
         guard let responseCache = cacheDictionary[endPoint] else { return nil }
         
         guard let url else { return nil }

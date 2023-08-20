@@ -30,10 +30,7 @@ final class RMLocationListView: UIView {
             RMLocationTableViewCell.self,
             forCellReuseIdentifier: RMLocationTableViewCell.cellIdentifier
         )
-        tableView.register(
-            RMLocationTableViewCell.self,
-            forCellReuseIdentifier: RMLoadingFooterTableView.cellIdentifier
-        )
+        tableView.register(RMLoadingFooterTableView.self, forHeaderFooterViewReuseIdentifier: RMLoadingFooterTableView.cellIdentifier)
         
         return tableView
     }()

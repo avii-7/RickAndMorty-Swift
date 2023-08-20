@@ -16,7 +16,7 @@ final class RMEpisodeDetailViewViewModel {
     
     private let url: URL?
     
-    public weak var delegate: RMNetworkDelegate?
+     weak var delegate: RMNetworkDelegate?
     
     private var dataTuple: (episode: RMEpisode, characters: [RMCharacter])? {
         didSet {
@@ -39,9 +39,9 @@ final class RMEpisodeDetailViewViewModel {
         self.url = url
     }
     
-    // MARK: - Public functions
+    // MARK: -  functions
     
-    public func fetchEpisodes() {
+     func fetchEpisodes() {
         guard
             let url,
             let request = RMRequest(url: url) else { return }

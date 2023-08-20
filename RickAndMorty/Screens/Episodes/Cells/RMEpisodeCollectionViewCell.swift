@@ -88,7 +88,7 @@ final class RMEpisodeCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    public func configure(with viewModel: RMEpisodeCollectionViewCellViewModel) {
+     func configure(with viewModel: RMEpisodeCollectionViewCellViewModel) {
         viewModel.registerForData { [weak self] result in
             guard let self else { return }
             self.nameLabel.text = result.name

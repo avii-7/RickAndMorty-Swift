@@ -47,7 +47,7 @@ final class RMSearchInputViewViewModel {
         self.moduleType = type
     }
     
-    public var options: [RMDynamicOption] {
+     var options: [RMDynamicOption] {
         switch moduleType {
         case .Character:
             return [.status, .gender]
@@ -58,7 +58,7 @@ final class RMSearchInputViewViewModel {
         }
     }
     
-    public var searchPlaceholderText: String {
+     var searchPlaceholderText: String {
         switch moduleType {
         case .Character:
             return "Character Name"

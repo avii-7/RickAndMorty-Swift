@@ -34,7 +34,7 @@ final class RMCharacterListViewViewModel: NSObject {
     
     private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
     
-    public weak var delegate: RMCharacterListViewModelDelegate?
+     weak var delegate: RMCharacterListViewModelDelegate?
     
     private var allCharacterInfo: RMInfo?
     
@@ -117,12 +117,13 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource, UICollection
         let bounds = collectionView.bounds
         var width: CGFloat
         
-        var currentIdiom = UIDevice.current.userInterfaceIdiom
+        let currentIdiom = UIDevice.current.userInterfaceIdiom
+        
         if currentIdiom == .phone {
             width = (bounds.width - 30) / 2
         }
         else{
-            // iPad and Mac
+            // iPad
             width = (bounds.width - 60 )/4
         }
 

@@ -34,13 +34,13 @@ final class RMEpisodeCollectionViewCellViewModel {
         self.borderColor = borderColor
     }
     
-    // MARK: - Public function
+    // MARK: -  function
     
-    public func registerForData(_ block: @escaping (RMEpisodeDataRenderer) -> Void) {
+     func registerForData(_ block: @escaping (RMEpisodeDataRenderer) -> Void) {
         self.dataBlock = block
     }
     
-    public func fetchEpisode() {
+     func fetchEpisode() {
         if isDataAlreadyFetched {
             guard let episode else { return }
             dataBlock?(episode)

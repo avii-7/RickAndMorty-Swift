@@ -11,13 +11,13 @@ final class RMCharacterInfoCollectionViewCellViewModel {
     
     private let type: `Type`
     
-    public var displayTitle: String {
+     var displayTitle: String {
         type.rawValue
     }
     
     private let value: String
     
-    public var displayValue: String {
+     var displayValue: String {
         if value.isEmpty { return "None" }
         else if type == .created {
             let formattedDate = RMDateFormatter.getFormattedDate(for: value)
@@ -26,11 +26,11 @@ final class RMCharacterInfoCollectionViewCellViewModel {
         return value
     }
     
-    public var displayImage: UIImage? {
+     var displayImage: UIImage? {
         return type.iconImage
     }
     
-    public var tintColor: UIColor {
+     var tintColor: UIColor {
         return type.tintColor
     }
     

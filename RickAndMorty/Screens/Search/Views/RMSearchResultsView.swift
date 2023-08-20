@@ -7,33 +7,32 @@
 
 import UIKit
 
+protocol RMSearchResultViewViewModelDelegate: AnyObject {
+    func didLoadLocations()
+    func didLoadCharactersOrEpisodes()
+    func didSelectLocation(at indexPath: IndexPath)
+    func didSelectCharacterOrEpisode(at indexPath: IndexPath)
+    func didLoadMoreLocations(at indexPaths: [IndexPath])
+}
+
 final class RMSearchResultsView: UIView {
     
-    private var viewModel: RMSearchResultViewModel? {
-        didSet {
-            processViewModel()
-        }
-    }
-    
-    private var locationCellViewViewModels: [RMLocationCellViewViewModel] = [] {
-        didSet {
-            configureTableView()
-        }
-    }
-    
-    private var collectionViewCellViewModels: [any Hashable] = [] {
-        didSet{
-            configureCollectionView()
-        }
-    }
-    
-    internal weak var delegate: RMSelectionDelegate?
+    private var viewModel = RMSearchResultViewViewModel()
+
+    weak var delegate: RMSelectionDelegate?
     
     private let tableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(RMLocationTableViewCell.self,
-                           forCellReuseIdentifier: RMLocationTableViewCell.cellIdentifier)
+        tableView.register(
+            RMLocationTableViewCell.self,
+            forCellReuseIdentifier: RMLocationTableViewCell.cellIdentifier
+        )
+        tableView.register(
+            RMLoadingFooterTableView.self,
+            forHeaderFooterViewReuseIdentifier: RMLoadingFooterTableView.cellIdentifier
+        )
+        tableView.sectionHeaderTopPadding = 0
         tableView.isHidden = true
         tableView.alpha = 0
         return tableView
@@ -48,10 +47,12 @@ final class RMSearchResultsView: UIView {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(
             RMCharacterCollectionViewCell.self,
-            forCellWithReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier)
+            forCellWithReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier
+        )
         collectionView.register(
             RMEpisodeCollectionViewCell.self,
-            forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier)
+            forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier
+        )
         return collectionView
     }()
     
@@ -60,6 +61,7 @@ final class RMSearchResultsView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         isHidden = true
         addSubviews(tableView, collectionView)
+        viewModel.delegate = self
         setUpTableView()
         setUpCollectionView()
         addConstraints()
@@ -86,30 +88,24 @@ final class RMSearchResultsView: UIView {
         ])
     }
     
-    private func processViewModel() {
-        guard let viewModel else { return }
-        
-        switch viewModel {
-        case .characters(let viewModels):
-            collectionViewCellViewModels = viewModels
-        case .locations(let locationCellViewViewModels):
-            self.locationCellViewViewModels = locationCellViewViewModels
-        case .episodes(let viewModels):
-            collectionViewCellViewModels = viewModels
-        }
-    }
-    
     private func setUpTableView() {
-        tableView.dataSource = self
-        tableView.delegate = self
+        tableView.dataSource = viewModel
+        tableView.delegate = viewModel
     }
     
     private func setUpCollectionView() {
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        collectionView.dataSource = viewModel
+        collectionView.delegate = viewModel
     }
     
-    private func configureTableView() {
+    func configure(with searchResult: RMSearchResult) {
+        viewModel.configure(with: searchResult)
+    }
+}
+
+extension RMSearchResultsView: RMSearchResultViewViewModelDelegate {
+
+    func didLoadLocations() {
         tableView.isHidden = false
         UIView.animate(withDuration: 1) {
             self.tableView.alpha = 1
@@ -117,7 +113,7 @@ final class RMSearchResultsView: UIView {
         tableView.reloadData()
     }
     
-    private func configureCollectionView() {
+    func didLoadCharactersOrEpisodes() {
         collectionView.isHidden = false
         UIView.animate(withDuration: 1) {
             self.collectionView.alpha = 1
@@ -125,81 +121,19 @@ final class RMSearchResultsView: UIView {
         collectionView.reloadData()
     }
     
-    public func configure(with viewModel: RMSearchResultViewModel) {
-        self.viewModel = viewModel
-    }
-}
-
-// MARK: - Location search result view
-extension RMSearchResultsView : UITableViewDataSource, UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        locationCellViewViewModels.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: RMLocationTableViewCell.cellIdentifier,
-            for: indexPath
-        ) as? RMLocationTableViewCell else { fatalError("Something goes wrong !") }
-        cell.config(with: locationCellViewViewModels[indexPath.row])
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        delegate?.didSelect(with: indexPath)
-    }
-}
-
-// MARK: - Character and episodes search result view
-
-extension RMSearchResultsView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let viewModel else { fatalError() }
-        
-        switch viewModel {
-        case .characters(let viewModels):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier, for: indexPath
-            ) as? RMCharacterCollectionViewCell else { fatalError() }
-            cell.configure(with: viewModels[indexPath.row])
-            return cell;
-        case .episodes(let viewModels):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier, for: indexPath
-            ) as? RMEpisodeCollectionViewCell else { fatalError() }
-            cell.configure(with: viewModels[indexPath.row])
-            return cell;
-        default:
-            fatalError()
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        collectionViewCellViewModels.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        guard let viewModel else { return }
+    func didSelectLocation(at indexPath: IndexPath) {
         delegate?.didSelect(with: indexPath)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard let viewModel else { return .zero }
-        switch viewModel {
-        case .characters:
-            let bounds = collectionView.bounds
-            let width = (bounds.width - 30) / 2
-            return CGSize(width: width, height: width * 1.5)
-        case .episodes:
-            let bounds = collectionView.bounds
-            let width = bounds.width - 20
-            return CGSize(width: width, height: 150)
-        default:
-            return .zero
+    func didSelectCharacterOrEpisode(at indexPath: IndexPath) {
+        delegate?.didSelect(with: indexPath)
+    }
+    
+    func didLoadMoreLocations(at indexPaths: [IndexPath]) {
+        tableView.performBatchUpdates {
+            self.tableView.insertRows(at: indexPaths, with: .automatic)
         }
     }
+    
 }
+

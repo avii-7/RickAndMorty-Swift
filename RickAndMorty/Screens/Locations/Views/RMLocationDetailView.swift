@@ -19,7 +19,7 @@ final class RMLocationDetailView: UIView {
     // Why i need Implicitly unwrapped optional here ?
     private var collectionView: UICollectionView!
     
-    public weak var delegate: RMSelectionDelegate?
+     weak var delegate: RMSelectionDelegate?
     
     private var viewModel: RMLocationDetailViewViewModel?
     

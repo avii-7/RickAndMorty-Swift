@@ -106,7 +106,7 @@ final class RMCharacterInfoCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    public func configure(with viewModel: RMCharacterInfoCollectionViewCellViewModel) {
+     func configure(with viewModel: RMCharacterInfoCollectionViewCellViewModel) {
         titleLabel.text = viewModel.displayTitle
         valueLabel.text = viewModel.displayValue
         iconLabel.image = viewModel.displayImage

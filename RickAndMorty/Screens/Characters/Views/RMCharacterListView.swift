@@ -16,7 +16,7 @@ final class RMCharacterListView: UIView {
     
     private let viewModel = RMCharacterListViewViewModel()
     
-    public weak var delegate: RMSelectionDelegate?
+     weak var delegate: RMSelectionDelegate?
     
     // Block pattern
     private let spinner: UIActivityIndicatorView = {

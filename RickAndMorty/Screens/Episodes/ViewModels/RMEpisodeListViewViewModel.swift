@@ -49,7 +49,7 @@ final class RMEpisodeListViewViewModel: NSObject {
     
     private var cellViewModels: [RMEpisodeCollectionViewCellViewModel] = []
     
-    public weak var delegate: RMEpisodeListViewModelDelegate?
+     weak var delegate: RMEpisodeListViewModelDelegate?
     
     private var allEpisodeInfo: RMInfo?
     

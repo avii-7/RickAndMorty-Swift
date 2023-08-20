@@ -17,6 +17,8 @@ final class RMSearchView: UIView {
     
     private let searchResultView = RMSearchResultsView()
     
+    private var queryText: String = String.empty
+    
     // For centering activity indicator between serach input view and bottom anchor of view.
     private var opaqueBox: UILayoutGuide = {
         let opaqueBox = UILayoutGuide()
@@ -31,7 +33,7 @@ final class RMSearchView: UIView {
         return spinner
     }()
     
-    public weak var delegate: RMSelectionDelegate?
+     weak var delegate: RMSelectionDelegate?
     
     init(frame: CGRect, viewModel: RMSearchViewViewModel) {
         self.viewModel = viewModel
@@ -76,7 +78,7 @@ final class RMSearchView: UIView {
         }
     }
     
-    private func addconstraints() {
+    func addconstraints() {
         NSLayoutConstraint.activate([
             
             // Input search view.
@@ -110,11 +112,16 @@ final class RMSearchView: UIView {
         ])
     }
     
-    public func presentKeyboard() {
+    func presentKeyboard() {
         searchInputView.presentKeyboard()
     }
     
-    public func startSearching() {
+    func startSearching() {
+        
+        if queryText.isEmpty {
+            return
+        }
+        
         searchResultView.isHidden = true
         noSearchResultView.isHidden = true
         spinner.isHidden = false
@@ -156,6 +163,7 @@ extension RMSearchView: RMSearchBarDelegate {
     }
     
     func rmSearchInputView(_ inputView: RMSearchInputView, didChangeSearchText text: String) {
+        queryText = text
         viewModel.set(query: text)
     }
     

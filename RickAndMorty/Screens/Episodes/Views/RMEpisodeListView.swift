@@ -12,7 +12,7 @@ final class RMEpisodeListView: UIView {
     
     private let viewModel = RMEpisodeListViewViewModel()
     
-    public weak var delegate: RMSelectionDelegate?
+     weak var delegate: RMSelectionDelegate?
     
     // Block pattern
     private let spinner: UIActivityIndicatorView = {

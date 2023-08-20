@@ -16,7 +16,7 @@ final class RMLocationDetailViewViewModel {
     
     private let location: RMLocation
     
-    public weak var delegate: RMNetworkDelegate?
+     weak var delegate: RMNetworkDelegate?
     
     private var residents: [RMCharacter]? {
         didSet {

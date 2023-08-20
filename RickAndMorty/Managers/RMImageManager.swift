@@ -11,7 +11,7 @@ final class RMImageManager {
 
     private init() {}
     
-    public static let shared = RMImageManager()
+     static let shared = RMImageManager()
     
     private var imageDataCache = NSCache<NSString, NSData>()
     
@@ -19,7 +19,7 @@ final class RMImageManager {
     /// - Parameters:
     ///   - url: Image URL object
     ///   - completion: callback
-    public func downloadImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void ) {
+     func downloadImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void ) {
         let key = url.absoluteString as NSString
         
         if let data = imageDataCache.object(forKey: key) {

@@ -8,17 +8,17 @@
 import Foundation
 
 struct RMCharacterCollectionViewCellViewModel {
-    public let id: Int
-    public let name: String
+     let id: Int
+     let name: String
     
     private let imageUrlString: String
-    public var imageUrl: URL? {
+     var imageUrl: URL? {
         URL(string: imageUrlString)
     }
     
     private let status: RMCharacterStatus
     
-    public var statusText: String {
+     var statusText: String {
         "Status: \(status.text)"
     }
     
@@ -31,7 +31,7 @@ struct RMCharacterCollectionViewCellViewModel {
         self.imageUrlString = imageUrlString
     }
     
-    public func fetchImage(completion: @escaping (Result<Data, Error>) -> Void) {
+     func fetchImage(completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = imageUrl else {
             completion(.failure(URLError(.badURL)))
             return

@@ -51,21 +51,21 @@ final class RMRequest {
     }
     
     /// Computed and constructed API url
-    public var url: URL? {
+     var url: URL? {
         URL(string: urlString)
     }
     
     /// Desired http method
-    public let httpMethod = "GET"
+     let httpMethod = "GET"
     
-    // Mark: - Public
+    // Mark: - 
     
     /// Designated initializer for construct request
     /// - Parameters:
     ///   - endpoint: Target endpoint
     ///   - pathComponents: Collection of path components
     ///   - queryParameters: Collection of query parameters.
-    public init(endpoint: RMEndpoint, pathComponents: [String] = [], queryParameters: [URLQueryItem] = []) {
+     init(endpoint: RMEndpoint, pathComponents: [String] = [], queryParameters: [URLQueryItem] = []) {
         self.endpoint = endpoint
         self.pathComponents = pathComponents
         self.queryParameters = queryParameters

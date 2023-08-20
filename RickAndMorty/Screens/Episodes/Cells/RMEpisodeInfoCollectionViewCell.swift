@@ -96,7 +96,7 @@ final class RMEpisodeInfoCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    // MARK: - Public function
+    // MARK: -  function
     
     func configure(with viewModel: RMBasicModel) {
         titleLabel.text = viewModel.title

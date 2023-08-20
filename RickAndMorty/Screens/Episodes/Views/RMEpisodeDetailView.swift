@@ -21,7 +21,7 @@ final class RMEpisodeDetailView: UIView {
     
     private var viewModel: RMEpisodeDetailViewViewModel?
     
-    public weak var delegate: RMSelectionDelegate?
+     weak var delegate: RMSelectionDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,9 +37,9 @@ final class RMEpisodeDetailView: UIView {
         fatalError("Unsupported")
     }
     
-    //MARK: - Public function
+    //MARK: -  function
     
-    public func configure(viewModel: RMEpisodeDetailViewViewModel) {
+     func configure(viewModel: RMEpisodeDetailViewViewModel) {
         self.viewModel = viewModel
         spinner.stopAnimating()
         collectionView.isHidden = false

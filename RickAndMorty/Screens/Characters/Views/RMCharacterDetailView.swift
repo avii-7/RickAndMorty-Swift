@@ -17,7 +17,7 @@ final class RMCharacterDetailView: UIView {
     
     private let viewModel: RMCharacterDetailViewViewModel
     
-    public weak var delegate: RMCharacterDetailViewDelegate?
+     weak var delegate: RMCharacterDetailViewDelegate?
     
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)

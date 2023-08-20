@@ -39,7 +39,7 @@ class RMLoadingFooterTableView: UITableViewHeaderFooterView {
         ])
     }
     
-    public func startAnimating() {
+     func startAnimating() {
         spinner.startAnimating()
     }
 }

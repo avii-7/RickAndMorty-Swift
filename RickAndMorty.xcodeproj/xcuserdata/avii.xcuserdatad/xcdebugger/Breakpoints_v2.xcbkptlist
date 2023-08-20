@@ -7,49 +7,177 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CAD1AF79-2A03-4C56-8309-0621B18511D7"
+            uuid = "0A96294B-CC4A-42E4-B056-35A87C9219CE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
+            landmarkName = "shouldShowLoadMoreIndicator"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "0A96294B-CC4A-42E4-B056-35A87C9219CE - 953a7fcae1d0cf59"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMSearchResultViewViewModel.configure(with: RickAndMorty.RMSearchResult) -&gt; ()"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "46"
+                  endingLineNumber = "46"
+                  offsetFromSymbolStart = "68">
+               </Location>
+               <Location
+                  uuid = "0A96294B-CC4A-42E4-B056-35A87C9219CE - 953a7fcae1d0cedd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "RickAndMorty.RMSearchResultViewViewModel.configure(with: RickAndMorty.RMSearchResult) -&gt; ()"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "42"
+                  endingLineNumber = "42"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "32426C2F-0974-4C9E-A79D-6893E83A100D"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "RickAndMorty/Screens/Locations/ViewModels/RMLocationViewViewModel.swift"
+            filePath = "RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
-            landmarkName = "tableView(_:heightForFooterInSection:)"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
+            landmarkName = "scrollViewDidEndDecelerating(_:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "CAD1AF79-2A03-4C56-8309-0621B18511D7 - 53b8ab3632a88b8b"
+                  uuid = "32426C2F-0974-4C9E-A79D-6893E83A100D - ddb2b8455c25856e"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "RickAndMorty.RMLocationViewViewModel.tableView(_: __C.UITableView, heightForFooterInSection: Swift.Int) -&gt; CoreGraphics.CGFloat"
+                  symbolName = "RickAndMorty.RMSearchResultViewViewModel.checkReachAtBottom(__C.UIScrollView) -&gt; ()"
                   moduleName = "RickAndMorty"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Locations/ViewModels/RMLocationViewViewModel.swift"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "92"
-                  endingLineNumber = "92"
-                  offsetFromSymbolStart = "36">
+                  startingLineNumber = "174"
+                  endingLineNumber = "174"
+                  offsetFromSymbolStart = "180">
                </Location>
                <Location
-                  uuid = "CAD1AF79-2A03-4C56-8309-0621B18511D7 - 53b8ab3632a88b8b"
+                  uuid = "32426C2F-0974-4C9E-A79D-6893E83A100D - ddb2b8455c2585c9"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "RickAndMorty.RMLocationViewViewModel.tableView(_: __C.UITableView, heightForFooterInSection: Swift.Int) -&gt; CoreGraphics.CGFloat"
+                  symbolName = "RickAndMorty.RMSearchResultViewViewModel.checkReachAtBottom(__C.UIScrollView) -&gt; ()"
                   moduleName = "RickAndMorty"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Locations/ViewModels/RMLocationViewViewModel.swift"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "92"
-                  endingLineNumber = "92"
-                  offsetFromSymbolStart = "68">
+                  startingLineNumber = "171"
+                  endingLineNumber = "171"
+                  offsetFromSymbolStart = "180">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "15485027-3EB7-4DEA-A381-7FEC170286DE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
+            landmarkName = "fetchAdditionalLocations(url:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "15485027-3EB7-4DEA-A381-7FEC170286DE - c502fe61dfd58267"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;RickAndMorty.RMAllLocations, Swift.Error&gt;) -&gt; () in RickAndMorty.RMSearchResultViewViewModel.fetchAdditionalLocations(url: Foundation.URL) -&gt; ()"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "196"
+                  endingLineNumber = "196"
+                  offsetFromSymbolStart = "592">
+               </Location>
+               <Location
+                  uuid = "15485027-3EB7-4DEA-A381-7FEC170286DE - c502fe61dfd58204"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;RickAndMorty.RMAllLocations, Swift.Error&gt;) -&gt; () in RickAndMorty.RMSearchResultViewViewModel.fetchAdditionalLocations(url: Foundation.URL) -&gt; ()"
+                  moduleName = "RickAndMorty"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/avii/Desktop/RickAndMorty/RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "193"
+                  endingLineNumber = "193"
+                  offsetFromSymbolStart = "592">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A29834CD-AA6F-45C4-810E-1A8BE3805556"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "172"
+            endingLineNumber = "172"
+            landmarkName = "checkReachAtBottom(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EFABB615-3E8A-4144-8679-471EA71C044F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RickAndMorty/Screens/Search/ViewModels/RMSearchResultViewViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "shouldShowLoadMoreIndicator"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

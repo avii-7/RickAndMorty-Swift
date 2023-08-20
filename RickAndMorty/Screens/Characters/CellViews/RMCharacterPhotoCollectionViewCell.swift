@@ -39,7 +39,7 @@ final class RMCharacterPhotoCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    public func configure(with viewModel: RMCharacterPhotoCollectionViewCellViewModel) {
+     func configure(with viewModel: RMCharacterPhotoCollectionViewCellViewModel) {
         viewModel.fetchImage { [weak self] result in
             switch result {
             case .success(let imageData):

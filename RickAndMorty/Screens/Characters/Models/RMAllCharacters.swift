@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct RMAllCharacters: Codable {
+ struct RMAllCharacters: Codable {
     let info: RMInfo
     let results: [RMCharacter]
 }

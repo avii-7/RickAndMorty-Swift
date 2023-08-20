@@ -11,9 +11,9 @@ struct RMSettingCellViewViewModel: Identifiable {
     
     var id = UUID()
     
-    public let type: RMSettingOption
+     let type: RMSettingOption
     
-    public let onTapHandler: (RMSettingOption) -> Void
+     let onTapHandler: (RMSettingOption) -> Void
     
     // MARK: - Init
     
