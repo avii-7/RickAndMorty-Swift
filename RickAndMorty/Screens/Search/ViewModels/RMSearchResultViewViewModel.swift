@@ -198,9 +198,7 @@ extension RMSearchResultViewViewModel: UICollectionViewDataSource, UICollectionV
             let bounds = collectionView.bounds
             var width: CGFloat
             
-            let currentIdiom = UIDevice.current.userInterfaceIdiom
-            
-            if currentIdiom == .phone {
+            if UIDevice.isIphone {
                 width = (bounds.width - 30) / 2
             }
             else{
@@ -211,7 +209,8 @@ extension RMSearchResultViewViewModel: UICollectionViewDataSource, UICollectionV
             return CGSize(width: width, height: width * 1.5)
         case .Episode:
             let bounds = collectionView.bounds
-            let width = bounds.width - 20
+            
+            let width = UIDevice.isIphone ? bounds.width - 20 : (bounds.width - 40)/3
             return CGSize(width: width, height: 150)
         default:
             return .zero

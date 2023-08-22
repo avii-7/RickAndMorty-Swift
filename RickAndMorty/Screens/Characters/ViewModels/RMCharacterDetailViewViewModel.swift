@@ -61,7 +61,7 @@ final class RMCharacterDetailViewViewModel {
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(0.5)
+                heightDimension: .fractionalHeight(UIDevice.isIphone ? 0.5 : 0.4)
             ),
             subitems: [item]
         )
@@ -80,7 +80,7 @@ final class RMCharacterDetailViewViewModel {
         
         let item = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.5),
+                widthDimension: .fractionalWidth(UIDevice.isIphone ? 0.5 : 0.25),
                 heightDimension: .fractionalHeight(1.0)
             )
         )
@@ -89,10 +89,10 @@ final class RMCharacterDetailViewViewModel {
         
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1),
+                widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(150)
             ),
-            subitems: [item, item]
+            subitems: UIDevice.isIphone ? [item, item] : [item, item, item, item]
         )
         
         let section = NSCollectionLayoutSection(group: group)
@@ -111,10 +111,10 @@ final class RMCharacterDetailViewViewModel {
         
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.8),
+                widthDimension: .fractionalWidth(UIDevice.isIphone ? 0.8 : 0.4),
                 heightDimension: .absolute(150)
             ),
-            subitems: [item]
+            subitems: UIDevice.isIphone ? [item] : [item, item]
         )
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPaging

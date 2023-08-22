@@ -117,9 +117,7 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource, UICollection
         let bounds = collectionView.bounds
         var width: CGFloat
         
-        let currentIdiom = UIDevice.current.userInterfaceIdiom
-        
-        if currentIdiom == .phone {
+        if UIDevice.isIphone {
             width = (bounds.width - 30) / 2
         }
         else{
