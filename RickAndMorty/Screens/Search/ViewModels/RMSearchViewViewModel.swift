@@ -18,7 +18,7 @@ final class RMSearchViewViewModel: NSObject {
     
     private var optionMap: [RMDynamicOption: String] = [:]
     
-    private var searchResultHandler: ((RMSearchResult) -> Void)?
+    private var searchResultHandler: ((RMSearchResultType) -> Void)?
     
     private var noResultsHandler: (() -> Void)?
     
@@ -43,7 +43,7 @@ final class RMSearchViewViewModel: NSObject {
         optionChangeBlock = block
     }
     
-    func registerSearchResultHandler(_ block: @escaping (RMSearchResult) -> Void) {
+    func registerSearchResultHandler(_ block: @escaping (RMSearchResultType) -> Void) {
         self.searchResultHandler = block
     }
     
@@ -87,38 +87,29 @@ final class RMSearchViewViewModel: NSObject {
     
     private func processSearchResults(with model: Codable) {
         
-        searchResultModel = model
-        
         var searchResultType: RMSearchResultType?
-        var nextResultUrl: String?
+        
+        searchResultModel = model
+        var nextPageURL: String?
         
         if let characterResults = model as? RMAllCharacters {
-            searchResultType = .characters(characterResults.results.compactMap({
-                .init(
-                    id: $0.id,
-                    name: $0.name,
-                    status: $0.status,
-                    imageUrlString: $0.image
-                )
-            }))
-            nextResultUrl = characterResults.info.next
+            nextPageURL = characterResults.info.next
+            var allCharacters = characterResults.results
+            searchResultType = .characters(allCharacters, nextPageURL)
         }
         else if let episodeResults = model as? RMAllEpisodes {
-            searchResultType = .episodes(episodeResults.results.compactMap({
-                .init(episodeUrl: URL(string: $0.url))
-            }))
-            nextResultUrl = episodeResults.info.next
+            nextPageURL = episodeResults.info.next
+            var allEpisodes = episodeResults.results
+            searchResultType = .episodes(allEpisodes, nextPageURL)
         }
         else if let locationResults = model as? RMAllLocations {
-            searchResultType = .locations(locationResults.results.compactMap({
-                .init(location: $0)
-            }))
-            nextResultUrl = locationResults.info.next
+            nextPageURL = locationResults.info.next
+            var allLocations = locationResults.results
+            searchResultType = .locations(allLocations, nextPageURL)
         }
         
         if let searchResultType {
-            let searchResult = RMSearchResult(searchResultType: searchResultType, nextResultURL: nextResultUrl)
-            searchResultHandler?(searchResult)
+            searchResultHandler?(searchResultType)
         }
         else {
             noResultsHandler?()
@@ -127,24 +118,6 @@ final class RMSearchViewViewModel: NSObject {
     
     func set(query text: String) {
         searchedText = text
-    }
-    
-    func getlocation(at indexPath: IndexPath) -> RMLocation?  {
-        guard let locations = searchResultModel as? RMAllLocations else { return nil }
-        guard let location = locations.results.elementAtOrNil(at: indexPath.row) else { return nil }
-        return location
-    }
-    
-    func getCharacter(at indexPath: IndexPath) -> RMCharacter? {
-        guard let characters = searchResultModel as? RMAllCharacters else { return nil }
-        guard let character = characters.results.elementAtOrNil(at: indexPath.row) else { return nil }
-        return character
-    }
-    
-    func getEpisode(at indexPath: IndexPath) -> RMEpisode? {
-        guard let episodes = searchResultModel as? RMAllEpisodes else { return nil }
-        guard let episode = episodes.results.elementAtOrNil(at: indexPath.row) else { return nil }
-        return episode
     }
 }
 

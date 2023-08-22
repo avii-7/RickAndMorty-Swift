@@ -39,7 +39,6 @@ final class RMService {
                 for: request.url) {
                 do{
                     let result = try JSONDecoder().decode(type.self, from: cachedResponse)
-                    print("Using cached response for url: \(request.url?.absoluteString ?? "")")
                     completion(.success(result))
                 }
                 catch {

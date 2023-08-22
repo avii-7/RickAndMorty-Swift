@@ -7,20 +7,10 @@
 
 import UIKit
 
-final class RMSearchResult {
-    let searchResultType: RMSearchResultType
-    var nextResultURL: String?
-    
-    init(searchResultType: RMSearchResultType, nextResultURL: String? = nil) {
-        self.searchResultType = searchResultType
-        self.nextResultURL = nextResultURL
-    }
-}
-
 enum RMSearchResultType {
-    case characters([RMCharacterCollectionViewCellViewModel])
-    case locations([RMLocationCellViewViewModel])
-    case episodes([RMEpisodeCollectionViewCellViewModel])
+    case characters([RMCharacter], String?)
+    case locations([RMLocation], String?)
+    case episodes([RMEpisode], String?)
 }
 
 final class RMSearchResultViewViewModel: NSObject {
@@ -29,46 +19,80 @@ final class RMSearchResultViewViewModel: NSObject {
     
     private var contentStatus: RMContentStatus = .notYetStarted
     
-    private var searchResult: RMSearchResult?
+    private var searchResultType: RMSearchResultType?
     
     private var locationCellViewViewModels: [RMLocationCellViewViewModel] = []
     
     private var characterCellViewModels: [RMCharacterCollectionViewCellViewModel] = []
     
+    private var allCharacters: [RMCharacter] = [] {
+        didSet {
+            for character in allCharacters where
+            !characterCellViewModels.contains(where: { $0.id == character.id }) {
+                characterCellViewModels.append(.init(
+                    id: character.id,
+                    name: character.name,
+                    status: character.status,
+                    imageUrlString: character.image
+                ))
+            }
+        }
+    }
+    
+    private var allEpisodes: [RMEpisode] = [] {
+        didSet {
+            for episode in allEpisodes where
+            !episodeCellViewModels.contains(.init(episodeUrl: URL(string: episode.url))) {
+                episodeCellViewModels.append(.init(
+                    episodeUrl: URL(string: episode.url)
+                ))
+            }
+        }
+    }
+    
+    private var allLocations: [RMLocation] = [] {
+        didSet {
+            for location in allLocations where
+            !locationCellViewViewModels.contains(where: { $0.id == location.id }) {
+                locationCellViewViewModels.append(.init(location: location))
+            }
+        }
+    }
+    
     private var episodeCellViewModels: [RMEpisodeCollectionViewCellViewModel] = []
     
+    private var nextPageURL: String?
+    
     private var shouldShowLoadMoreIndicator: Bool {
-        searchResult?.nextResultURL != nil
+        nextPageURL != nil
     }
     
     private var moduleType: RMModuleType?
     
-    func configure(with searchResult: RMSearchResult) {
-        self.searchResult = searchResult
-        switch searchResult.searchResultType {
-        case .characters:
-            moduleType = .Character
-        case .episodes:
-            moduleType = .Episode
-        case .locations:
-            moduleType = .Location
-        }
+    func configure(with searchResultType: RMSearchResultType) {
+        self.searchResultType = searchResultType
         processViewModel()
     }
     
     private func processViewModel() {
         
-        guard let searchResult else { return }
+        guard let searchResultType else { return }
         
-        switch searchResult.searchResultType {
-        case .characters(let viewModels):
-            characterCellViewModels = viewModels
+        switch searchResultType {
+        case .characters(let allCharacters, let nextPageUrl):
+            self.nextPageURL = nextPageUrl
+            self.allCharacters = allCharacters
+            moduleType = .Character
             delegate?.didLoadCharactersOrEpisodes()
-        case .locations(let viewModels):
-            locationCellViewViewModels = viewModels
+        case .locations(let allLocations, let nextPageUrl):
+            self.nextPageURL = nextPageUrl
+            self.allLocations = allLocations
+            moduleType = .Location
             delegate?.didLoadLocations()
-        case .episodes(let viewModels):
-            episodeCellViewModels = viewModels
+        case .episodes(let allEpisodes, let nextPageUrl):
+            self.nextPageURL = nextPageUrl
+            self.allEpisodes = allEpisodes
+            moduleType = .Episode
             delegate?.didLoadCharactersOrEpisodes()
         }
     }
@@ -96,7 +120,8 @@ extension RMSearchResultViewViewModel : UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        delegate?.didSelectLocation(at: indexPath)
+        let viewModel = allLocations[indexPath.row]
+        delegate?.didSelectLocation(with: viewModel)
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -154,15 +179,22 @@ extension RMSearchResultViewViewModel: UICollectionViewDataSource, UICollectionV
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        delegate?.didSelectCharacterOrEpisode(at: indexPath)
+        
+        if moduleType == .Character {
+            let viewModel = allCharacters[indexPath.row]
+            delegate?.didSelectCharacter(with: viewModel)
+        }
+        else if moduleType == .Episode {
+            let viewModel = allEpisodes[indexPath.row]
+            delegate?.didSelectEpisode(with: viewModel)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard let moduleType else { return .zero }
         
-        guard let searchResult else { return .zero }
-        // Make iPad compatible
-        switch searchResult.searchResultType {
-        case .characters:
+        switch moduleType {
+        case .Character:
             let bounds = collectionView.bounds
             var width: CGFloat
             
@@ -175,9 +207,9 @@ extension RMSearchResultViewViewModel: UICollectionViewDataSource, UICollectionV
                 // iPad
                 width = (bounds.width - 60 )/4
             }
-
+            
             return CGSize(width: width, height: width * 1.5)
-        case .episodes:
+        case .Episode:
             let bounds = collectionView.bounds
             let width = bounds.width - 20
             return CGSize(width: width, height: 150)
@@ -224,8 +256,7 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
         if scrollView.contentOffset.y + 1 >= (scrollView.contentSize.height - scrollView.frame.height - 120) {
             guard shouldShowLoadMoreIndicator,
                   contentStatus != .inProgress,
-                  let searchResult,
-                  let urlString = searchResult.nextResultURL,
+                  let urlString = nextPageURL,
                   let url = URL(string: urlString)
             else { return }
             appendNextPageData(from: url)
@@ -259,15 +290,14 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
             
             switch result {
             case .success(let responseModel):
-                self.searchResult?.nextResultURL = responseModel.info.next
                 
-                let startIndex = self.locationCellViewViewModels.endIndex
+                nextPageURL = responseModel.info.next
                 
-                self.locationCellViewViewModels.append(contentsOf: responseModel.results.compactMap({
-                    RMLocationCellViewViewModel(location: $0)
-                }))
+                let startIndex = allLocations.endIndex
                 
-                let endIndex = self.locationCellViewViewModels.endIndex - 1
+                allLocations.append(contentsOf: responseModel.results)
+                
+                let endIndex = allLocations.endIndex - 1
                 
                 let indexPathToAdd = Array(startIndex...endIndex).compactMap {
                     IndexPath(row: $0, section: 0)
@@ -290,23 +320,20 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
             
             switch result {
             case .success(let responseModel):
-                guard var searchResult else { return }
                 
-                searchResult.nextResultURL = responseModel.info.next
+                nextPageURL = responseModel.info.next
                 
-                print(searchResult.nextResultURL)
+                let startIndex = allCharacters.endIndex
                 
-                let startIndex = self.characterCellViewModels.endIndex
+                print("X All: \(allCharacters.count)")
+                print("X Cell: \(characterCellViewModels.count)")
                 
-                self.characterCellViewModels.append(contentsOf: responseModel.results.compactMap({
-                    RMCharacterCollectionViewCellViewModel(
-                        id: $0.id,
-                        name: $0.name,
-                        status: $0.status,
-                        imageUrlString: $0.image)
-                }))
+                allCharacters.append(contentsOf: responseModel.results)
                 
-                let endIndex = self.characterCellViewModels.endIndex - 1
+                print("Y All: \(allCharacters.count)")
+                print("Y Cell: \(characterCellViewModels.count)")
+                
+                let endIndex = allCharacters.endIndex - 1
                 
                 let indexPathToAdd = Array(startIndex...endIndex).compactMap {
                     IndexPath(row: $0, section: 0)
@@ -329,16 +356,14 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
             
             switch result {
             case .success(let responseModel):
-                guard var searchResult else { return }
                 
-                searchResult.nextResultURL = responseModel.info.next
+                nextPageURL = responseModel.info.next
                 
-                let startIndex = self.episodeCellViewModels.endIndex
-                self.episodeCellViewModels.append(contentsOf: responseModel.results.compactMap({
-                    let episodeURL = URL(string: $0.url)
-                    return RMEpisodeCollectionViewCellViewModel(episodeUrl: episodeURL)
-                }))
-                let endIndex = self.episodeCellViewModels.endIndex - 1
+                let startIndex = allEpisodes.endIndex
+                
+                allEpisodes.append(contentsOf: responseModel.results)
+                
+                let endIndex = allEpisodes.endIndex - 1
                 
                 let indexPathToAdd = Array(startIndex...endIndex).compactMap {
                     IndexPath(row: $0, section: 0)

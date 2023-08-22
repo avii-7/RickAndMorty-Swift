@@ -10,8 +10,11 @@ import UIKit
 protocol RMSearchResultViewViewModelDelegate: AnyObject {
     func didLoadLocations()
     func didLoadCharactersOrEpisodes()
-    func didSelectLocation(at indexPath: IndexPath)
-    func didSelectCharacterOrEpisode(at indexPath: IndexPath)
+    
+    func didSelectLocation(with model: RMLocation)
+    func didSelectCharacter(with model: RMCharacter)
+    func didSelectEpisode(with model: RMEpisode)
+    
     func didLoadMoreLocations(at indexPaths: [IndexPath])
     func didLoadMoreCharactersOrEpisodes(at indexPaths: [IndexPath])
 }
@@ -19,7 +22,7 @@ protocol RMSearchResultViewViewModelDelegate: AnyObject {
 final class RMSearchResultsView: UIView {
     
     private var viewModel = RMSearchResultViewViewModel()
-
+    
     weak var delegate: RMSelectionDelegate?
     
     private let tableView: UITableView = {
@@ -104,13 +107,13 @@ final class RMSearchResultsView: UIView {
         collectionView.delegate = viewModel
     }
     
-    func configure(with searchResult: RMSearchResult) {
+    func configure(with searchResult: RMSearchResultType) {
         viewModel.configure(with: searchResult)
     }
 }
 
 extension RMSearchResultsView: RMSearchResultViewViewModelDelegate {
-
+    
     func didLoadLocations() {
         tableView.isHidden = false
         UIView.animate(withDuration: 1) {
@@ -127,12 +130,16 @@ extension RMSearchResultsView: RMSearchResultViewViewModelDelegate {
         collectionView.reloadData()
     }
     
-    func didSelectLocation(at indexPath: IndexPath) {
-        delegate?.didSelect(with: indexPath)
+    func didSelectLocation(with model: RMLocation) {
+        delegate?.didSelect(with: model)
     }
     
-    func didSelectCharacterOrEpisode(at indexPath: IndexPath) {
-        delegate?.didSelect(with: indexPath)
+    func didSelectCharacter(with model: RMCharacter) {
+        delegate?.didSelect(with: model)
+    }
+    
+    func didSelectEpisode(with model: RMEpisode) {
+        delegate?.didSelect(with: model)
     }
     
     func didLoadMoreLocations(at indexPaths: [IndexPath]) {

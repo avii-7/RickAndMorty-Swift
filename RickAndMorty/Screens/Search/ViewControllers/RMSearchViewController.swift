@@ -62,6 +62,7 @@ final class RMSearchViewController: UIViewController {
 }
 
 extension RMSearchViewController: RMSelectionDelegate {
+    
     func didSelect<T>(with data: T) {
         if let option = data as? RMDynamicOption {
             let vc = RMSearchOptionPickerViewController(with: option) { [weak self] selection in
@@ -95,5 +96,4 @@ extension RMSearchViewController: RMSelectionDelegate {
             navigationController?.pushViewController(vc, animated: true)
         }
     }
-    
 }
