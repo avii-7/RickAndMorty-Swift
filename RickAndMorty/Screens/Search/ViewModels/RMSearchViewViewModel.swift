@@ -90,21 +90,20 @@ final class RMSearchViewViewModel: NSObject {
         var searchResultType: RMSearchResultType?
         
         searchResultModel = model
-        var nextPageURL: String?
         
         if let characterResults = model as? RMAllCharacters {
-            nextPageURL = characterResults.info.next
-            var allCharacters = characterResults.results
+            let nextPageURL = characterResults.info.next
+            let allCharacters = characterResults.results
             searchResultType = .characters(allCharacters, nextPageURL)
         }
         else if let episodeResults = model as? RMAllEpisodes {
-            nextPageURL = episodeResults.info.next
-            var allEpisodes = episodeResults.results
+            let nextPageURL = episodeResults.info.next
+            let allEpisodes = episodeResults.results
             searchResultType = .episodes(allEpisodes, nextPageURL)
         }
         else if let locationResults = model as? RMAllLocations {
-            nextPageURL = locationResults.info.next
-            var allLocations = locationResults.results
+            let nextPageURL = locationResults.info.next
+            let allLocations = locationResults.results
             searchResultType = .locations(allLocations, nextPageURL)
         }
         

@@ -327,14 +327,8 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
                 
                 let startIndex = allCharacters.endIndex
                 
-                print("X All: \(allCharacters.count)")
-                print("X Cell: \(characterCellViewModels.count)")
-                
                 allCharacters.append(contentsOf: responseModel.results)
-                
-                print("Y All: \(allCharacters.count)")
-                print("Y Cell: \(characterCellViewModels.count)")
-                
+
                 let endIndex = allCharacters.endIndex - 1
                 
                 let indexPathToAdd = Array(startIndex...endIndex).compactMap {
