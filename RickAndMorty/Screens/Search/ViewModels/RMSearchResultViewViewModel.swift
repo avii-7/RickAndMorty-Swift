@@ -81,16 +81,19 @@ final class RMSearchResultViewViewModel: NSObject {
         switch searchResultType {
         case .characters(let allCharacters, let nextPageUrl):
             self.nextPageURL = nextPageUrl
+            characterCellViewModels.removeAll()
             self.allCharacters = allCharacters
             moduleType = .Character
             delegate?.didLoadCharactersOrEpisodes()
         case .locations(let allLocations, let nextPageUrl):
             self.nextPageURL = nextPageUrl
+            locationCellViewViewModels.removeAll()
             self.allLocations = allLocations
             moduleType = .Location
             delegate?.didLoadLocations()
         case .episodes(let allEpisodes, let nextPageUrl):
             self.nextPageURL = nextPageUrl
+            episodeCellViewModels.removeAll()
             self.allEpisodes = allEpisodes
             moduleType = .Episode
             delegate?.didLoadCharactersOrEpisodes()
