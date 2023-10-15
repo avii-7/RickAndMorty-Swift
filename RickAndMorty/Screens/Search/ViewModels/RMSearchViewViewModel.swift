@@ -74,12 +74,13 @@ final class RMSearchViewViewModel: NSObject {
     }
     
     private func makeSearchAPICall<T: Codable>(for type: T.Type, with request: RMRequest) {
-        RMService.shared.execute(request, expecting: type) { [weak self] result in
+        Task {
+            let result = await RMService.shared.execute(request, expecting: type)
             switch result {
             case .success(let model):
-                self?.processSearchResults(with: model)
+                processSearchResults(with: model)
             case .failure(let error):
-                self?.noResultsHandler?()
+                noResultsHandler?()
                 print(String(describing: error))
             }
         }

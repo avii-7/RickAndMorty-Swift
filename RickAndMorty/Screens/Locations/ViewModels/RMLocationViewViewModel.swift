@@ -34,14 +34,15 @@ final class RMLocationViewViewModel: NSObject {
     private var cellViewModels: [RMLocationCellViewViewModel] = []
     
     func fetchInitialLocations() {
-        RMService.shared.execute(
-            .listLocationsRequest,
-            expecting: RMAllLocations.self
-        ) {
-            [weak self] result in
-            guard let self else { return }
+        
+        Task {
             
-            switch result {
+            let response = await RMService.shared.execute(
+                .listLocationsRequest,
+                expecting: RMAllLocations.self
+            )
+            
+            switch response {
             case .success(let model):
                 allLocationInfo = model.info
                 locations.append(contentsOf: model.results)
@@ -134,10 +135,10 @@ extension RMLocationViewViewModel: UIScrollViewDelegate {
             return
         }
         
-        RMService.shared.execute(request, expecting: RMAllLocations.self) { [weak self] result in
-            guard let self else { return }
+        Task {
+            let response = await RMService.shared.execute(request, expecting: RMAllLocations.self)
             
-            switch result {
+            switch response {
             case .success(let responseModel):
                 self.allLocationInfo = responseModel.info
                 

@@ -29,48 +29,40 @@ final class RMService {
     ///   - request: Request instace
     ///   - type: The type of object we expect to get back
     ///   - completion: Callback with data or error
-     func execute<T: Codable>(
+    ///
+    // Todo:- async/await pending !
+    func execute<T: Codable>(
         _ request: RMRequest,
-        expecting type: T.Type,
-        completion: @escaping (Result<T, Error>) -> Void) {
+        expecting type: T.Type) async -> Result<T, Error> {
             
-            if let cachedResponse = cacheManager.getCacheResponse(
-                endPoint: request.endpoint,
-                for: request.url) {
-                do{
+            do {
+                if let cachedResponse = cacheManager.getCacheResponse(
+                    endPoint: request.endpoint,
+                    for: request.url) {
                     let result = try JSONDecoder().decode(type.self, from: cachedResponse)
-                    completion(.success(result))
-                }
-                catch {
-                    completion(.failure(error))
-                }
-                return
-            }
-            
-            guard let urlRequest = self.getURLRequest(from: request) else {
-                completion(.failure(ServiceError.failedToCreateRequest))
-                return
-            }
-
-            let task = URLSession.shared.dataTask(with: urlRequest) { [weak self] data, _, error in
-                guard let data ,error == nil else {
-                    completion(.failure(ServiceError.failedToGetData))
-                    return
+                    return .success(result)
                 }
                 
-                // decode response
-                do{
-                    let result = try JSONDecoder().decode(type.self, from: data)
-                    if let url = request.url {
-                        self?.cacheManager.setCacheResponse(endPoint: request.endpoint, url: url, data: data)
-                    }
-                    completion(.success(result))
+                guard let urlRequest = self.getURLRequest(from: request) else {
+                    return .failure(ServiceError.failedToCreateRequest)
                 }
-                catch {
-                    completion(.failure(error))
+                
+                let (data, _) = try await URLSession.shared.data(for: urlRequest)
+                
+                let result = try JSONDecoder().decode(type.self, from: data)
+                
+                if let url = request.url {
+                    cacheManager.setCacheResponse(
+                        endPoint: request.endpoint,
+                        url: url,
+                        data: data
+                    )
                 }
+                
+                return .success(result)
+            } catch {
+                return .failure(ServiceError.failedToGetData)
             }
-            task.resume()
         }
     
     // Mark: - Private

@@ -287,10 +287,10 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
     
     private func fetchMoreDataForLocations(with request: RMRequest) {
         
-        RMService.shared.execute(request, expecting: RMAllLocations.self) { [weak self] result in
-            guard let self else { return }
+        Task {
+            let response = await RMService.shared.execute(request, expecting: RMAllLocations.self)
             
-            switch result {
+            switch response {
             case .success(let responseModel):
                 
                 nextPageURL = responseModel.info.next
@@ -317,10 +317,9 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
     }
     
     private func fetchMoreDataForCharacters(with request: RMRequest) {
-        RMService.shared.execute(request, expecting: RMAllCharacters.self) { [weak self] result in
-            guard let self else { return }
-            
-            switch result {
+        Task {
+            let response = await RMService.shared.execute(request, expecting: RMAllCharacters.self)
+            switch response {
             case .success(let responseModel):
                 
                 nextPageURL = responseModel.info.next
@@ -328,7 +327,7 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
                 let startIndex = allCharacters.endIndex
                 
                 allCharacters.append(contentsOf: responseModel.results)
-
+                
                 let endIndex = allCharacters.endIndex - 1
                 
                 let indexPathToAdd = Array(startIndex...endIndex).compactMap {
@@ -347,10 +346,9 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
     }
     
     private func fetchMoreDataForEpisodes(with request: RMRequest) {
-        RMService.shared.execute(request, expecting: RMAllEpisodes.self) { [weak self] result in
-            guard let self else { return }
-            
-            switch result {
+        Task {
+            let response = await RMService.shared.execute(request, expecting: RMAllEpisodes.self)
+            switch response {
             case .success(let responseModel):
                 
                 nextPageURL = responseModel.info.next

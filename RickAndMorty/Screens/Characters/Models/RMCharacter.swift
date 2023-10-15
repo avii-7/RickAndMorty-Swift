@@ -22,6 +22,28 @@ struct RMCharacter: Codable {
     let created: String
 }
 
+
+extension RMCharacter {
+    
+    static func getDefault() -> RMCharacter {
+        
+        return .init(
+            id: 0,
+            name: .empty,
+            status: .unknown,
+            species: .empty,
+            type: .empty,
+            gender: .unknown,
+            origin: .init(name: .empty, url: .empty),
+            location: .init(name: .empty, url: .empty),
+            image: .empty,
+            episode: .init(),
+            url: .applicationDirectory,
+            created: .empty
+        )
+    }
+}
+
 enum RMCharacterStatus: String, Codable {
     case alive = "Alive"
     case dead = "Dead"

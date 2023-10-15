@@ -38,7 +38,7 @@ final class RMEpisodeListViewViewModel: NSObject {
                 let cellViewModel = RMEpisodeCollectionViewCellViewModel(
                     episodeUrl: url,
                     borderColor: randomColor)
-                if !cellViewModels.contains(cellViewModel) {   
+                if !cellViewModels.contains(cellViewModel) {
                     cellViewModels.append(cellViewModel)
                 }
             }
@@ -49,28 +49,30 @@ final class RMEpisodeListViewViewModel: NSObject {
     
     private var cellViewModels: [RMEpisodeCollectionViewCellViewModel] = []
     
-     weak var delegate: RMEpisodeListViewModelDelegate?
+    weak var delegate: RMEpisodeListViewModelDelegate?
     
     private var allEpisodeInfo: RMInfo?
     
     /// Fetch initial set of characters ( 20 )
     func fetchInitialEpisodes() {
-        RMService.shared.execute(.listEpisodesRequest, expecting: RMAllEpisodes.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
+        Task {
+            let response = await RMService.shared.execute(.listEpisodesRequest, expecting: RMAllEpisodes.self)
+            
+            switch response {
             case .success(let model):
                 self.episodes = model.results
                 self.allEpisodeInfo = model.info
+                
                 DispatchQueue.main.async {
                     self.delegate?.didLoadInitialEpisode()
                 }
             case .failure(let error):
-                print(String(describing: error))
+                debugPrint(error)
             }
         }
     }
-    
-    /// Paginate if possible
+
+/// Paginate if possible
     func fetchAdditionalEpisodes(url: URL) {
         fetchingMoreEpisodesStatus = .inProgress
         
@@ -79,10 +81,10 @@ final class RMEpisodeListViewViewModel: NSObject {
             return
         }
         
-        RMService.shared.execute(request, expecting: RMAllEpisodes.self) { [weak self] result in
-            guard let self else { return }
+        Task {
+            let response = await RMService.shared.execute(request, expecting: RMAllEpisodes.self)
             
-            switch result {
+            switch response {
             case .success(let responseModel):
                 self.allEpisodeInfo = responseModel.info
                 
@@ -104,10 +106,10 @@ final class RMEpisodeListViewViewModel: NSObject {
             }
         }
     }
-    
-    var shouldShowLoadMoreIndicator: Bool {
-        allEpisodeInfo?.next != nil
-    }
+
+var shouldShowLoadMoreIndicator: Bool {
+    allEpisodeInfo?.next != nil
+}
 }
 
 // MARK: - CollectionView

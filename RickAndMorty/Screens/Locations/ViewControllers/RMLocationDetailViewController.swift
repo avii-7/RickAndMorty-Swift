@@ -50,7 +50,9 @@ class RMLocationDetailViewController: UIViewController {
 extension RMLocationDetailViewController: RMNetworkDelegate {
     
     func didFetchData() {
-        detailView.configure(model: viewModel)
+        DispatchQueue.main.async{
+            self.detailView.configure(model: self.viewModel)
+        }
     }
 }
 

@@ -40,7 +40,7 @@ final class RMEpisodeCollectionViewCellViewModel {
         self.dataBlock = block
     }
     
-     func fetchEpisode() {
+    func fetchEpisode() {
         if isDataAlreadyFetched {
             guard let episode else { return }
             dataBlock?(episode)
@@ -50,10 +50,14 @@ final class RMEpisodeCollectionViewCellViewModel {
         guard let episodeUrl,
               let request = RMRequest(url: episodeUrl)
         else { return }
-
-        RMService.shared.execute(request, expecting: RMEpisode.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
+        
+        Task {
+            let response = await RMService.shared.execute(
+                request,
+                expecting: RMEpisode.self
+            )
+            
+            switch response {
             case .success(let model):
                 self.isDataAlreadyFetched = true
                 DispatchQueue.main.async {

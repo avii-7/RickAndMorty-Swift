@@ -34,15 +34,20 @@ final class RMCharacterListViewViewModel: NSObject {
     
     private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
     
-     weak var delegate: RMCharacterListViewModelDelegate?
+    weak var delegate: RMCharacterListViewModelDelegate?
     
     private var allCharacterInfo: RMInfo?
     
     /// Fetch initial set of characters ( 20 )
     func fetchInitialCharacters() {
-        RMService.shared.execute(.listCharactersRequest, expecting: RMAllCharacters.self) { [weak self] result in
-            guard let self else { return }
-            switch result {
+        
+        Task {
+            let response = await RMService.shared.execute(
+                .listCharactersRequest,
+                expecting: RMAllCharacters.self
+            )
+            
+            switch response {
             case .success(let model):
                 self.characters = model.results
                 self.allCharacterInfo = model.info
@@ -57,6 +62,7 @@ final class RMCharacterListViewViewModel: NSObject {
     
     /// Paginate if possible
     func fetchAdditionalCharacters(url: URL) {
+        
         fetchingMoreCharacterStatus = .inProgress
         
         guard let request = RMRequest(url: url) else {
@@ -64,10 +70,10 @@ final class RMCharacterListViewViewModel: NSObject {
             return
         }
         
-        RMService.shared.execute(request, expecting: RMAllCharacters.self) { [weak self] result in
-            guard let self else { return }
+        Task {
+            let response = await RMService.shared.execute(request, expecting: RMAllCharacters.self)
             
-            switch result {
+            switch response {
             case .success(let responseModel):
                 self.allCharacterInfo = responseModel.info
                 
@@ -98,7 +104,7 @@ final class RMCharacterListViewViewModel: NSObject {
 // MARK: - CollectionView
 
 extension RMCharacterListViewViewModel: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-     
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         cellViewModels.count
     }
@@ -124,7 +130,7 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource, UICollection
             // iPad
             width = (bounds.width - 60 )/4
         }
-
+        
         return CGSize(width: width, height: width * 1.5)
     }
     
@@ -169,9 +175,9 @@ extension RMCharacterListViewViewModel: UIScrollViewDelegate {
     private func checkReachAtBottom(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y + 1 >= (scrollView.contentSize.height - scrollView.frame.height - 120) {
             guard shouldShowLoadMoreIndicator,
-            fetchingMoreCharacterStatus != .inProgress,
-            let urlString = allCharacterInfo?.next,
-            let url = URL(string: urlString)
+                  fetchingMoreCharacterStatus != .inProgress,
+                  let urlString = allCharacterInfo?.next,
+                  let url = URL(string: urlString)
             else { return }
             fetchAdditionalCharacters(url: url)
         }

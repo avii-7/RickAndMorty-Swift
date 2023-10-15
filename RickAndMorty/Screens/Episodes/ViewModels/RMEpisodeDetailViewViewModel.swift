@@ -16,7 +16,7 @@ final class RMEpisodeDetailViewViewModel {
     
     private let url: URL?
     
-     weak var delegate: RMNetworkDelegate?
+    weak var delegate: RMNetworkDelegate?
     
     private var dataTuple: (episode: RMEpisode, characters: [RMCharacter])? {
         didSet {
@@ -41,15 +41,17 @@ final class RMEpisodeDetailViewViewModel {
     
     // MARK: -  functions
     
-     func fetchEpisodes() {
+    func fetchEpisodes() {
+        
         guard
             let url,
             let request = RMRequest(url: url) else { return }
         
-        RMService.shared.execute(request, expecting: RMEpisode.self) { [weak self] result in
-            switch result {
+        Task {
+            let response = await RMService.shared.execute(request, expecting: RMEpisode.self)
+            switch response {
             case .success(let model):
-                self?.fetchRelatedCharacters(episode: model)
+                await fetchRelatedCharacters(episode: model)
             case .failure(_):
                 break
             }
@@ -84,32 +86,44 @@ final class RMEpisodeDetailViewViewModel {
         ]
     }
     
-    private func fetchRelatedCharacters(episode: RMEpisode) {
+    private func fetchRelatedCharacters(episode: RMEpisode) async {
+        
         let requests: [RMRequest] = episode.characters.compactMap {
             guard let url = URL(string: $0) else { return nil }
             return RMRequest(url: url)
         }
-        
-        var relatedCharacters = [RMCharacter]()
-        let group = DispatchGroup()
-        
-        for request in requests {
-            group.enter()
-            RMService.shared.execute(request, expecting: RMCharacter.self ) { result in
-                defer {
-                    group.leave()
+
+        do {
+            var relatedCharacters = [RMCharacter]()
+            
+            try await withThrowingTaskGroup(of: (RMCharacter.self)) { group in
+                
+                for request in requests {
+                    group.addTask {
+                        let response = await RMService.shared.execute(
+                            request,
+                            expecting: RMCharacter.self
+                        )
+                        switch response {
+                        case .success(let character):
+                            return character
+                        case .failure:
+                            return .getDefault()
+                        }
+                    }
                 }
-                switch result {
-                case .success(let character):
+                
+                for try await character in group {
                     relatedCharacters.append(character)
-                case .failure:
-                    break
                 }
             }
+            
+            DispatchQueue.main.async {
+                self.dataTuple = (episode, relatedCharacters)
+            }
         }
-        group.notify(queue: .main) {
-            self.dataTuple = (episode, relatedCharacters)
+        catch {
+            debugPrint(error)
         }
     }
 }
-

@@ -16,7 +16,7 @@ final class RMLocationDetailViewViewModel {
     
     private let location: RMLocation
     
-     weak var delegate: RMNetworkDelegate?
+    weak var delegate: RMNetworkDelegate?
     
     private var residents: [RMCharacter]? {
         didSet {
@@ -43,7 +43,7 @@ final class RMLocationDetailViewViewModel {
     
     private func createCellViewModels() {
         guard let residents else { return }
-
+        
         let formattedDate = RMDateFormatter.getFormattedDate(for: location.created)
         
         cellViewModels = [
@@ -65,30 +65,37 @@ final class RMLocationDetailViewViewModel {
     }
     
     func fetchResidents() {
+        
         let requests: [RMRequest] = location.residents.compactMap {
             guard let url = URL(string: $0) else { return nil }
             return RMRequest(url: url)
         }
         
-        var residents = [RMCharacter]()
-        let group = DispatchGroup()
-        
-        for request in requests {
-            group.enter()
-            RMService.shared.execute(request, expecting: RMCharacter.self ) { result in
-                defer {
-                    group.leave()
+        Task {
+            try await withThrowingTaskGroup(of: RMCharacter.self) { group in
+                
+                var residents = [RMCharacter]()
+                
+                for request in requests {
+                    
+                    group.addTask {
+                        let response = await RMService.shared.execute(request, expecting: RMCharacter.self )
+                        
+                        switch response {
+                        case .success(let character):
+                            return character
+                        case .failure:
+                            return .getDefault()
+                        }
+                    }
+                    
+                    for try await character in group {
+                        residents.append(character)
+                    }
                 }
-                switch result {
-                case .success(let character):
-                    residents.append(character)
-                case .failure:
-                    break
-                }
+                
+                self.residents = residents
             }
-        }
-        group.notify(queue: .main) {
-            self.residents =  residents
         }
     }
 }
