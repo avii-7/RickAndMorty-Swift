@@ -20,6 +20,8 @@ enum FetchingMoreCharactersStatus {
 /// View model to handle character list logic
 final class RMCharacterListViewViewModel: NSObject {
     
+    private let dataRepository = RMCharacterDataRepository()
+    
     private var characters: [RMCharacter] = [] {
         didSet {
             for character in characters where
@@ -42,10 +44,8 @@ final class RMCharacterListViewViewModel: NSObject {
     func fetchInitialCharacters() {
         
         Task {
-            let response = await RMService.shared.execute(
-                .listCharactersRequest,
-                expecting: RMAllCharacters.self
-            )
+            
+            let response = await dataRepository.fetchInitialCharacters()
             
             switch response {
             case .success(let model):
@@ -65,13 +65,10 @@ final class RMCharacterListViewViewModel: NSObject {
         
         fetchingMoreCharacterStatus = .inProgress
         
-        guard let request = RMRequest(url: url) else {
-            fetchingMoreCharacterStatus = .failed
-            return
-        }
-        
         Task {
-            let response = await RMService.shared.execute(request, expecting: RMAllCharacters.self)
+            //let response = await RMService.shared.execute(request, expecting: RMAllCharacters.self)
+            
+            let response = await dataRepository.fetchAdditionalCharacters()
             
             switch response {
             case .success(let responseModel):

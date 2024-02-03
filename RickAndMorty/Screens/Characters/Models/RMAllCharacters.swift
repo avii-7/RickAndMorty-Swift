@@ -7,7 +7,9 @@
 
 import Foundation
 
- struct RMAllCharacters: Codable {
+struct RMAllCharacters: Codable, Pagination {
+    
     let info: RMInfo
     let results: [RMCharacter]
 }
+         

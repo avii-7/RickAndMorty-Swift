@@ -14,6 +14,8 @@ protocol RMLocationViewViewModelDelegate: AnyObject {
 
 final class RMLocationViewViewModel: NSObject {
     
+    let locationDataRepository = RMLocationDataRepository()
+    
     private var locations: [RMLocation] = [] {
         didSet {
             for location in locations where !cellViewModels.contains(where: { $0.id == location.id })  {
@@ -37,10 +39,7 @@ final class RMLocationViewViewModel: NSObject {
         
         Task {
             
-            let response = await RMService.shared.execute(
-                .listLocationsRequest,
-                expecting: RMAllLocations.self
-            )
+            let response = await locationDataRepository.fetchInitialLocations()
             
             switch response {
             case .success(let model):
@@ -130,13 +129,9 @@ extension RMLocationViewViewModel: UIScrollViewDelegate {
     func fetchAdditionalLocations(url: URL) {
         contentStatus = .inProgress
         
-        guard let request = RMRequest(url: url) else {
-            contentStatus = .failed
-            return
-        }
-        
         Task {
-            let response = await RMService.shared.execute(request, expecting: RMAllLocations.self)
+            //let response = await RMService.shared.execute(request, expecting: RMAllLocations.self)
+            let response = await locationDataRepository.fetchAdditionalLocations()
             
             switch response {
             case .success(let responseModel):

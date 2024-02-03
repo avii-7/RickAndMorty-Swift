@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RMAllEpisodes: Codable {
+struct RMAllEpisodes: Codable, Pagination {
     let info: RMInfo
     let results: [RMEpisode]
 }

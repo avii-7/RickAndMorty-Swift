@@ -30,7 +30,6 @@ final class RMService {
     ///   - type: The type of object we expect to get back
     ///   - completion: Callback with data or error
     ///
-    // Todo:- async/await pending !
     func execute<T: Codable>(
         _ request: RMRequest,
         expecting type: T.Type) async -> Result<T, Error> {
@@ -39,6 +38,7 @@ final class RMService {
                 if let cachedResponse = cacheManager.getCacheResponse(
                     endPoint: request.endpoint,
                     for: request.url) {
+                    
                     let result = try JSONDecoder().decode(type.self, from: cachedResponse)
                     return .success(result)
                 }

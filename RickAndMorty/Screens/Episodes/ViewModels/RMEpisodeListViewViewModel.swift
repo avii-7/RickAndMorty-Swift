@@ -18,6 +18,8 @@ protocol RMEpisodeListViewModelDelegate: AnyObject {
 /// View model to handle character list logic
 final class RMEpisodeListViewViewModel: NSObject {
     
+    let episodeDataRepository = RMEpisodeDataRepository()
+    
     private var randomColor: UIColor {
         let red = CGFloat.random(in: 0...1)
         let green = CGFloat.random(in: 0...1)
@@ -56,7 +58,8 @@ final class RMEpisodeListViewViewModel: NSObject {
     /// Fetch initial set of characters ( 20 )
     func fetchInitialEpisodes() {
         Task {
-            let response = await RMService.shared.execute(.listEpisodesRequest, expecting: RMAllEpisodes.self)
+            //let response = await RMService.shared.execute(.listEpisodesRequest, expecting: RMAllEpisodes.self)
+            let response = await episodeDataRepository.fetchInitialEpisodes()
             
             switch response {
             case .success(let model):
@@ -71,8 +74,8 @@ final class RMEpisodeListViewViewModel: NSObject {
             }
         }
     }
-
-/// Paginate if possible
+    
+    /// Paginate if possible
     func fetchAdditionalEpisodes(url: URL) {
         fetchingMoreEpisodesStatus = .inProgress
         
@@ -82,7 +85,9 @@ final class RMEpisodeListViewViewModel: NSObject {
         }
         
         Task {
-            let response = await RMService.shared.execute(request, expecting: RMAllEpisodes.self)
+            //let response = await RMService.shared.execute(request, expecting: RMAllEpisodes.self)
+            
+            let response = await episodeDataRepository.fetchAdditionalEpisodes()
             
             switch response {
             case .success(let responseModel):
@@ -106,10 +111,10 @@ final class RMEpisodeListViewViewModel: NSObject {
             }
         }
     }
-
-var shouldShowLoadMoreIndicator: Bool {
-    allEpisodeInfo?.next != nil
-}
+    
+    var shouldShowLoadMoreIndicator: Bool {
+        allEpisodeInfo?.next != nil
+    }
 }
 
 // MARK: - CollectionView
