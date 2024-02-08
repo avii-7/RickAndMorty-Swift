@@ -21,8 +21,16 @@ final class RMLocationViewController: UIViewController {
         )
         view.backgroundColor = .systemBackground
         title = "Locations"
+        
         view.addSubview(locationListView)
-        locationListView.selectionDelegate = self
+        locationListView.delegate = self
+        
+        let listSource = RemoteDataSource()
+        let viewModel = RMLocationViewViewModel(listSource: listSource)
+        locationListView.viewModel = viewModel
+        
+        locationListView.loadInitialLocations()
+        
         addConstraints()
     }
     
@@ -42,13 +50,10 @@ final class RMLocationViewController: UIViewController {
     }
 }
 
-extension RMLocationViewController: RMSelectionDelegate {
+extension RMLocationViewController: RMLocationListViewDelegate {
     
-    func didSelect<T>(with model: T) {
-        guard let location = model as? RMLocation else { return }
-        
+    func rmLocationListView(didSelectLocation location: RMLocation) {
         let viewModel = RMLocationDetailViewViewModel(location: location)
-        
         let vc = RMLocationDetailViewController(model: viewModel)
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)

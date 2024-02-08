@@ -9,7 +9,7 @@ import UIKit
 
 class RMLoadingFooterCollectionResuableView: UICollectionReusableView {
 
-    static let cellIndentifier = String(describing: RMLoadingFooterCollectionResuableView.self)
+    static let Identifier = String(describing: RMLoadingFooterCollectionResuableView.self)
     
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)

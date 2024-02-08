@@ -73,7 +73,7 @@ final class RMEpisodeDetailView: UIView {
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.register(RMEpisodeInfoCollectionViewCell.self, forCellWithReuseIdentifier: RMEpisodeInfoCollectionViewCell.cellIdentifier)
-        collectionView.register(RMCharacterCollectionViewCell.self, forCellWithReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier)
+        collectionView.register(RMCharacterCollectionViewCell.self, forCellWithReuseIdentifier: RMCharacterCollectionViewCell.Identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.isHidden = true
@@ -154,7 +154,7 @@ extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDele
             return cell
         case .characters(let viewModels):
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier,
+                withReuseIdentifier: RMCharacterCollectionViewCell.Identifier,
                 for: indexPath) as? RMCharacterCollectionViewCell
             else { fatalError("Something went wrong") }
             cell.configure(with: viewModels[indexPath.row])

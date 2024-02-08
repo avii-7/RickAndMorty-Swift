@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RMAllLocations: Codable, Pagination {
+struct RMAllLocations: Codable {
     let info: RMInfo
     let results: [RMLocation]
 }

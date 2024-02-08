@@ -51,7 +51,7 @@ final class RMSearchResultsView: UIView {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(
             RMCharacterCollectionViewCell.self,
-            forCellWithReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier
+            forCellWithReuseIdentifier: RMCharacterCollectionViewCell.Identifier
         )
         collectionView.register(
             RMEpisodeCollectionViewCell.self,
@@ -60,7 +60,7 @@ final class RMSearchResultsView: UIView {
         collectionView.register(
             RMLoadingFooterCollectionResuableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-            withReuseIdentifier: RMLoadingFooterCollectionResuableView.cellIndentifier
+            withReuseIdentifier: RMLoadingFooterCollectionResuableView.Identifier
         )
         return collectionView
     }()

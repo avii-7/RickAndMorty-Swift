@@ -153,7 +153,7 @@ extension RMSearchResultViewViewModel: UICollectionViewDataSource, UICollectionV
         switch moduleType {
         case .Character:
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: RMCharacterCollectionViewCell.cellIdentifier, for: indexPath
+                withReuseIdentifier: RMCharacterCollectionViewCell.Identifier, for: indexPath
             ) as? RMCharacterCollectionViewCell else { fatalError() }
             cell.configure(with: characterCellViewModels[indexPath.row])
             return cell;

@@ -17,9 +17,15 @@ final class RMEpisodeViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(didTapSearch))
         view.backgroundColor = .systemBackground
         title = "Episodes"
+        
         view.addSubview(episodeListView)
-        episodeListView.delegate = self
         setupView()
+
+        episodeListView.delegate = self
+        let listSource = RemoteDataSource()
+        let viewModel = RMEpisodeListViewViewModel(listSource: listSource)
+        episodeListView.viewModel = viewModel
+        episodeListView.loadInitialEpisodes()
     }
     
     @objc
@@ -39,10 +45,10 @@ final class RMEpisodeViewController: UIViewController {
     }
 }
 
-extension RMEpisodeViewController: RMSelectionDelegate {
-    func didSelect<T>(with model: T) {
-        guard let episodeModel = model as? RMEpisode else { return }
-        let viewModel = RMEpisodeDetailViewViewModel(url: URL(string: episodeModel.url))
+extension RMEpisodeViewController: RMEpisodeListViewDelegate {
+    
+    func rmEpisodeListView(didSelectEpisode episode: RMEpisode) {
+        let viewModel = RMEpisodeDetailViewViewModel(url: URL(string: episode.url))
         let vc = RMEpisodeDetailViewController(viewModel: viewModel)
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)

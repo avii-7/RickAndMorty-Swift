@@ -17,12 +17,20 @@ final class RMCharacterViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(didTapSearch))
         view.backgroundColor = .systemBackground
         title = "Characters"
+        
         characterListView.delegate = self
         setupView()
+        
+        let remoteListSource = RemoteDataSource()
+        let viewModel = RMCharacterListViewViewModel(listSource: remoteListSource)
+        characterListView.viewModel = viewModel
+        
+        characterListView.loadInitialCharacters()
     }
     
     private func setupView() {
         view.addSubview(characterListView)
+        
         NSLayoutConstraint.activate([
             characterListView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             characterListView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -38,13 +46,12 @@ final class RMCharacterViewController: UIViewController {
     }
 }
 
-extension RMCharacterViewController: RMSelectionDelegate {
+extension RMCharacterViewController: RMCharacterListViewDelegate {
     
-    func didSelect<T>(with model: T) {
-        guard let characterModel = model as? RMCharacter else { return }
-        
-        let viewModel = RMCharacterDetailViewViewModel(with: characterModel)
+    func rmCharacterListView(didSelectCharacter character: RMCharacter) {
+        let viewModel = RMCharacterDetailViewViewModel(with: character)
         let vc = RMCharacterDetailViewController(viewModel: viewModel)
+        
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }
