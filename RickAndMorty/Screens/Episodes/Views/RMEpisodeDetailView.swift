@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol RMEpisodeDetailViewDelegate: AnyObject {
+    func rmEpisodeDetailView(didSelectCharacter character: RMCharacter)
+}
+
 final class RMEpisodeDetailView: UIView {
     
     private let spinner: UIActivityIndicatorView = {
@@ -19,39 +23,56 @@ final class RMEpisodeDetailView: UIView {
     // Why i need Implicitly unwrapped optional here ?
     private var collectionView: UICollectionView!
     
-    private var viewModel: RMEpisodeDetailViewViewModel?
+    private let viewModel: RMEpisodeDetailViewViewModel
     
-     weak var delegate: RMSelectionDelegate?
+    weak var delegate: RMEpisodeDetailViewDelegate?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: RMEpisodeDetailViewViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
         collectionView = createCollectionView()
         addSubviews(spinner, collectionView)
         addConstraints()
-        spinner.startAnimating()
+        loadData()
     }
     
     required init?(coder: NSCoder) {
         fatalError("Unsupported")
     }
     
-    //MARK: -  function
-    
-     func configure(viewModel: RMEpisodeDetailViewViewModel) {
-        self.viewModel = viewModel
-        spinner.stopAnimating()
-        collectionView.isHidden = false
-        // do we actually need to reload data ?
-        collectionView.reloadData()
-        UIView.animate(withDuration: 0.5) {
-            self.collectionView.alpha = 1
+    //MARK: - function
+    func loadData() {
+        spinner.startAnimating()
+        
+        Task { @MainActor [weak self] in
+            
+            guard let self else { return }
+            
+            do {
+                if viewModel.isEpisodeInitialized == false {
+                    try await viewModel.setEpisode()
+                }
+                
+                try await viewModel.fetchRelatedCharacters()
+                
+                try viewModel.createSections()
+                
+                spinner.stopAnimating()
+                collectionView.isHidden = false
+                collectionView.reloadData()
+                UIView.animate(withDuration: 0.5) {
+                    self.collectionView.alpha = 1
+                }
+            }
+            catch {
+                debugPrint("Error \(error)")
+            }
         }
     }
     
     //MARK: - Private function
-    
     private func addConstraints() {
         NSLayoutConstraint.activate([
             spinner.widthAnchor.constraint(equalToConstant: 100),
@@ -87,10 +108,8 @@ final class RMEpisodeDetailView: UIView {
 extension RMEpisodeDetailView {
     
     private func getCollectionViewLayout(for section: Int) -> NSCollectionLayoutSection {
-        guard let viewModel else {
-            return getEpisodeInfoLayout()
-        }
-        let sections = viewModel.cellViewModels
+        let sections = viewModel.sections
+        
         switch sections[section] {
         case .information:
             return getEpisodeInfoLayout()
@@ -139,10 +158,7 @@ extension RMEpisodeDetailView {
 extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let viewModel else { fatalError("No View Models !") }
-        
-        let sectionType = viewModel.cellViewModels[indexPath.section]
+        let sectionType = viewModel.sections[indexPath.section]
         
         switch sectionType {
         case .information(let viewModels):
@@ -163,12 +179,11 @@ extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDele
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        viewModel?.cellViewModels.count ?? 0
+        viewModel.sections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let viewModel else { return 0 }
-        let sectionType = viewModel.cellViewModels[section]
+        let sectionType = viewModel.sections[section]
         switch sectionType {
         case .information(let viewModels):
             return viewModels.count
@@ -178,14 +193,12 @@ extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let viewModel else { return }
-        let sectionType = viewModel.cellViewModels[indexPath.section]
+        let sectionType = viewModel.sections[indexPath.section]
         switch sectionType {
         case .characters:
             guard let character = viewModel.character(at: indexPath.row) else { return }
-            delegate?.didSelect(with: character)
-            break
-        case .information:
+            delegate?.rmEpisodeDetailView(didSelectCharacter: character)
+        default:
             break
         }
     }

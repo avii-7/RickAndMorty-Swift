@@ -5,7 +5,7 @@
 //  Created by Arun on 08/06/23.
 //
 
-import UIKit
+import Foundation
 
 final class RMCharacterDetailViewViewModel {
     
@@ -20,10 +20,16 @@ final class RMCharacterDetailViewViewModel {
         setUpSections()
     }
     
+    var name: String {
+        character.name
+    }
+    
     private func setUpSections() {
-        sections.append(.photo(
-            viewModel: .init(imageUrl: URL(string: character.image))
-        ))
+        
+        if let imageURL = URL(string: character.image) {
+            sections.append(.photo(viewModel: .init(imageUrl: imageURL)))
+        }
+        
         sections.append(.information(
             viewModel: [
                 .init(type: .status, value: character.status.rawValue),
@@ -36,89 +42,14 @@ final class RMCharacterDetailViewViewModel {
                 .init(type: .episodeCount, value: "\(character.episode.count)")
             ]
         ))
+        
         sections.append(.episodes(
             viewModel: character.episode.compactMap({
-                RMEpisodeCollectionViewCellViewModel(episodeUrl: URL(string: $0))
+                if let episodeURL = URL(string: $0) {
+                    return RMEpisodeCollectionViewCellViewModel(episodeUrl: episodeURL)
+                }
+                return nil
             })
         ))
-    }
-    
-    var name: String {
-        character.name
-    }
-    
-    // MARK: - Collection View Section Layouts.
-    
-    func createPhotoSectionLayout() -> NSCollectionLayoutSection {
-        
-        let item = NSCollectionLayoutItem(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-        )
-        
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(UIDevice.isIphone ? 0.5 : 0.4)
-            ),
-            subitems: [item]
-        )
-        
-        let section = NSCollectionLayoutSection(group: group)
-        
-        section.contentInsets = .init(
-            top: 0, leading: 0,
-            bottom: 5, trailing: 0
-        )
-        
-        return section
-    }
-    
-    func createInformationSectionLayout() -> NSCollectionLayoutSection {
-        
-        let item = NSCollectionLayoutItem(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(UIDevice.isIphone ? 0.5 : 0.25),
-                heightDimension: .fractionalHeight(1.0)
-            )
-        )
-        
-        item.contentInsets = .init(top: 2.5, leading: 2.5, bottom: 2.5, trailing: 2.5)
-        
-        let group = NSCollectionLayoutGroup.horizontal(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(150)
-            ),
-            subitems: UIDevice.isIphone ? [item, item] : [item, item, item, item]
-        )
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = .init(top: 0, leading: 2.5, bottom: 0, trailing: 2.5)
-        return section
-    }
-    
-    func createEpisodeSectionLayout() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-        )
-        item.contentInsets = .init(top: 0, leading: 2.5, bottom: 0, trailing: 2.5)
-        
-        let group = NSCollectionLayoutGroup.horizontal(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(UIDevice.isIphone ? 0.8 : 0.4),
-                heightDimension: .absolute(150)
-            ),
-            subitems: UIDevice.isIphone ? [item] : [item, item]
-        )
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .groupPaging
-        section.contentInsets = .init(top: 2.5, leading: 2.5, bottom: 2.5, trailing: 2.5)
-        return section
     }
 }

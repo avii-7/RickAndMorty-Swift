@@ -7,8 +7,6 @@
 
 import UIKit
 
-
-
 protocol RMCharacterListViewDelegate: AnyObject {
     func rmCharacterListView(didSelectCharacter character: RMCharacter)
 }
@@ -93,16 +91,21 @@ final class RMCharacterListView: UIView {
         Task { @MainActor in
             
             if let viewModel {
-                let response = try await viewModel.fetchInitialCharacters()
-                
-                switch response {
-                case .success(let rmAllCharacters):
-                    nextURL = rmAllCharacters.info.next
-                    self.characters.append(contentsOf: rmAllCharacters.results)
-                    let cellViewModels = RMCharacterHelper.createCellViewModels(from: characters)
-                    self.cellViewModels.append(contentsOf: cellViewModels)
-                case .failure(let errror):
-                    debugPrint("Error \(errror)")
+                do {
+                    let response = try await viewModel.fetchInitialCharacters()
+                    
+                    switch response {
+                    case .success(let rmAllCharacters):
+                        nextURL = rmAllCharacters.info.next
+                        self.characters.append(contentsOf: rmAllCharacters.results)
+                        let cellViewModels = RMCharacterHelper.createCellViewModels(from: characters)
+                        self.cellViewModels.append(contentsOf: cellViewModels)
+                    case .failure(let error):
+                        throw error
+                    }
+                }
+                catch {
+                    debugPrint("Error \(error.localizedDescription)")
                 }
             }
             

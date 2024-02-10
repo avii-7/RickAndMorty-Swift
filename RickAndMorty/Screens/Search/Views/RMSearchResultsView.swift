@@ -55,7 +55,7 @@ final class RMSearchResultsView: UIView {
         )
         collectionView.register(
             RMEpisodeCollectionViewCell.self,
-            forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier
+            forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.Identifier
         )
         collectionView.register(
             RMLoadingFooterCollectionResuableView.self,

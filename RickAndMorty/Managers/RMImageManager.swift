@@ -8,36 +8,33 @@
 import Foundation
 
 final class RMImageManager {
-
+    
     private init() {}
     
-     static let shared = RMImageManager()
+    static let shared = RMImageManager()
     
     private var imageDataCache = NSCache<NSString, NSData>()
     
-    /// Get image image from URL
+    /// Get image from URL
     /// - Parameters:
     ///   - url: Image URL object
-    ///   - completion: callback
-     func downloadImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void ) {
+    func downloadImage(from url: URL) async throws -> Result<Data, NetworkError> {
         let key = url.absoluteString as NSString
         
         if let data = imageDataCache.object(forKey: key) {
-            completion(.success((data as Data)))
-            return
+            return .success(data as Data)
         }
-            
+        
         let request = URLRequest(url: url)
         
-        let task = URLSession.shared.dataTask(with: request) { [weak self]data, _, error in
-            guard let data, error == nil else {
-                completion(.failure(error ?? URLError(.badServerResponse)))
-                return
-            }
-            self?.imageDataCache.setObject(data as NSData, forKey: key)
-            completion(.success(data))
+        let response: (Data, URLResponse) = try await NetworkRequest.shared.hit(using: request)
+        
+        guard let httpResponse = (response.1 as? HTTPURLResponse),
+              200...299 ~= httpResponse.statusCode else {
+            return .failure(NetworkError.statusCodeError)
         }
         
-        task.resume()
+        imageDataCache.setObject(response.0 as NSData, forKey: key)
+        return .success(response.0)
     }
 }

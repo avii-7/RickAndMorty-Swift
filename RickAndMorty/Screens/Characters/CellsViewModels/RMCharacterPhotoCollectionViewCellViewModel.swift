@@ -8,18 +8,14 @@
 import Foundation
 
 final class RMCharacterPhotoCollectionViewCellViewModel {
-    private let imageUrl: URL?
+    private let imageUrl: URL
     
-    init(imageUrl: URL?) {
+    init(imageUrl: URL) {
         self.imageUrl = imageUrl
     }
     
-     func fetchImage(completion: @escaping (Result<Data, Error>) -> Void) {
-        
-        guard let imageUrl else {
-            completion(.failure(URLError(.badURL)))
-            return
-        }
-        RMImageManager.shared.downloadImage(from: imageUrl, completion: completion)
+    func fetchImage() async throws -> Result<Data, NetworkError> {
+        let response = try await RMImageManager.shared.downloadImage(from: imageUrl)
+        return response
     }
 }

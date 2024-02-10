@@ -8,7 +8,7 @@
 import UIKit
 
 final class RMCharacterInfoCollectionViewCell: UICollectionViewCell {
-    static let cellIndentifier = String(describing: RMCharacterInfoCollectionViewCell.self)
+    static let Indentifier = String(describing: RMCharacterInfoCollectionViewCell.self)
     
     private let titleContainerView: UIView = {
         let titleContainerView = UIView()

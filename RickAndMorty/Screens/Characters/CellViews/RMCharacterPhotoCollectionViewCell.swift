@@ -9,7 +9,7 @@ import UIKit
 
 final class RMCharacterPhotoCollectionViewCell: UICollectionViewCell {
     
-    static let cellIndentifier = String(describing: RMCharacterPhotoCollectionViewCell.self)
+    static let Indentifier = String(describing: RMCharacterPhotoCollectionViewCell.self)
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -39,15 +39,21 @@ final class RMCharacterPhotoCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-     func configure(with viewModel: RMCharacterPhotoCollectionViewCellViewModel) {
-        viewModel.fetchImage { [weak self] result in
-            switch result {
-            case .success(let imageData):
-                DispatchQueue.main.async {
+    func configure(with viewModel: RMCharacterPhotoCollectionViewCellViewModel) {
+        
+        Task { @MainActor [weak self] in
+            do {
+                let response = try await viewModel.fetchImage()
+                
+                switch response {
+                case .success(let imageData):
                     self?.imageView.image = UIImage(data: imageData)
+                case .failure(let failure):
+                    throw failure
                 }
-            case .failure:
-                break
+            }
+            catch {
+                debugPrint("Error \(error)")
             }
         }
     }

@@ -38,7 +38,7 @@ struct NetworkRequest {
     static let shared = NetworkRequest()
     
     func hit<T>(using urlRequest: URLRequest) async throws -> Result<T, NetworkError> where T: Decodable {
-        let (data, urlResponse) = try await URLSession.shared.data(for: urlRequest)
+        let (data, urlResponse) = try await hit(using: urlRequest)
         
         guard let httpResponse = (urlResponse as? HTTPURLResponse),
               200...299 ~= httpResponse.statusCode else {
@@ -47,5 +47,9 @@ struct NetworkRequest {
         
         let response =  try JSONDecoder().decode(T.self, from: data)
         return .success(response)
+    }
+    
+    func hit(using urlRequest: URLRequest) async throws -> (Data, URLResponse) {
+        return try await URLSession.shared.data(for: urlRequest)
     }
 }

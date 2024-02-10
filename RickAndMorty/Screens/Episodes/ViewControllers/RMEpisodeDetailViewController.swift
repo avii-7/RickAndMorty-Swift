@@ -11,11 +11,11 @@ final class RMEpisodeDetailViewController: UIViewController {
     
     private var viewModel: RMEpisodeDetailViewViewModel
     
-    private let detailView = RMEpisodeDetailView()
+    private let detailView: RMEpisodeDetailView
     
     init(viewModel: RMEpisodeDetailViewViewModel) {
         self.viewModel = viewModel
-        // Not clear why we need to call this after property initialization
+        self.detailView = .init(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -36,9 +36,7 @@ final class RMEpisodeDetailViewController: UIViewController {
         )
         view.addSubview(detailView)
         addConstraints()
-        viewModel.delegate = self
         detailView.delegate = self
-        viewModel.fetchEpisodes()
     }
     
     private func addConstraints() {
@@ -56,15 +54,10 @@ final class RMEpisodeDetailViewController: UIViewController {
     }
 }
 
-extension RMEpisodeDetailViewController: RMNetworkDelegate, RMSelectionDelegate {
+extension RMEpisodeDetailViewController: RMEpisodeDetailViewDelegate{
     
-    func didFetchData() {
-        detailView.configure(viewModel: viewModel)
-    }
-    
-    func didSelect<T>(with model: T) {
-        guard let characterModel = model as? RMCharacter else { return }
-        let viewModel = RMCharacterDetailViewViewModel(with: characterModel)
+    func rmEpisodeDetailView(didSelectCharacter character: RMCharacter) {
+        let viewModel = RMCharacterDetailViewViewModel(with: character)
         let vc = RMCharacterDetailViewController(viewModel: viewModel)
         navigationController?.pushViewController(vc, animated: true)
     }

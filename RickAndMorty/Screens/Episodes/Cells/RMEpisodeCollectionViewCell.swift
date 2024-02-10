@@ -8,7 +8,7 @@
 import UIKit
 
 final class RMEpisodeCollectionViewCell: UICollectionViewCell {
-    static let cellIdentifier = String(describing: RMEpisodeCollectionViewCell.self)
+    static let Identifier = String(describing: RMEpisodeCollectionViewCell.self)
     
     private let verticalStackView: UIStackView = {
         let verticalStackView = UIStackView()
@@ -42,11 +42,11 @@ final class RMEpisodeCollectionViewCell: UICollectionViewCell {
     }()
     
     // MARK: - Init
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .tertiarySystemGroupedBackground
         contentView.addSubview(verticalStackView)
+        contentView.layer.borderColor = RMSharedHelper.randomColor.cgColor
         setupConstraints()
         setUpConentViewLayer()
         setUpVerticalStackView()
@@ -73,8 +73,6 @@ final class RMEpisodeCollectionViewCell: UICollectionViewCell {
         verticalStackView.addArrangedSubview(rightView)
     }
     
-    private func registerForData() { }
-
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             verticalStackView.topAnchor.constraint(
@@ -88,7 +86,7 @@ final class RMEpisodeCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-     func configure(with viewModel: RMEpisodeCollectionViewCellViewModel) {
+    func configure(with viewModel: RMEpisodeCollectionViewCellViewModel) {
         viewModel.registerForData { [weak self] result in
             guard let self else { return }
             self.nameLabel.text = result.name
@@ -96,7 +94,7 @@ final class RMEpisodeCollectionViewCell: UICollectionViewCell {
             self.airDateLabel.text = result.air_date
         }
         viewModel.fetchEpisode()
-        contentView.layer.borderColor = viewModel.borderColor.cgColor
+        
     }
     
     override func prepareForReuse() {
@@ -104,6 +102,5 @@ final class RMEpisodeCollectionViewCell: UICollectionViewCell {
         nameLabel.text = nil
         episodeLabel.text = nil
         airDateLabel.text = nil
-        contentView.layer.borderColor = nil
     }
 }

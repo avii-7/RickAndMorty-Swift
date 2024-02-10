@@ -81,16 +81,21 @@ final class RMCharacterCollectionViewCell: UICollectionViewCell {
         nameLabel.text = viewModel.name
         statusLabel.text = viewModel.statusText
         
-        viewModel.fetchImage { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let data):
-                let image = UIImage(data: data)
-                DispatchQueue.main.async {
-                    self.imageView.image = image
+        Task { @MainActor [weak self] in
+            
+            do {
+                let response = try await viewModel.fetchImage()
+                
+                switch response {
+                case .success(let data):
+                    let image = UIImage(data: data)
+                    self?.imageView.image = image
+                case .failure(let failure):
+                    throw failure
                 }
-            case .failure(let error):
-                print(error.localizedDescription)
+            }
+            catch {
+                debugPrint("Error \(error)")
             }
         }
     }

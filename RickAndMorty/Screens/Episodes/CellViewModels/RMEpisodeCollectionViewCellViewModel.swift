@@ -5,7 +5,7 @@
 //  Created by Arun on 20/06/23.
 //
 
-import UIKit
+import Foundation
 
 protocol RMEpisodeDataRenderer {
     var id: Int { get }
@@ -15,10 +15,9 @@ protocol RMEpisodeDataRenderer {
 }
 
 final class RMEpisodeCollectionViewCellViewModel {
-    private(set) var episodeUrl: URL?
+    private(set) var episodeUrl: URL
     private var isDataAlreadyFetched = false
     private var dataBlock: ((RMEpisodeDataRenderer) -> Void)?
-    let borderColor: UIColor
     
     private var episode: RMEpisode? {
         didSet {
@@ -28,14 +27,11 @@ final class RMEpisodeCollectionViewCellViewModel {
     }
     
     // MARK: - Init
-    
-    init(episodeUrl: URL?, borderColor: UIColor = .blue) {
+    init(episodeUrl: URL) {
         self.episodeUrl = episodeUrl
-        self.borderColor = borderColor
     }
     
     // MARK: -  function
-    
      func registerForData(_ block: @escaping (RMEpisodeDataRenderer) -> Void) {
         self.dataBlock = block
     }
@@ -47,36 +43,26 @@ final class RMEpisodeCollectionViewCellViewModel {
             return
         }
         
-        guard let episodeUrl,
-              let request = RMRequest(url: episodeUrl)
-        else { return }
-        
-        Task {
-            let response = await RMService.shared.execute(
-                request,
-                expecting: RMEpisode.self
-            )
+        Task { @MainActor [weak self, episodeUrl] in
             
-            switch response {
-            case .success(let model):
-                self.isDataAlreadyFetched = true
-                DispatchQueue.main.async {
+            do {
+                let episodeURLRequest = URLRequest(url: episodeUrl)
+                
+                let response: Result<RMEpisode, NetworkError> = try await NetworkRequest.shared.hit(using: episodeURLRequest)
+                
+                guard let self else { return }
+                
+                switch response {
+                case .success(let model):
+                    self.isDataAlreadyFetched = true
                     self.episode = model
+                case .failure(let error):
+                    print(String(describing: error))
                 }
-            case .failure(let error):
-                print(String(describing: error))
+            }
+            catch {
+                debugPrint("Error \(error.localizedDescription)")
             }
         }
-    }
-}
-
-extension RMEpisodeCollectionViewCellViewModel : Equatable, Hashable {
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(self.episodeUrl)
-    }
-    
-    static func == (lhs: RMEpisodeCollectionViewCellViewModel, rhs: RMEpisodeCollectionViewCellViewModel) -> Bool {
-        lhs.hashValue == rhs.hashValue
     }
 }

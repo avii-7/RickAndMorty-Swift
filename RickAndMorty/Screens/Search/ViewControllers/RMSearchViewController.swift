@@ -87,8 +87,8 @@ extension RMSearchViewController: RMSelectionDelegate {
                 vc = RMCharacterDetailViewController(viewModel: viewModel)
             }
             else if searchType.moduleType == .Episode {
-                guard let episodeModel = data as? RMEpisode else { return }
-                let viewModel = RMEpisodeDetailViewViewModel(url: URL(string: episodeModel.url))
+                guard let episodeModel = data as? RMEpisode, let url = URL(string: episodeModel.url) else { return }
+                let viewModel = RMEpisodeDetailViewViewModel(url: url)
                 vc = RMEpisodeDetailViewController(viewModel: viewModel)
             }
             guard let vc else { return }

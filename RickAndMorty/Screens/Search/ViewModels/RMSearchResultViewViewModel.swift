@@ -41,11 +41,10 @@ final class RMSearchResultViewViewModel: NSObject {
     
     private var allEpisodes: [RMEpisode] = [] {
         didSet {
-            for episode in allEpisodes where
-            !episodeCellViewModels.contains(.init(episodeUrl: URL(string: episode.url))) {
-                episodeCellViewModels.append(.init(
-                    episodeUrl: URL(string: episode.url)
-                ))
+            for episode in allEpisodes {
+                if let episodeURL = URL(string: episode.url) {
+                    episodeCellViewModels.append(.init(episodeUrl: episodeURL))
+                }
             }
         }
     }
@@ -159,7 +158,7 @@ extension RMSearchResultViewViewModel: UICollectionViewDataSource, UICollectionV
             return cell;
         case .Episode:
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier, for: indexPath
+                withReuseIdentifier: RMEpisodeCollectionViewCell.Identifier, for: indexPath
             ) as? RMEpisodeCollectionViewCell else { fatalError() }
             cell.configure(with: episodeCellViewModels[indexPath.row])
             return cell;

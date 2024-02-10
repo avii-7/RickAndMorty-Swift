@@ -43,7 +43,7 @@ final class RMEpisodeListView: UIView {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(
             RMEpisodeCollectionViewCell.self,
-            forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier)
+            forCellWithReuseIdentifier: RMEpisodeCollectionViewCell.Identifier)
         collectionView.register(
             RMLoadingFooterCollectionResuableView.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
@@ -55,11 +55,9 @@ final class RMEpisodeListView: UIView {
     // MARK: - Int
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         translatesAutoresizingMaskIntoConstraints = false
         addSubviews(collectionView, spinner)
         addConstraints()
-        spinner.startAnimating()
         setupCollectionView()
     }
     
@@ -122,7 +120,7 @@ extension RMEpisodeListView: UICollectionViewDataSource, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMEpisodeCollectionViewCell.cellIdentifier, for: indexPath) as? RMEpisodeCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RMEpisodeCollectionViewCell.Identifier, for: indexPath) as? RMEpisodeCollectionViewCell else {
             fatalError("Unsupported Cell")
         }
         
