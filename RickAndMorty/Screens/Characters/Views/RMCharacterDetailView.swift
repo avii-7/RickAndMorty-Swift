@@ -8,7 +8,7 @@
 import UIKit
 
 protocol RMCharacterDetailViewDelegate: AnyObject  {
-    func rmCharacterDetailView(didSelectEpisode episodeViewModel: RMEpisodeCollectionViewCellViewModel)
+    func rmCharacterDetailView(didSelectEpisode episode: RMEpisode)
 }
 
 final class RMCharacterDetailView: UIView {
@@ -146,7 +146,9 @@ extension RMCharacterDetailView: UICollectionViewDataSource, UICollectionViewDel
         switch sectionType {
         case .episodes(let viewModel):
             let episodeViewModel = viewModel[indexPath.row]
-            delegate?.rmCharacterDetailView(didSelectEpisode: episodeViewModel)
+            let episode = episodeViewModel.episode
+            guard let episode else { return }
+            delegate?.rmCharacterDetailView(didSelectEpisode: episode)
         default:
             break
         }

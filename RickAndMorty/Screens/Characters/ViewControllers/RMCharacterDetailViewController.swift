@@ -54,8 +54,8 @@ final class RMCharacterDetailViewController: UIViewController {
 
 extension RMCharacterDetailViewController: RMCharacterDetailViewDelegate {
     
-    func rmCharacterDetailView(didSelectEpisode episodeViewModel: RMEpisodeCollectionViewCellViewModel) {
-        let viewModel = RMEpisodeDetailViewViewModel(url: episodeViewModel.episodeUrl)
+    func rmCharacterDetailView(didSelectEpisode episode: RMEpisode) {
+        let viewModel = RMEpisodeDetailViewViewModel(episode: episode)
         let vc = RMEpisodeDetailViewController(viewModel: viewModel)
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)

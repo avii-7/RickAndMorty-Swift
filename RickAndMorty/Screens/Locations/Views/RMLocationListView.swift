@@ -139,7 +139,7 @@ extension RMLocationListView: UITableViewDataSource, UITableViewDelegate {
     
     // Make dynmaic size
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if let nextURL {
+        if nextURL != nil {
          return 100
         } else {
             return CGFloat.zero

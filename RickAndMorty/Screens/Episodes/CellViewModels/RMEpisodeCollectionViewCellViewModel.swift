@@ -19,12 +19,7 @@ final class RMEpisodeCollectionViewCellViewModel {
     private var isDataAlreadyFetched = false
     private var dataBlock: ((RMEpisodeDataRenderer) -> Void)?
     
-    private var episode: RMEpisode? {
-        didSet {
-            guard let episode else { return }
-            dataBlock?(episode)
-        }
-    }
+    private(set) var episode: RMEpisode? 
     
     // MARK: - Init
     init(episodeUrl: URL) {
@@ -56,6 +51,7 @@ final class RMEpisodeCollectionViewCellViewModel {
                 case .success(let model):
                     self.isDataAlreadyFetched = true
                     self.episode = model
+                    self.dataBlock?(model)
                 case .failure(let error):
                     print(String(describing: error))
                 }
