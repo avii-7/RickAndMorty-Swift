@@ -9,19 +9,17 @@ import UIKit
 
 class RMLocationDetailViewController: UIViewController {
     
-    private let detailView = RMLocationDetailView()
+    private let detailView: RMLocationDetailView
     
-    private var viewModel: RMLocationDetailViewViewModel
-    
-    init(model: RMLocationDetailViewViewModel) {
-        self.viewModel = model
+    init(viewModel: RMLocationDetailViewViewModel) {
+        detailView = .init(viewModel: viewModel)
         super.init(nibName: nil, bundle: .none)
     }
     
     required init?(coder: NSCoder) {
         fatalError("Unsupported !")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .systemBackground
@@ -30,9 +28,7 @@ class RMLocationDetailViewController: UIViewController {
         view.addSubview(detailView)
         addConstraints()
         detailView.delegate = self
-        viewModel.delegate = self
-        viewModel.fetchResidents()
-        //detailView.delegate = self
+        detailView.loadData()
     }
     
     private func addConstraints() {
@@ -47,19 +43,9 @@ class RMLocationDetailViewController: UIViewController {
     @objc private func didTapShare() { }
 }
 
-extension RMLocationDetailViewController: RMNetworkDelegate {
+extension RMLocationDetailViewController: RMLocationDetailViewDelegate {
     
-    func didFetchData() {
-        DispatchQueue.main.async{
-            self.detailView.configure(model: self.viewModel)
-        }
-    }
-}
-
-extension RMLocationDetailViewController: RMSelectionDelegate {
-    func didSelect<T>(with model: T) {
-        guard let character = model as? RMCharacter else { return }
-        
+    func rmLocationDetailView(didSelectResident character: RMCharacter) {
         let viewModel = RMCharacterDetailViewViewModel(with: character)
         let vc = RMCharacterDetailViewController(viewModel: viewModel)
         navigationController?.pushViewController(vc, animated: true)

@@ -7,31 +7,30 @@
 
 import Foundation
 
+enum RMLocationDetailSection {
+    case information(viewModel: [RMBasicModel])
+    case characters(viewModel: [RMCharacterCollectionViewCellViewModel])
+}
+
 final class RMLocationDetailViewViewModel {
     
-    enum SectionType {
-        case information(viewModel: [RMBasicModel])
-        case characters(viewModel: [RMCharacterCollectionViewCellViewModel])
-    }
+    let location: RMLocation
     
-    private let location: RMLocation
+    //weak var delegate: RMNetworkDelegate?
     
-    weak var delegate: RMNetworkDelegate?
+//    private var residents: [RMCharacter]? {
+//        didSet {
+//            createCellViewModels()
+//            delegate?.didFetchData()
+//        }
+//    }
     
-    private var residents: [RMCharacter]? {
-        didSet {
-            createCellViewModels()
-            delegate?.didFetchData()
-        }
-    }
     
-    private(set) var cellViewModels = [SectionType]()
-    
-    func character(at index: Int) -> RMCharacter? {
-        guard let residents else { return nil }
-        let character = residents[index]
-        return character
-    }
+//    func character(at index: Int) -> RMCharacter? {
+//        guard let residents else { return nil }
+//        let character = residents[index]
+//        return character
+//    }
     
     // MARK: - Init
     
@@ -39,64 +38,37 @@ final class RMLocationDetailViewViewModel {
         self.location = location
     }
     
-    // MARK: - Private functions
-    
-    private func createCellViewModels() {
-        guard let residents else { return }
+    func getResidents() async throws -> [RMCharacter] {
         
-        let formattedDate = RMDateFormatter.getFormattedDate(for: location.created)
-        
-        cellViewModels = [
-            .information(viewModel:[
-                .init(title: "Name", value: location.name),
-                .init(title: "Type", value: location.type),
-                .init(title: "Dimension", value: location.dimension),
-                .init(title: "Created", value: formattedDate)
-            ]),
-            .characters(viewModel: residents.compactMap({
-                RMCharacterCollectionViewCellViewModel(
-                    id: $0.id,
-                    name: $0.name,
-                    status: $0.status,
-                    imageUrlString: $0.image
-                )
-            }))
-        ]
-    }
-    
-    func fetchResidents() {
-        
-        let requests: [RMRequest] = location.residents.compactMap {
+        let requests: [URLRequest] = location.residents.compactMap {
             guard let url = URL(string: $0) else { return nil }
-            return RMRequest(url: url)
+            return URLRequest(url: url)
         }
         
-        Task {
-            try await withThrowingTaskGroup(of: RMCharacter.self) { group in
+        let residents: [RMCharacter] = try await withThrowingTaskGroup(of: (RMCharacter.self)) { group in
+            
+            for request in requests {
                 
-                var residents = [RMCharacter]()
-                
-                for request in requests {
-                    
-                    group.addTask {
-                        let response = await RMService.shared.execute(request, expecting: RMCharacter.self )
-                        
-                        switch response {
-                        case .success(let character):
-                            return character
-                        case .failure:
-                            return .getDefault()
-                        }
-                    }
-                    
-                    for try await character in group {
-                        residents.append(character)
+                group.addTask {
+                    let response: Result<RMCharacter, NetworkError> = try await NetworkRequest.shared.hit(using: request)
+                    switch response {
+                    case .success(let resident):
+                        return resident
+                    case .failure(let error):
+                        throw error
                     }
                 }
-                
-                self.residents = residents
             }
+            
+            var residents = [RMCharacter]()
+            
+            for try await resident in group {
+                residents.append(resident)
+            }
+            
+            return residents
         }
+        return residents
     }
 }
 

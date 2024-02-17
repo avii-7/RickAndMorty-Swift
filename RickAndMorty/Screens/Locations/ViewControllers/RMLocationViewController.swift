@@ -14,13 +14,10 @@ final class RMLocationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .search,
-            target: self,
-            action: #selector(didTapSearch)
-        )
         view.backgroundColor = .systemBackground
         title = "Locations"
+        
+        setRightBarButton()
         
         view.addSubview(locationListView)
         locationListView.delegate = self
@@ -30,15 +27,10 @@ final class RMLocationViewController: UIViewController {
         locationListView.viewModel = viewModel
         
         locationListView.loadInitialLocations()
-        
         addConstraints()
     }
     
-    @objc
-    private func didTapSearch() {
-        let vc = RMSearchViewController(for: .Location)
-        navigationController?.pushViewController(vc, animated: true)
-    }
+    
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
@@ -48,13 +40,27 @@ final class RMLocationViewController: UIViewController {
             locationListView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
+    
+    private func setRightBarButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .search,
+            target: self,
+            action: #selector(didTapSearch)
+        )
+    }
+    
+    @objc
+    private func didTapSearch() {
+        let vc = RMSearchViewController(for: .Location)
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 extension RMLocationViewController: RMLocationListViewDelegate {
     
     func rmLocationListView(didSelectLocation location: RMLocation) {
         let viewModel = RMLocationDetailViewViewModel(location: location)
-        let vc = RMLocationDetailViewController(model: viewModel)
+        let vc = RMLocationDetailViewController(viewModel: viewModel)
         vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
     }

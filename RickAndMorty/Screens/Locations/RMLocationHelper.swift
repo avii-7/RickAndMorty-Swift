@@ -20,4 +20,28 @@ struct RMLocationHelper {
         
         return cellViewModels
     }
+    
+    static func getSections(location: RMLocation, residents: [RMCharacter]) -> [RMLocationDetailSection] {
+        
+        let formattedDate = RMDateFormatter.getFormattedDate(for: location.created)
+        
+        let sections: [RMLocationDetailSection] = [
+            .information(viewModel:[
+                .init(title: "Name", value: location.name),
+                .init(title: "Type", value: location.type),
+                .init(title: "Dimension", value: location.dimension),
+                .init(title: "Created", value: formattedDate)
+            ]),
+            .characters(viewModel: residents.compactMap({
+                RMCharacterCollectionViewCellViewModel(
+                    id: $0.id,
+                    name: $0.name,
+                    status: $0.status,
+                    imageUrlString: $0.image
+                )
+            }))
+        ]
+        
+        return sections
+    }
 }

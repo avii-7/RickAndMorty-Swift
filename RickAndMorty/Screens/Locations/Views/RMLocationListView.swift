@@ -40,7 +40,7 @@ final class RMLocationListView: UIView {
         tableView.sectionHeaderTopPadding = 0
         tableView.register(
             RMLocationTableViewCell.self,
-            forCellReuseIdentifier: RMLocationTableViewCell.cellIdentifier
+            forCellReuseIdentifier: RMLocationTableViewCell.Identifier
         )
         tableView.register(RMLoadingFooterTableView.self, forHeaderFooterViewReuseIdentifier: RMLoadingFooterTableView.cellIdentifier)
         
@@ -80,17 +80,18 @@ final class RMLocationListView: UIView {
     }
     
     func loadInitialLocations() {
-        
         spinner.startAnimating()
-        Task { @MainActor in
-
-            if let viewModel {
+        Task { @MainActor [weak self] in
+            
+            if let viewModel = self?.viewModel {
                 
                 let response = try await viewModel.fetchInitialLocations()
                 
+                guard let self else { return }
+                
                 switch response {
                 case .success(let rmAllLocations):
-                    nextURL = rmAllLocations.info.next
+                    self.nextURL = rmAllLocations.info.next
                     self.locations.append(contentsOf: rmAllLocations.results)
                     let cellViewModels = RMLocationHelper.createCellViewModels(from: locations)
                     self.cellViewModels.append(contentsOf: cellViewModels)
@@ -98,10 +99,12 @@ final class RMLocationListView: UIView {
                     debugPrint("Error \(errror)")
                 }
             }
-
-            spinner.stopAnimating()
-            tableView.isHidden = false
-            tableView.reloadData()
+            
+            guard let self else { return }
+            
+            self.spinner.stopAnimating()
+            self.tableView.isHidden = false
+            self.tableView.reloadData()
             UIView.animate(withDuration: 0.4) {
                 self.tableView.alpha = 1
             }
@@ -120,7 +123,7 @@ extension RMLocationListView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: RMLocationTableViewCell.cellIdentifier) as? RMLocationTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: RMLocationTableViewCell.Identifier) as? RMLocationTableViewCell else {
             fatalError()
         }
         let viewModel = cellViewModels[indexPath.row]
@@ -140,7 +143,7 @@ extension RMLocationListView: UITableViewDataSource, UITableViewDelegate {
     // Make dynmaic size
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if nextURL != nil {
-         return 100
+            return 100
         } else {
             return CGFloat.zero
         }
@@ -172,35 +175,45 @@ extension RMLocationListView: UIScrollViewDelegate {
             if let nextURL, fetchingMoreLocationStatus != .inProgress, viewModel != nil {
                 
                 fetchingMoreLocationStatus = .inProgress
-
-                Task { @MainActor in
-                    let response = try await viewModel!.fetchAdditionalLocations(urlString: nextURL)
+                
+                Task { @MainActor [weak self] in
                     
-                    let cellViewModels: [RMLocationCellViewViewModel]?
-                    
-                    switch response {
-                    case .success(let rmAllLocations):
-                        self.nextURL = rmAllLocations.info.next
-                        let newLocations = rmAllLocations.results
-                        self.locations.append(contentsOf: newLocations)
-                        cellViewModels = RMLocationHelper.createCellViewModels(from: newLocations)
-                    case .failure(let error):
-                        debugPrint("Error \(error.localizedDescription)")
-                        cellViewModels = nil
-                    }
-                    
-                    if let cellViewModels {
-                        let startIndex = self.cellViewModels.endIndex
-                        self.cellViewModels.append(contentsOf: cellViewModels)
-                        let endIndex = self.cellViewModels.endIndex - 1
-                        let indexPaths = RMSharedHelper.getIndexPaths(start: startIndex, end: endIndex)
+                    do {
+                        guard let viewModel = self?.viewModel else { return }
                         
-                        tableView.performBatchUpdates {
-                            tableView.insertRows(at: indexPaths, with: .automatic)
+                        let response = try await viewModel.fetchAdditionalLocations(urlString: nextURL)
+                        
+                        let cellViewModels: [RMLocationCellViewViewModel]?
+                        
+                        guard let self else { return }
+                        
+                        switch response {
+                        case .success(let rmAllLocations):
+                            self.nextURL = rmAllLocations.info.next
+                            let newLocations = rmAllLocations.results
+                            self.locations.append(contentsOf: newLocations)
+                            cellViewModels = RMLocationHelper.createCellViewModels(from: newLocations)
+                        case .failure(let error):
+                            debugPrint("Error \(error.localizedDescription)")
+                            cellViewModels = nil
                         }
+                        
+                        if let cellViewModels {
+                            let startIndex = self.cellViewModels.endIndex
+                            self.cellViewModels.append(contentsOf: cellViewModels)
+                            let endIndex = self.cellViewModels.endIndex - 1
+                            let indexPaths = RMSharedHelper.getIndexPaths(start: startIndex, end: endIndex)
+                            
+                            self.tableView.performBatchUpdates {
+                                self.tableView.insertRows(at: indexPaths, with: .automatic)
+                            }
+                        }
+                        
+                        do { self.fetchingMoreLocationStatus = .finished }
+                        
+                    } catch {
+                        debugPrint("Eror \(error)")
                     }
-                    
-                    fetchingMoreLocationStatus = .finished
                 }
             }
         }

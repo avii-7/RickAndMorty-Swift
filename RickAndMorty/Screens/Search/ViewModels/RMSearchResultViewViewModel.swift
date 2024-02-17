@@ -113,7 +113,7 @@ extension RMSearchResultViewViewModel : UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: RMLocationTableViewCell.cellIdentifier,
+            withIdentifier: RMLocationTableViewCell.Identifier,
             for: indexPath
         ) as? RMLocationTableViewCell else { fatalError("Something went wrong !") }
         cell.config(with: locationCellViewViewModels[indexPath.row])

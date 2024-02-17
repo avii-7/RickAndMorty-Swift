@@ -30,7 +30,7 @@ final class RMSearchResultsView: UIView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(
             RMLocationTableViewCell.self,
-            forCellReuseIdentifier: RMLocationTableViewCell.cellIdentifier
+            forCellReuseIdentifier: RMLocationTableViewCell.Identifier
         )
         tableView.register(
             RMLoadingFooterTableView.self,

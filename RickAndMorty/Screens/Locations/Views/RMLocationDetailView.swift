@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol RMLocationDetailViewDelegate: AnyObject {
+    func rmLocationDetailView(didSelectResident resident: RMCharacter)
+}
+
 final class RMLocationDetailView: UIView {
     
     private let spinner: UIActivityIndicatorView = {
@@ -19,18 +23,22 @@ final class RMLocationDetailView: UIView {
     // Why i need Implicitly unwrapped optional here ?
     private var collectionView: UICollectionView!
     
-     weak var delegate: RMSelectionDelegate?
+     weak var delegate: RMLocationDetailViewDelegate?
     
-    private var viewModel: RMLocationDetailViewViewModel?
+    private let viewModel: RMLocationDetailViewViewModel
     
-    private override init(frame: CGRect) {
-        super.init(frame: frame)
+    private var sections = [RMLocationDetailSection]()
+    
+    private var residents = [RMCharacter]()
+    
+    init(viewModel: RMLocationDetailViewViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBackground
         collectionView = createCollectionView()
         addSubviews(spinner, collectionView)
         addConstraints()
-        spinner.startAnimating()
     }
     
     required init?(coder: NSCoder) {
@@ -38,7 +46,6 @@ final class RMLocationDetailView: UIView {
     }
     
     //MARK: - Private function
-    
     private func addConstraints() {
         NSLayoutConstraint.activate([
             spinner.widthAnchor.constraint(equalToConstant: 100),
@@ -69,14 +76,79 @@ final class RMLocationDetailView: UIView {
         return collectionView
     }
     
-    func configure(model viewModel: RMLocationDetailViewViewModel) {
-        self.viewModel = viewModel
-        spinner.stopAnimating()
-        collectionView.isHidden = false
-        // do we actually need to reload data ?
-        collectionView.reloadData()
-        UIView.animate(withDuration: 0.5) {
-            self.collectionView.alpha = 1
+    func loadData() {
+        spinner.startAnimating()
+        Task { @MainActor [weak self] in
+            do {
+                let residents = try await self!.viewModel.getResidents()
+                self?.residents.append(contentsOf: residents)
+                guard let self else { return }
+                
+                let sections = RMLocationHelper.getSections(location: viewModel.location, residents: residents)
+                self.sections.append(contentsOf: sections)
+                
+                spinner.stopAnimating()
+                collectionView.isHidden = false
+                collectionView.reloadData()
+                UIView.animate(withDuration: 0.5) {
+                    self.collectionView.alpha = 1
+                }
+            }
+            catch {
+                debugPrint("Error \(error)")
+            }
+        }
+    }
+}
+
+extension RMLocationDetailView : UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let sectionType = sections[indexPath.section]
+        
+        switch sectionType {
+        case .information(let viewModels):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RMEpisodeInfoCollectionViewCell.cellIdentifier,
+                for: indexPath) as? RMEpisodeInfoCollectionViewCell
+            else { fatalError("Something went wrong") }
+            cell.configure(with: viewModels[indexPath.row])
+            return cell
+        case .characters(let viewModels):
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: RMCharacterCollectionViewCell.Identifier,
+                for: indexPath) as? RMCharacterCollectionViewCell
+            else { fatalError("Something went wrong") }
+            cell.configure(with: viewModels[indexPath.row])
+            return cell
+        }
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        sections.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        let section = sections[section]
+        switch section {
+        case .information(let viewModels):
+            return viewModels.count
+        case .characters(let viewModels):
+            return viewModels.count
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let section = sections[indexPath.section]
+        switch section {
+        case .characters:
+            let resident = residents[indexPath.row]
+            delegate?.rmLocationDetailView(didSelectResident: resident)
+            break
+        case .information:
+            break
         }
     }
 }
@@ -84,12 +156,8 @@ final class RMLocationDetailView: UIView {
 // MARK: - Collection View Layouts
 extension RMLocationDetailView {
     
-    private func getCollectionViewLayout(for section: Int) -> NSCollectionLayoutSection {
-        
-        guard let viewModel else { return getEpisodeInfoLayout() }
-        
-        let sections = viewModel.cellViewModels
-        switch sections[section] {
+    private func getCollectionViewLayout(for sectionIndex: Int) -> NSCollectionLayoutSection {
+        switch sections[sectionIndex] {
         case .information:
             return getEpisodeInfoLayout()
         case .characters:
@@ -131,65 +199,5 @@ extension RMLocationDetailView {
         
         let section = NSCollectionLayoutSection(group: group)
         return section
-    }
-    
-}
-
-extension RMLocationDetailView : UICollectionViewDataSource, UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let viewModel else { fatalError("Something wrong") }
-        
-        let sectionType = viewModel.cellViewModels[indexPath.section]
-        
-        switch sectionType {
-        case .information(let viewModels):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: RMEpisodeInfoCollectionViewCell.cellIdentifier,
-                for: indexPath) as? RMEpisodeInfoCollectionViewCell
-            else { fatalError("Something went wrong") }
-            cell.configure(with: viewModels[indexPath.row])
-            return cell
-        case .characters(let viewModels):
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: RMCharacterCollectionViewCell.Identifier,
-                for: indexPath) as? RMCharacterCollectionViewCell
-            else { fatalError("Something went wrong") }
-            cell.configure(with: viewModels[indexPath.row])
-            return cell
-        }
-    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        viewModel?.cellViewModels.count ?? 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        guard let viewModel else { return 0 }
-        
-        let sectionType = viewModel.cellViewModels[section]
-        switch sectionType {
-        case .information(let viewModels):
-            return viewModels.count
-        case .characters(let viewModels):
-            return viewModels.count
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        guard let viewModel else { return }
-        
-        let sectionType = viewModel.cellViewModels[indexPath.section]
-        switch sectionType {
-        case .characters:
-            guard let character = viewModel.character(at: indexPath.row) else { return }
-            delegate?.didSelect(with: character)
-            break
-        case .information:
-            break
-        }
     }
 }
