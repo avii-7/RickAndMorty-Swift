@@ -10,7 +10,17 @@ import UIKit
 /// Controller to show and seach for location
 final class RMLocationViewController: UIViewController {
     
-    private let locationListView = RMLocationListView()
+    private let locationListView: RMLocationListView
+    
+    init() {
+        let viewModel = RMLocationViewViewModel(listSource: RemoteDataSource())
+        locationListView = RMLocationListView(viewModel: viewModel)
+        super.init()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,19 +28,12 @@ final class RMLocationViewController: UIViewController {
         title = "Locations"
         
         setRightBarButton()
-        
-        view.addSubview(locationListView)
+
         locationListView.delegate = self
-        
-        let listSource = RemoteDataSource()
-        let viewModel = RMLocationViewViewModel(listSource: listSource)
-        locationListView.viewModel = viewModel
-        
         locationListView.loadInitialLocations()
+        view.addSubview(locationListView)
         addConstraints()
     }
-    
-    
     
     private func addConstraints() {
         NSLayoutConstraint.activate([

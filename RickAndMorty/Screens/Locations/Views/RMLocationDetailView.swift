@@ -81,15 +81,17 @@ final class RMLocationDetailView: UIView {
         Task { @MainActor [weak self] in
             do {
                 let residents = try await self!.viewModel.getResidents()
-                self?.residents.append(contentsOf: residents)
+                
                 guard let self else { return }
+                
+                self.residents.append(contentsOf: residents)
                 
                 let sections = RMLocationHelper.getSections(location: viewModel.location, residents: residents)
                 self.sections.append(contentsOf: sections)
                 
-                spinner.stopAnimating()
-                collectionView.isHidden = false
-                collectionView.reloadData()
+                self.spinner.stopAnimating()
+                self.collectionView.isHidden = false
+                self.collectionView.reloadData()
                 UIView.animate(withDuration: 0.5) {
                     self.collectionView.alpha = 1
                 }

@@ -15,7 +15,7 @@ final class RMLocationListView: UIView {
     
     private var nextURL: String?
     
-    var viewModel: RMLocationViewViewModel?
+    private let viewModel: RMLocationViewViewModel
     
     var delegate: RMLocationListViewDelegate?
     
@@ -47,9 +47,9 @@ final class RMLocationListView: UIView {
         return tableView
     }()
     
-    // MARK: - Init
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: RMLocationViewViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         addSubviews(spinner, tableView)
         addConstraints()
@@ -83,24 +83,19 @@ final class RMLocationListView: UIView {
         spinner.startAnimating()
         Task { @MainActor [weak self] in
             
-            if let viewModel = self?.viewModel {
-                
-                let response = try await viewModel.fetchInitialLocations()
-                
-                guard let self else { return }
-                
-                switch response {
-                case .success(let rmAllLocations):
-                    self.nextURL = rmAllLocations.info.next
-                    self.locations.append(contentsOf: rmAllLocations.results)
-                    let cellViewModels = RMLocationHelper.createCellViewModels(from: locations)
-                    self.cellViewModels.append(contentsOf: cellViewModels)
-                case .failure(let errror):
-                    debugPrint("Error \(errror)")
-                }
-            }
+            let response = try await self!.viewModel.fetchInitialLocations()
             
             guard let self else { return }
+            
+            switch response {
+            case .success(let rmAllLocations):
+                self.nextURL = rmAllLocations.info.next
+                self.locations.append(contentsOf: rmAllLocations.results)
+                let cellViewModels = RMLocationHelper.createCellViewModels(from: locations)
+                self.cellViewModels.append(contentsOf: cellViewModels)
+            case .failure(let errror):
+                debugPrint("Error \(errror)")
+            }
             
             self.spinner.stopAnimating()
             self.tableView.isHidden = false
@@ -172,16 +167,14 @@ extension RMLocationListView: UIScrollViewDelegate {
     private func checkReachAtBottom(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y + 1 >= (scrollView.contentSize.height - scrollView.frame.height - 120) {
             
-            if let nextURL, fetchingMoreLocationStatus != .inProgress, viewModel != nil {
+            if let nextURL, fetchingMoreLocationStatus != .inProgress {
                 
                 fetchingMoreLocationStatus = .inProgress
                 
                 Task { @MainActor [weak self] in
                     
                     do {
-                        guard let viewModel = self?.viewModel else { return }
-                        
-                        let response = try await viewModel.fetchAdditionalLocations(urlString: nextURL)
+                        let response = try await self!.viewModel.fetchAdditionalLocations(urlString: nextURL)
                         
                         let cellViewModels: [RMLocationCellViewViewModel]?
                         
@@ -209,11 +202,11 @@ extension RMLocationListView: UIScrollViewDelegate {
                             }
                         }
                         
-                        do { self.fetchingMoreLocationStatus = .finished }
-                        
                     } catch {
                         debugPrint("Eror \(error)")
                     }
+                    
+                    self?.fetchingMoreLocationStatus = .finished
                 }
             }
         }

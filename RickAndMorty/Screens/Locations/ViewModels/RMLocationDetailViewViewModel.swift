@@ -15,23 +15,7 @@ enum RMLocationDetailSection {
 final class RMLocationDetailViewViewModel {
     
     let location: RMLocation
-    
-    //weak var delegate: RMNetworkDelegate?
-    
-//    private var residents: [RMCharacter]? {
-//        didSet {
-//            createCellViewModels()
-//            delegate?.didFetchData()
-//        }
-//    }
-    
-    
-//    func character(at index: Int) -> RMCharacter? {
-//        guard let residents else { return nil }
-//        let character = residents[index]
-//        return character
-//    }
-    
+
     // MARK: - Init
     
     init(location: RMLocation) {
