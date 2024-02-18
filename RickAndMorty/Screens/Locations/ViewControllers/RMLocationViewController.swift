@@ -15,7 +15,7 @@ final class RMLocationViewController: UIViewController {
     init() {
         let viewModel = RMLocationViewViewModel(listSource: RemoteDataSource())
         locationListView = RMLocationListView(viewModel: viewModel)
-        super.init()
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {

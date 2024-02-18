@@ -17,7 +17,6 @@ final class RMLocationDetailViewViewModel {
     let location: RMLocation
 
     // MARK: - Init
-    
     init(location: RMLocation) {
         self.location = location
     }
