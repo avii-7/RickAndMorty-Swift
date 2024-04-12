@@ -1,6 +1,6 @@
 # Swift Rick & Morty App
 
-Full featured iOS App showcasing the Rick and Morty API with MVVM architecutre.
+Full featured iOS App showcasing the Rick and Morty API with MVVM architecutre and leveraging power of UICollectionViewCompositionalLayout.
 
 Sample Video: 
 
