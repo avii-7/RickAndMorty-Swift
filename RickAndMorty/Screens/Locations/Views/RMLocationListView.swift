@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol RMLocationListViewDelegate: AnyObject {
     func rmLocationListView(didSelectLocation location: RMLocation)
 }

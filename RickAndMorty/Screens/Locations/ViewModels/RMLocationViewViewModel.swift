@@ -12,7 +12,7 @@ protocol RMLocationViewViewModelDelegate: AnyObject {
     func didLoadMoreLocations(at indexPaths: [IndexPath])
 }
 
-final class RMLocationViewViewModel: NSObject {
+final class RMLocationViewViewModel: NSObject, Sendable {
     
     let listSource: RemoteListSource
     

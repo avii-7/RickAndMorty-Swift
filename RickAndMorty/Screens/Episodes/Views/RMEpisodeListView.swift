@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol RMEpisodeListViewDelegate: AnyObject {
     func rmEpisodeListView(didSelectEpisode episode: RMEpisode)
 }
@@ -84,7 +85,6 @@ final class RMEpisodeListView: UIView {
         collectionView.delegate = self
     }
     
-    
     func loadInitialEpisodes() {
         spinner.startAnimating()
         
@@ -97,7 +97,7 @@ final class RMEpisodeListView: UIView {
                 case .success(let rmAllEpisodes):
                     nextURL = rmAllEpisodes.info.next
                     self.episodes.append(contentsOf: rmAllEpisodes.results)
-                    let cellViewModels = RMEpisodeHelper.createCellViewModels(from: episodes)
+                    let cellViewModels = RMEpisodeHelper.createCellViewModels(from: rmAllEpisodes.results)
                     self.cellViewModels.append(contentsOf: cellViewModels)
                 case .failure(let errror):
                     debugPrint("Error \(errror)")

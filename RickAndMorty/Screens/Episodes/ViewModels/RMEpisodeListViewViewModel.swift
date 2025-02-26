@@ -8,7 +8,7 @@
 import Foundation
 
 /// View model to handle character list logic
-final class RMEpisodeListViewViewModel: NSObject {
+final class RMEpisodeListViewViewModel: NSObject, Sendable {
     
     let listSource: RemoteListSource
     

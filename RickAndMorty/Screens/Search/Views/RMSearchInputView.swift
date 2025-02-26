@@ -7,7 +7,9 @@
 
 import UIKit
 
+@MainActor
 protocol RMSearchBarDelegate: AnyObject {
+    
     func rmSearchInputView(_ inputView: RMSearchInputView, didChangeSearchText text: String)
     
     func rmSearchInputView_DidTapCrossButton(_ inputView: RMSearchInputView)

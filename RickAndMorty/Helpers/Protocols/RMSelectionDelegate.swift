@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol RMSelectionDelegate: AnyObject {
     func didSelect<T>(with data: T)
 }

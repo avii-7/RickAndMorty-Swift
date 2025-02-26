@@ -68,11 +68,13 @@ final class RMSearchResultViewViewModel: NSObject {
     
     private var moduleType: RMModuleType?
     
+    @MainActor
     func configure(with searchResultType: RMSearchResultType) {
         self.searchResultType = searchResultType
         processViewModel()
     }
     
+    @MainActor
     private func processViewModel() {
         
         guard let searchResultType else { return }

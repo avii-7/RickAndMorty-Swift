@@ -12,7 +12,7 @@ enum RMLocationDetailSection {
     case characters(viewModel: [RMCharacterCollectionViewCellViewModel])
 }
 
-final class RMLocationDetailViewViewModel {
+final class RMLocationDetailViewViewModel: Sendable {
     
     let location: RMLocation
 

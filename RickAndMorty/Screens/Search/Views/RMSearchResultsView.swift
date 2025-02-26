@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol RMSearchResultViewViewModelDelegate: AnyObject {
     func didLoadLocations()
     func didLoadCharactersOrEpisodes()

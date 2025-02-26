@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol RMLocationDetailViewDelegate: AnyObject {
     func rmLocationDetailView(didSelectResident resident: RMCharacter)
 }

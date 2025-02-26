@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 protocol RMEpisodeDetailViewDelegate: AnyObject {
     func rmEpisodeDetailView(didSelectCharacter character: RMCharacter)
 }
