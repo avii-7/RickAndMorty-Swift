@@ -7,21 +7,35 @@
 
 import Foundation
 
-final class RMImageManager {
+final class RMImageManager: @unchecked Sendable {
     
     private init() {}
     
     static let shared = RMImageManager()
     
-    private var imageDataCache = NSCache<NSString, NSData>()
+    private let dispatchQueue = DispatchQueue(label: "cache.queue", attributes: .concurrent)
+    
+    func getCache(for key: String) -> NSData? {
+        dispatchQueue.sync {
+            imageDataCache.object(forKey: key as NSString)
+        }
+    }
+    
+    func setCache(_ data: Data, for key: String) {
+        dispatchQueue.async(flags: .barrier) {
+            self.imageDataCache.setObject(data as NSData, forKey: key as NSString)
+        }
+    }
+    
+    private let imageDataCache = NSCache<NSString, NSData>()
     
     /// Get image from URL
     /// - Parameters:
     ///   - url: Image URL object
     func downloadImage(from url: URL) async throws -> Result<Data, NetworkError> {
-        let key = url.absoluteString as NSString
+        let key = url.absoluteString
         
-        if let data = imageDataCache.object(forKey: key) {
+        if let data = getCache(for: key) {
             return .success(data as Data)
         }
         
@@ -34,7 +48,7 @@ final class RMImageManager {
             return .failure(NetworkError.statusCodeError)
         }
         
-        imageDataCache.setObject(response.0 as NSData, forKey: key)
+        setCache(response.0, for: key)
         return .success(response.0)
     }
 }

@@ -10,11 +10,9 @@ import Foundation
 typealias ListResult<T> = Result<[T], NetworkError>
 
 /// View model to handle character list logic
-final class RMCharacterListViewViewModel {
+final class RMCharacterListViewViewModel: Sendable {
     
     private let listSource: RemoteListSource
-    
-    private var hasMoreCharacters = false
     
     init(listSource: RemoteListSource) {
         self.listSource = listSource

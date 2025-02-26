@@ -18,7 +18,7 @@ extension UIView {
 }
 
 extension String {
-    static var empty = "" 
+    static let empty = "" 
 }
 
 extension Array {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RemoteDataSource : RemoteListSource {
+final class RemoteDataSource : RemoteListSource {
 
     func fetch<T>(endPoint: RMNetworkEndpoint) async throws -> Result<T, NetworkError> where T : Decodable {
         

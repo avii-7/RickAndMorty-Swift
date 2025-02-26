@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol RemoteListSource {
+protocol RemoteListSource: Sendable {
     
     func fetch<T: Decodable>(endPoint: RMNetworkEndpoint) async throws -> Result<T, NetworkError>
     

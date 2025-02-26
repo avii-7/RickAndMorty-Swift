@@ -84,6 +84,7 @@ final class RMEpisodeListView: UIView {
         collectionView.delegate = self
     }
     
+    
     func loadInitialEpisodes() {
         spinner.startAnimating()
         
