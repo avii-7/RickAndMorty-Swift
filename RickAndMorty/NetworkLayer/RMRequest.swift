@@ -8,7 +8,7 @@
 import Foundation
 
 /// Object that represents single API call
-final class RMRequest {
+struct RMRequest: Sendable {
     
     /// API constants
     private struct Constants {
@@ -71,7 +71,7 @@ final class RMRequest {
         self.queryParameters = queryParameters
     }
     
-    convenience init?(url: URL) {
+    init?(url: URL) {
         let urlString = url.absoluteString
         
         if !urlString.contains(Constants.baseUrl) {

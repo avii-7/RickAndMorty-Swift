@@ -255,18 +255,23 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
         checkReachAtBottom(scrollView)
     }
     
+    @MainActor
     private func checkReachAtBottom(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y + 1 >= (scrollView.contentSize.height - scrollView.frame.height - 120) {
             guard shouldShowLoadMoreIndicator,
                   contentStatus != .inProgress,
-                  let urlString = nextPageURL,
-                  let url = URL(string: urlString)
+                  let nextPageURL,
+                  let url = URL(string: nextPageURL)
             else { return }
-            appendNextPageData(from: url)
+            
+            
+            Task {
+                await appendNextPageData(from: url)
+            }
         }
     }
     
-    private func appendNextPageData(from url: URL) {
+    private func appendNextPageData(from url: URL) async {
         contentStatus = .inProgress
         
         guard let request = RMRequest(url: url) else {
@@ -278,100 +283,91 @@ extension RMSearchResultViewViewModel: UIScrollViewDelegate {
         
         switch moduleType {
         case .Character:
-            fetchMoreDataForCharacters(with: request)
+            await fetchMoreDataForCharacters(with: request)
         case .Location:
-            fetchMoreDataForLocations(with: request)
+            await fetchMoreDataForLocations(with: request)
         case .Episode:
-            fetchMoreDataForEpisodes(with: request)
+            await fetchMoreDataForEpisodes(with: request)
         }
     }
     
-    private func fetchMoreDataForLocations(with request: RMRequest) {
+    private func fetchMoreDataForLocations(with request: RMRequest) async {
+        let response = await RMService.shared.execute(request, expecting: RMAllLocations.self)
         
-        Task {
-            let response = await RMService.shared.execute(request, expecting: RMAllLocations.self)
+        switch response {
+        case .success(let responseModel):
             
-            switch response {
-            case .success(let responseModel):
-                
-                nextPageURL = responseModel.info.next
-                
-                let startIndex = allLocations.endIndex
-                
-                allLocations.append(contentsOf: responseModel.results)
-                
-                let endIndex = allLocations.endIndex - 1
-                
-                let indexPathToAdd = Array(startIndex...endIndex).compactMap {
-                    IndexPath(row: $0, section: 0)
-                }
-                
-                DispatchQueue.main.async {
-                    self.delegate?.didLoadMoreLocations(at: indexPathToAdd)
-                    self.contentStatus = .finished
-                }
-            case .failure(let failure):
-                self.contentStatus = .failed
-                print(" Failed \(failure.localizedDescription)")
+            nextPageURL = responseModel.info.next
+            
+            let startIndex = allLocations.endIndex
+            
+            allLocations.append(contentsOf: responseModel.results)
+            
+            let endIndex = allLocations.endIndex - 1
+            
+            let indexPathToAdd = Array(startIndex...endIndex).compactMap {
+                IndexPath(row: $0, section: 0)
             }
+            
+            await self.delegate?.didLoadMoreLocations(at: indexPathToAdd)
+            self.contentStatus = .finished
+            
+        case .failure(let failure):
+            self.contentStatus = .failed
+            print(" Failed \(failure.localizedDescription)")
+        }
+        
+    }
+    
+    private func fetchMoreDataForCharacters(with request: RMRequest) async {
+        let response = await RMService.shared.execute(request, expecting: RMAllCharacters.self)
+        switch response {
+        case .success(let responseModel):
+            
+            nextPageURL = responseModel.info.next
+            
+            let startIndex = allCharacters.endIndex
+            
+            allCharacters.append(contentsOf: responseModel.results)
+            
+            let endIndex = allCharacters.endIndex - 1
+            
+            let indexPathToAdd = Array(startIndex...endIndex).compactMap {
+                IndexPath(row: $0, section: 0)
+            }
+            
+            await self.delegate?.didLoadMoreCharactersOrEpisodes(at: indexPathToAdd)
+            self.contentStatus = .finished
+            
+        case .failure(let failure):
+            self.contentStatus = .failed
+            print(" Failed \(failure.localizedDescription)")
         }
     }
     
-    private func fetchMoreDataForCharacters(with request: RMRequest) {
-        Task {
-            let response = await RMService.shared.execute(request, expecting: RMAllCharacters.self)
-            switch response {
-            case .success(let responseModel):
-                
-                nextPageURL = responseModel.info.next
-                
-                let startIndex = allCharacters.endIndex
-                
-                allCharacters.append(contentsOf: responseModel.results)
-                
-                let endIndex = allCharacters.endIndex - 1
-                
-                let indexPathToAdd = Array(startIndex...endIndex).compactMap {
-                    IndexPath(row: $0, section: 0)
-                }
-                
-                DispatchQueue.main.async {
-                    self.delegate?.didLoadMoreCharactersOrEpisodes(at: indexPathToAdd)
-                    self.contentStatus = .finished
-                }
-            case .failure(let failure):
-                self.contentStatus = .failed
-                print(" Failed \(failure.localizedDescription)")
+    private func fetchMoreDataForEpisodes(with request: RMRequest) async {
+        let response = await RMService.shared.execute(request, expecting: RMAllEpisodes.self)
+        switch response {
+        case .success(let responseModel):
+            
+            nextPageURL = responseModel.info.next
+            
+            let startIndex = allEpisodes.endIndex
+            
+            allEpisodes.append(contentsOf: responseModel.results)
+            
+            let endIndex = allEpisodes.endIndex - 1
+            
+            let indexPathToAdd = Array(startIndex...endIndex).compactMap {
+                IndexPath(row: $0, section: 0)
             }
+            
+            await self.delegate?.didLoadMoreCharactersOrEpisodes(at: indexPathToAdd)
+            self.contentStatus = .finished
+        case .failure(let failure):
+            self.contentStatus = .failed
+            print(" Failed \(failure.localizedDescription)")
         }
-    }
-    
-    private func fetchMoreDataForEpisodes(with request: RMRequest) {
-        Task {
-            let response = await RMService.shared.execute(request, expecting: RMAllEpisodes.self)
-            switch response {
-            case .success(let responseModel):
-                
-                nextPageURL = responseModel.info.next
-                
-                let startIndex = allEpisodes.endIndex
-                
-                allEpisodes.append(contentsOf: responseModel.results)
-                
-                let endIndex = allEpisodes.endIndex - 1
-                
-                let indexPathToAdd = Array(startIndex...endIndex).compactMap {
-                    IndexPath(row: $0, section: 0)
-                }
-                
-                DispatchQueue.main.async {
-                    self.delegate?.didLoadMoreCharactersOrEpisodes(at: indexPathToAdd)
-                    self.contentStatus = .finished
-                }
-            case .failure(let failure):
-                self.contentStatus = .failed
-                print(" Failed \(failure.localizedDescription)")
-            }
-        }
+        
     }
 }

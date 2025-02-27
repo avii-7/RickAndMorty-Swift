@@ -9,7 +9,7 @@ import Foundation
 
 
 /// Primary API service object to get Rick and Morty data
-final class RMService {
+final class RMService: Sendable {
     
     /// Privatized constructor
     private init() {}
@@ -35,7 +35,7 @@ final class RMService {
         expecting type: T.Type) async -> Result<T, Error> {
             
             do {
-                if let cachedResponse = cacheManager.getCacheResponse(
+                if let cachedResponse = await cacheManager.getCacheResponse(
                     endPoint: request.endpoint,
                     for: request.url) {
                     
@@ -52,7 +52,7 @@ final class RMService {
                 let result = try JSONDecoder().decode(type.self, from: data)
                 
                 if let url = request.url {
-                    cacheManager.setCacheResponse(
+                    await cacheManager.setCacheResponse(
                         endPoint: request.endpoint,
                         url: url,
                         data: data

@@ -17,7 +17,7 @@ protocol RMEpisodeDataRenderer {
 final class RMEpisodeCollectionViewCellViewModel {
     private(set) var episodeUrl: URL
     private var isDataAlreadyFetched = false
-    private var dataBlock: ((RMEpisodeDataRenderer) -> Void)?
+    private var dataBlock: (@MainActor (RMEpisodeDataRenderer) -> Void)?
     
     private(set) var episode: RMEpisode? 
     
@@ -27,10 +27,11 @@ final class RMEpisodeCollectionViewCellViewModel {
     }
     
     // MARK: -  function
-     func registerForData(_ block: @escaping (RMEpisodeDataRenderer) -> Void) {
+    func registerForData(_ block: @escaping (RMEpisodeDataRenderer) -> Void) {
         self.dataBlock = block
     }
     
+    @MainActor
     func fetchEpisode() {
         if isDataAlreadyFetched {
             guard let episode else { return }
@@ -38,7 +39,7 @@ final class RMEpisodeCollectionViewCellViewModel {
             return
         }
         
-        Task { @MainActor [weak self, episodeUrl] in
+        Task { [weak self, episodeUrl] in
             
             do {
                 let episodeURLRequest = URLRequest(url: episodeUrl)

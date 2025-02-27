@@ -10,18 +10,17 @@ import Foundation
 /// NSCache requires Data to be class type.
 typealias ResponseCache = NSCache<NSString, NSData>
 
-final class RMAPICacheManager {
+actor RMAPICacheManager: Sendable {
     
-    private var cacheResponse = ResponseCache()
-    
-    private var cacheDictionary = Dictionary<RMEndpoint, ResponseCache>()
-    
-    init() {
-        setupCache()
-    }
+    private let cacheDictionary: Dictionary<RMEndpoint, ResponseCache> = {
+        var dict = [RMEndpoint: ResponseCache]()
+        RMEndpoint.allCases.forEach { endPoint in
+            dict[endPoint] = ResponseCache()
+        }
+        return dict
+    }()
     
     // MARK: -  function
-    
      func setCacheResponse(endPoint: RMEndpoint, url: URL?, data: Data) {
         guard let responseCache = cacheDictionary[endPoint] else { return }
         
@@ -39,14 +38,5 @@ final class RMAPICacheManager {
         
         guard let response = responseCache.object(forKey: key) as? Data else { return nil }
         return response
-    }
-    
-    
-    // MARK: - Private function
-    
-    private func setupCache() {
-        RMEndpoint.allCases.forEach { endPoint in
-            cacheDictionary[endPoint] = ResponseCache()
-        }
     }
 }

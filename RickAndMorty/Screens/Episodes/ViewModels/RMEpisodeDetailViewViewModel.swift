@@ -16,27 +16,13 @@ enum SectionType {
     case characters(viewModel: [RMCharacterCollectionViewCellViewModel])
 }
 
-final class RMEpisodeDetailViewViewModel {
+actor RMEpisodeDetailViewViewModel {
     
-    private var url: URL?
+    private let url: URL?
     
     private var episode: RMEpisode?
     
-    private(set) var sections = [SectionType]()
-    
-    private var characters = [RMCharacter]()
-    
     private(set) var isEpisodeInitialized = false
-    
-    func character(at index: Int) -> RMCharacter? {
-        
-        if characters.isEmpty {
-            return nil
-        }
-        
-        let character = characters[index]
-        return character
-    }
     
     // MARK: - Init
     // Must call fetch Episode method.
@@ -47,9 +33,10 @@ final class RMEpisodeDetailViewViewModel {
     init(episode: RMEpisode) {
         self.episode = episode
         isEpisodeInitialized = true
+        self.url = nil
     }
     
-    // MARK: -  functions
+    // MARK: - Functions
     func setEpisode() async throws {
         
         guard let url else {
@@ -69,11 +56,7 @@ final class RMEpisodeDetailViewViewModel {
         }
     }
     
-    func fetchRelatedCharacters() async throws {
-        
-        if characters.isEmpty == false {
-            characters.removeAll()
-        }
+    func getRelatedCharacters() async throws -> [RMCharacter] {
         
         guard let episode else {
             throw EpisodeError.badInitialization()
@@ -85,7 +68,7 @@ final class RMEpisodeDetailViewViewModel {
         }
         
         if requests.isEmpty {
-            return
+            return []
         }
         
         let result: [RMCharacter] = try await withThrowingTaskGroup(of: (RMCharacter.self)) { group in
@@ -111,20 +94,15 @@ final class RMEpisodeDetailViewViewModel {
             
             return relatedCharacters
         }
-        characters.append(contentsOf: result)
+        return result
     }
     
-    func createSections() throws {
+    func getSections(for characters: [RMCharacter]) throws -> [SectionType] {
     
         guard let episode else {
             throw EpisodeError.badInitialization()
         }
         
-        if sections.isEmpty == false {
-            sections.removeAll()
-        }
-        
-        let result = RMEpisodeHelper.createCellViewModels(from: (episode, characters))
-        sections.append(contentsOf: result)
+        return RMEpisodeHelper.createCellViewModels(from: (episode, characters))
     }
 }

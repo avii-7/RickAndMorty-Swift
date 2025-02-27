@@ -61,20 +61,16 @@ final class RMSearchView: UIView {
         }
         
         viewModel.registerSearchResultHandler { [weak self] results in
-            DispatchQueue.main.async {
-                self?.spinner.stopAnimating()
-                self?.noSearchResultView.isHidden  = true
-                self?.searchResultView.isHidden = false
-                self?.searchResultView.configure(with: results)
-            }
+            self?.spinner.stopAnimating()
+            self?.noSearchResultView.isHidden  = true
+            self?.searchResultView.isHidden = false
+            self?.searchResultView.configure(with: results)
         }
         
         viewModel.registerNoResultsHandler { [weak self] in
-            DispatchQueue.main.async {
-                self?.spinner.stopAnimating()
-                self?.noSearchResultView.isHidden  = false
-                self?.searchResultView.isHidden = true
-            }
+            self?.spinner.stopAnimating()
+            self?.noSearchResultView.isHidden  = false
+            self?.searchResultView.isHidden = true
         }
     }
     
@@ -126,7 +122,9 @@ final class RMSearchView: UIView {
         noSearchResultView.isHidden = true
         spinner.isHidden = false
         spinner.startAnimating()
-        viewModel.executeSearch()
+        Task {
+            await viewModel.executeSearch(with: queryText)
+        }
     }
 }
 
@@ -148,7 +146,6 @@ extension RMSearchView: RMSearchBarDelegate {
     
     func rmSearchInputView(_ inputView: RMSearchInputView, didChangeSearchText text: String) {
         queryText = text
-        viewModel.set(query: text)
     }
     
     func rmSearchInputView_DidTapSearchKeyboardButton(_ inputView: RMSearchInputView) {

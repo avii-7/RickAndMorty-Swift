@@ -14,6 +14,10 @@ protocol RMEpisodeDetailViewDelegate: AnyObject {
 
 final class RMEpisodeDetailView: UIView {
     
+    private var sections = [SectionType]()
+    
+    private var characters = [RMCharacter]()
+    
     private let spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView()
         spinner.hidesWhenStopped = true
@@ -43,22 +47,23 @@ final class RMEpisodeDetailView: UIView {
         fatalError("Unsupported")
     }
     
-    //MARK: - function
+    //MARK: - Functions
+    @MainActor
     func loadData() {
         spinner.startAnimating()
         
-        Task { @MainActor [weak self] in
+        Task { /*@MainActor*/ [weak self] in
             
             guard let self else { return }
             
             do {
-                if viewModel.isEpisodeInitialized == false {
+                if await viewModel.isEpisodeInitialized == false {
                     try await viewModel.setEpisode()
                 }
                 
-                try await viewModel.fetchRelatedCharacters()
+                try await fetchRelatedCharacters()
                 
-                try viewModel.createSections()
+                try await createSections()
                 
                 spinner.stopAnimating()
                 collectionView.isHidden = false
@@ -109,7 +114,7 @@ final class RMEpisodeDetailView: UIView {
 extension RMEpisodeDetailView {
     
     private func getCollectionViewLayout(for section: Int) -> NSCollectionLayoutSection {
-        let sections = viewModel.sections
+        let sections = sections
         
         switch sections[section] {
         case .information:
@@ -159,7 +164,7 @@ extension RMEpisodeDetailView {
 extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let sectionType = viewModel.sections[indexPath.section]
+        let sectionType = sections[indexPath.section]
         
         switch sectionType {
         case .information(let viewModels):
@@ -180,11 +185,11 @@ extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDele
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        viewModel.sections.count
+        sections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        let sectionType = viewModel.sections[section]
+        let sectionType = sections[section]
         switch sectionType {
         case .information(let viewModels):
             return viewModels.count
@@ -194,13 +199,43 @@ extension RMEpisodeDetailView : UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let sectionType = viewModel.sections[indexPath.section]
+        let sectionType = sections[indexPath.section]
         switch sectionType {
         case .characters:
-            guard let character = viewModel.character(at: indexPath.row) else { return }
+            guard let character = character(at: indexPath.row) else { return }
             delegate?.rmEpisodeDetailView(didSelectCharacter: character)
         default:
             break
         }
+    }
+}
+
+
+extension RMEpisodeDetailView {
+    
+    func createSections() async throws {
+        if sections.isEmpty == false {
+            sections.removeAll()
+        }
+        
+        self.sections = try await viewModel.getSections(for: characters)
+    }
+    
+    func fetchRelatedCharacters() async throws {
+        if characters.isEmpty == false {
+            characters.removeAll()
+        }
+        
+        self.characters = try await viewModel.getRelatedCharacters()
+    }
+    
+    func character(at index: Int) -> RMCharacter? {
+        
+        if characters.isEmpty {
+            return nil
+        }
+        
+        let character = characters[index]
+        return character
     }
 }

@@ -8,32 +8,26 @@
 import Foundation
 import UIKit
 
-final class RMSearchViewViewModel: NSObject {
+final class RMSearchViewViewModel: NSObject, @unchecked Sendable {
     
     let searchType: RMSearchType
     
-    private var searchedText = String.empty
+    private let optionMap: TypeSafeDictionary<RMDynamicOption, String> = .init()
     
-    private var optionChangeBlock: ((RMDynamicOption, String) -> Void)?
+    private var searchResultHandler: (@MainActor (RMSearchResultType) -> Void)?
     
-    private var optionMap: [RMDynamicOption: String] = [:]
+    private var noResultsHandler: (@MainActor () -> Void)?
     
-    private var searchResultHandler: ((RMSearchResultType) -> Void)?
-    
-    private var noResultsHandler: (() -> Void)?
-    
-    private var searchResultModel: Codable?
+    private var optionChangeBlock: (@MainActor (RMDynamicOption, String) -> Void)?
     
     //MARK: - Init
-    
     init(_ searchType: RMSearchType) {
         self.searchType = searchType
     }
     
-    // MARK: - Internal
-    
+    @MainActor
     func set(value: String, for option: RMDynamicOption) {
-        optionMap[option] = value
+        optionMap.set(value, forKey: option)
         optionChangeBlock?(option, value)
     }
     
@@ -51,46 +45,44 @@ final class RMSearchViewViewModel: NSObject {
         noResultsHandler = block
     }
     
-    func executeSearch() {
+    func executeSearch(with text: String) async {
+        
         var queryParameters = [URLQueryItem]()
         
-        if !searchedText.isEmpty {
-            queryParameters.append(.init(name: "name", value: searchedText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)))
+        if !text.isEmpty {
+            queryParameters.append(.init(name: "name", value: text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)))
         }
         
-        queryParameters.append(contentsOf: optionMap.compactMap({
-            URLQueryItem(name: $0.key.networkKey, value: $0.value)
-        }))
+        queryParameters.append(
+            contentsOf: optionMap.getAll().compactMap { URLQueryItem(name: $0.key.networkKey, value: $0.value)
+        })
         
         let request = RMRequest(endpoint: searchType.moduleType.endPoint, queryParameters: queryParameters)
+        
         switch searchType.moduleType {
         case .Character:
-            makeSearchAPICall(for: RMAllCharacters.self, with: request)
+            await makeSearchAPICall(for: RMAllCharacters.self, with: request)
         case .Episode:
-            makeSearchAPICall(for: RMAllEpisodes.self, with: request)
+            await makeSearchAPICall(for: RMAllEpisodes.self, with: request)
         case .Location:
-            makeSearchAPICall(for: RMAllLocations.self, with: request)
+            await makeSearchAPICall(for: RMAllLocations.self, with: request)
         }
     }
     
-    private func makeSearchAPICall<T: Codable>(for type: T.Type, with request: RMRequest) {
-        Task {
-            let result = await RMService.shared.execute(request, expecting: type)
-            switch result {
-            case .success(let model):
-                processSearchResults(with: model)
-            case .failure(let error):
-                noResultsHandler?()
-                print(String(describing: error))
-            }
+    private func makeSearchAPICall<T: Codable & Sendable>(for type: T.Type, with request: RMRequest) async {
+        let result = await RMService.shared.execute(request, expecting: type)
+        switch result {
+        case .success(let model):
+            await self.processSearchResults(with: model)
+        case .failure(let error):
+            await noResultsHandler?()
+            print(String(describing: error))
         }
     }
     
-    private func processSearchResults(with model: Codable) {
+    private func processSearchResults(with model: Codable) async {
         
         var searchResultType: RMSearchResultType?
-        
-        searchResultModel = model
         
         if let characterResults = model as? RMAllCharacters {
             let nextPageURL = characterResults.info.next
@@ -109,15 +101,38 @@ final class RMSearchViewViewModel: NSObject {
         }
         
         if let searchResultType {
-            searchResultHandler?(searchResultType)
+            await searchResultHandler?(searchResultType)
         }
         else {
-            noResultsHandler?()
+            await noResultsHandler?()
         }
-    }
-    
-    func set(query text: String) {
-        searchedText = text
     }
 }
 
+
+final class TypeSafeDictionary<P: Hashable & Sendable, Q: Sendable>: @unchecked Sendable {
+    
+    private let dispatchQueue = DispatchQueue(label: "com.avii.typeSafeDictionary")
+    
+    private var dictionary: [P: Q] = [:]
+    
+    public init() { }
+    
+    func set(_ value: Q, forKey key: P) {
+        dispatchQueue.async(flags: .barrier) { [weak self] in
+            self?.dictionary[key] = value
+        }
+    }
+    
+    func get(for key: P) -> Q? {
+        dispatchQueue.sync {
+            self.dictionary[key]
+        }
+     }
+    
+    func getAll() -> [P: Q] {
+        dispatchQueue.sync {
+            self.dictionary
+        }
+    }
+}
