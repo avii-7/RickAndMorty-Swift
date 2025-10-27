@@ -69,7 +69,7 @@ final class RMSearchViewViewModel: NSObject, @unchecked Sendable {
         }
     }
     
-    private func makeSearchAPICall<T: Codable & Sendable>(for type: T.Type, with request: RMRequest) async {
+    private func makeSearchAPICall<T: Decodable & Sendable>(for type: T.Type, with request: RMRequest) async {
         let result = await RMService.shared.execute(request, expecting: type)
         switch result {
         case .success(let model):
@@ -80,7 +80,7 @@ final class RMSearchViewViewModel: NSObject, @unchecked Sendable {
         }
     }
     
-    private func processSearchResults(with model: Codable) async {
+    private func processSearchResults(with model: Decodable) async {
         
         var searchResultType: RMSearchResultType?
         

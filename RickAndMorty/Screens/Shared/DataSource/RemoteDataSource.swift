@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import Networking
 
-final class RemoteDataSource : RemoteListSource {
+final class RemoteDataSource: RemoteListSource {
 
     func fetch<T>(endPoint: RMNetworkEndpoint) async throws -> Result<T, NetworkError> where T : Decodable {
         
@@ -29,5 +30,18 @@ final class RemoteDataSource : RemoteListSource {
         let response: Result<T, NetworkError> = try await NetworkRequest.shared.hit(using: urlRequest)
         
         return response
+    }
+}
+
+struct RemoteDataSourceV2: RemoteListSourceV2 {
+    
+    private let httpClient: HTTPClient
+    
+    init(httpClient: HTTPClient) {
+        self.httpClient = httpClient
+    }
+    
+    func fetch<T>(endPoint: NetworkEndpoint) async throws(Networking.NetworkError) -> T where T : Decodable {
+        return try await httpClient.execute(httpRequest: endPoint)
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RMCharacter: Codable {
+struct RMCharacter: Decodable, Identifiable {
     let id: Int
     let name: String
     let status: RMCharacterStatus
@@ -18,27 +18,26 @@ struct RMCharacter: Codable {
     let location: RMCharacterLocation
     let image: String
     let episode: [String]
-    let url: URL
+    let url: URL?
     let created: String
 }
-
 
 extension RMCharacter {
     
     static func getDefault() -> RMCharacter {
         
-        return .init(
-            id: 0,
-            name: .empty,
-            status: .unknown,
-            species: .empty,
+        .init(
+            id: 1,
+            name: "Rick Sanchez",
+            status: .alive,
+            species: "Human",
             type: .empty,
-            gender: .unknown,
+            gender: .male,
             origin: .init(name: .empty, url: .empty),
             location: .init(name: .empty, url: .empty),
-            image: .empty,
-            episode: .init(),
-            url: .applicationDirectory,
+            image: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+            episode: (1...10).map { "https://rickandmortyapi.com/api/episode/\($0)" },
+            url: URL(string: "https://rickandmortyapi.com/api/character/1"),
             created: .empty
         )
     }

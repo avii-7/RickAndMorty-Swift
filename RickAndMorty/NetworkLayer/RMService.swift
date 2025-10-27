@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 /// Primary API service object to get Rick and Morty data
 final class RMService: Sendable {
     
@@ -30,7 +29,7 @@ final class RMService: Sendable {
     ///   - type: The type of object we expect to get back
     ///   - completion: Callback with data or error
     ///
-    func execute<T: Codable>(
+    func execute<T: Decodable>(
         _ request: RMRequest,
         expecting type: T.Type) async -> Result<T, Error> {
             
