@@ -8,11 +8,13 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
+
+
 struct CharacterListView: View {
     
     @State var viewModel: CharacterListViewModel
     
-    private let gridItems = Array(repeating: GridItem(.flexible()), count: 2)
+    private let columns = Array(repeating: GridItem(.flexible(), alignment: .top), count: 2)
     
     var body: some View {
         content
@@ -27,13 +29,34 @@ struct CharacterListView: View {
     private var content: some View {
         GeometryReader { geometry in
             ScrollView {
-                LazyVGrid(columns: gridItems, spacing: 10) {
-                    ForEach(viewModel.characters) { character in
-                        CharacterItemView(character: character, parentSize: geometry.size)
+                Section {
+                    LazyVGrid(columns: columns, spacing: 10) {
+                        ForEach(Array(viewModel.characters.enumerated()), id: \.element.id) { index, character in
+                            Group {
+                                if index == viewModel.characters.endIndex - 1 {
+                                    CharacterItemView(character: character, parentSize: geometry.size)
+                                        .onAppear {
+                                            viewModel.fetchNextPageCharacters()
+                                        }
+                                }
+                                else {
+                                    CharacterItemView(character: character, parentSize: geometry.size)
+                                }
+                            }
+                            .onTapGesture {
+                                print("Tapped character: \(index)")
+                            }
+                        }
                     }
                 }
+                footer: {
+                    if viewModel.hasMore {
+                        ProgressView()
+                    }
+                }
+                .padding(.horizontal, 10)
             }
-            .padding(.horizontal, 10)
+            .defaultScrollAnchor(.top)
         }
     }
 }
@@ -54,15 +77,24 @@ struct CharacterItemView: View {
     let parentSize: CGSize
     
     var body: some View {
-        VStack(alignment: .leading) {
-            WebImage(url: URL(string: character.image))
-                .resizable()
-                .aspectRatio(1, contentMode: .fit)
-                .frame(maxWidth: parentSize.width / 2, maxHeight: parentSize.width / 2)
+        VStack(alignment: .leading, spacing: .zero) {
+            WebImage(url: URL(string: character.image)) { image in
+                image.resizable()
+            } placeholder: {
+                ProgressView()
+                    .controlSize(.large)
+                    .aspectRatio(1, contentMode: .fit)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .frame(height: parentSize.height * 0.3)
+            }
+            .aspectRatio(1, contentMode: .fit)
+            .frame(maxWidth: .infinity)
+            .frame(height: parentSize.height * 0.3)
+            .clipped()
             
-            Group {
+            VStack(alignment: .leading, spacing: 8) {
                 Text(character.name)
-                    .font(.title)
+                    .font(.title3)
                     .foregroundStyle(.primary)
                 
                 Text("Status: \(character.status.rawValue)")
@@ -71,9 +103,12 @@ struct CharacterItemView: View {
                     .padding(.bottom, 10)
             }
             .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            
+            Spacer(minLength: .zero)
         }
         .frame(maxWidth: .infinity)
-        .background(Color(uiColor: .secondarySystemBackground))
+        .background(BackgroundStyle().secondary)
         .clipShape(.rect(cornerRadius: 8))
     }
 }

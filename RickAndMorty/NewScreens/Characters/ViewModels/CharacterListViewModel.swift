@@ -47,6 +47,7 @@ final class CharacterListViewModel {
                 let response: RMAllCharacters = try await listSource.fetchAllCharacters(pageNo: nextPage)
                 self.characters.append(contentsOf: response.results)
                 self.pageInfo = response.info
+                if pageInfo?.next != nil { nextPage += 1 }
             }
             catch {
                 printError(error)

@@ -24,20 +24,25 @@ struct RMCharacter: Decodable, Identifiable {
 
 extension RMCharacter {
     
-    static func getDefault() -> RMCharacter {
-        
+    static func getAllDefault() -> [RMCharacter] {
+        return (1...10).map { index in
+            getDefault(index: index)
+        }
+    }
+    
+    static func getDefault(index: Int) -> RMCharacter {
         .init(
-            id: 1,
-            name: "Rick Sanchez",
-            status: .alive,
+            id: index,
+            name: "Rick Sanchez \(Bool.random() ? "" : String(index))",
+            status: Bool.random() ? .alive: .dead,
             species: "Human",
             type: .empty,
             gender: .male,
             origin: .init(name: .empty, url: .empty),
             location: .init(name: .empty, url: .empty),
-            image: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+            image: "https://rickandmortyapi.com/api/character/avatar/\(index).jpeg",
             episode: (1...10).map { "https://rickandmortyapi.com/api/episode/\($0)" },
-            url: URL(string: "https://rickandmortyapi.com/api/character/1"),
+            url: URL(string: "https://rickandmortyapi.com/api/character/\(index)"),
             created: .empty
         )
     }

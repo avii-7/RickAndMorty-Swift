@@ -23,7 +23,7 @@ extension RMAllCharacters {
                 next: "https://rickandmortyapi.com/api/character/?page=2",
                 prev: nil
             ),
-            results: [.getDefault(), .getDefault(), .getDefault()]
+            results: RMCharacter.getAllDefault()
         )
     }
 }

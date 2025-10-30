@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		869871AC2EAFE4D2004E28DC /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 869871AB2EAFE4D2004E28DC /* Networking */; };
 		869872902EAFF733004E28DC /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8698728F2EAFF733004E28DC /* SDWebImageSwiftUI */; };
+		86DAE7832EB3B120008DCFB3 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = 86DAE7822EB3B120008DCFB3 /* Factory */; };
+		86DAE7852EB3B120008DCFB3 /* FactoryKit in Frameworks */ = {isa = PBXBuildFile; productRef = 86DAE7842EB3B120008DCFB3 /* FactoryKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +48,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86DAE7832EB3B120008DCFB3 /* Factory in Frameworks */,
 				869872902EAFF733004E28DC /* SDWebImageSwiftUI in Frameworks */,
+				86DAE7852EB3B120008DCFB3 /* FactoryKit in Frameworks */,
 				869871AC2EAFE4D2004E28DC /* Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -154,6 +158,7 @@
 			packageReferences = (
 				869871AA2EAFE4D2004E28DC /* XCLocalSwiftPackageReference "../Networking" */,
 				8698728E2EAFF733004E28DC /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				86DAE7812EB3B120008DCFB3 /* XCRemoteSwiftPackageReference "Factory" */,
 			);
 			productRefGroup = 869268C02A2B24430001C1B5 /* Products */;
 			projectDirPath = "";
@@ -493,6 +498,14 @@
 				minimumVersion = 3.1.3;
 			};
 		};
+		86DAE7812EB3B120008DCFB3 /* XCRemoteSwiftPackageReference "Factory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Factory.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -504,6 +517,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8698728E2EAFF733004E28DC /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
 			productName = SDWebImageSwiftUI;
+		};
+		86DAE7822EB3B120008DCFB3 /* Factory */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86DAE7812EB3B120008DCFB3 /* XCRemoteSwiftPackageReference "Factory" */;
+			productName = Factory;
+		};
+		86DAE7842EB3B120008DCFB3 /* FactoryKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86DAE7812EB3B120008DCFB3 /* XCRemoteSwiftPackageReference "Factory" */;
+			productName = FactoryKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

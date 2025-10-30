@@ -44,12 +44,12 @@ final class RMCharacterDetailViewViewModel {
         ))
         
         sections.append(.episodes(
-            viewModel: character.episode.compactMap({
+            viewModel: character.episode.compactMap {
                 if let episodeURL = URL(string: $0) {
                     return RMEpisodeCollectionViewCellViewModel(episodeUrl: episodeURL)
                 }
                 return nil
-            })
+            }
         ))
     }
 }

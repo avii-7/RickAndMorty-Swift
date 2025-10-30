@@ -32,16 +32,3 @@ final class RemoteDataSource: RemoteListSource {
         return response
     }
 }
-
-struct RemoteDataSourceV2: RemoteListSourceV2 {
-    
-    private let httpClient: HTTPClient
-    
-    init(httpClient: HTTPClient) {
-        self.httpClient = httpClient
-    }
-    
-    func fetch<T>(endPoint: NetworkEndpoint) async throws(Networking.NetworkError) -> T where T : Decodable {
-        return try await httpClient.execute(httpRequest: endPoint)
-    }
-}
