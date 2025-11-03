@@ -41,7 +41,7 @@ final class RMCharacterPhotoCollectionViewCell: UICollectionViewCell {
     
     func configure(with viewModel: RMCharacterPhotoCollectionViewCellViewModel) {
         
-        Task { @MainActor [weak self] in
+        Task { [weak self] in
             do {
                 let response = try await viewModel.fetchImage()
                 

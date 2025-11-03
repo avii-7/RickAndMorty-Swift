@@ -91,7 +91,7 @@ final class RMEpisodeCollectionViewCell: UICollectionViewCell {
             guard let self else { return }
             self.nameLabel.text = result.name
             self.episodeLabel.text = result.episode
-            self.airDateLabel.text = result.air_date
+            self.airDateLabel.text = result.airDate
         }
         viewModel.fetchEpisode()
         

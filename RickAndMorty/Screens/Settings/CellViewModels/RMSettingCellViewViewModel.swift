@@ -16,7 +16,7 @@ struct RMSettingCellViewViewModel: Identifiable {
      let onTapHandler: (RMSettingOption) -> Void
     
     // MARK: - Init
-    
+
     init(type: RMSettingOption, onTapHandler: @escaping (RMSettingOption) -> Void) {
         self.type = type
         self.onTapHandler = onTapHandler

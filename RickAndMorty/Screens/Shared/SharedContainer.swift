@@ -14,4 +14,12 @@ extension SharedContainer {
         self { HTTPClient() }
             .singleton
     }
+    
+    var locationsSource: Factory<LocationsSource> {
+        self { DefaultLocationsSource(httpClient: self.httpClient()) }
+    }
+    
+    var characterListSource: Factory<CharactersSource> {
+        self { DefaultCharactersSource(httpClient: self.httpClient()) }
+    }
 }

@@ -20,7 +20,14 @@ final class CharacterCoordinator {
     private let diContainer: CharacterDIContainer
     
     var rootView: some View {
-        CharacterListView(viewModel: CharacterListViewModel(listSource: diContainer.characterListSource()))
+        CharacterListView(
+            viewModel: CharacterListViewModel(
+                listSource: diContainer.characterListSource(),
+                action: .init(
+                    didTapCharacter: goToDetails(character:)
+                )
+            )
+        )
     }
     
     init(diContainer: CharacterDIContainer) {
@@ -35,7 +42,12 @@ final class CharacterCoordinator {
     func build(page: NavigationRoute) -> some View {
         switch page {
         case .characterDetails(let character):
-            CharacterDetailView(character: character)
+            CharacterDetailView(
+                viewModel: CharacterDetailViewModel(
+                    character: character,
+                    source: diContainer.characterListSource()
+                )
+            )
         }
     }
 }

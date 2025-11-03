@@ -2,7 +2,7 @@
 //  CharacterCoordinatorView.swift
 //  RickAndMorty
 //
-//  Created by Avii 🔥  on 30/10/25.
+//  Created by Avii 🔥 on 30/10/25.
 //
 
 import SwiftUI
@@ -15,11 +15,9 @@ struct CharacterCoordinatorView: View {
         NavigationStack(path: $coordinator.navigationPath) {
             coordinator.rootView
                 .navigationDestination(for: CharacterCoordinator.NavigationRoute.self) { route in
-                    switch route {
-                    case .characterDetails(let character):
-                        CharacterDetailView(character: character)
-                    }
+                    coordinator.build(page: route)
                 }
         }
+        .tint(.white)
     }
 }
