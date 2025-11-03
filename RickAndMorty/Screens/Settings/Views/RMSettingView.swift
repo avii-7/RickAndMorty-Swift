@@ -31,8 +31,9 @@ struct RMSettingView: View {
                 }
                 Text(model.title)
                 Spacer()
-            }.padding(.init(top: 7, leading: 0, bottom: 7, trailing: 0))
-                .onTapGesture {
+            }
+            .padding(.vertical, 7)
+            .onTapGesture {
                 model.onTapHandler(model.type)
             }
         }

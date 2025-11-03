@@ -32,7 +32,7 @@ struct RMEpisodeHelper {
         let cellViewModels: [SectionType] = [
             .information(viewModel:[
                 .init(title: "Name", value: episode.name),
-                .init(title: "Air date", value: episode.air_date),
+                .init(title: "Air date", value: episode.airDate),
                 .init(title: "Episode", value: episode.episode),
                 .init(title: "Created", value: formattedDate)
             ]),

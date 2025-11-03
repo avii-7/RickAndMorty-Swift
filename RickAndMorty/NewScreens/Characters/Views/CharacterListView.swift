@@ -8,8 +8,6 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
-
-
 struct CharacterListView: View {
     
     @State var viewModel: CharacterListViewModel
@@ -44,7 +42,7 @@ struct CharacterListView: View {
                                 }
                             }
                             .onTapGesture {
-                                print("Tapped character: \(index)")
+                                viewModel.didTap(character)
                             }
                         }
                     }
@@ -55,6 +53,12 @@ struct CharacterListView: View {
                     }
                 }
                 .padding(.horizontal, 10)
+                .overlay {
+                    if viewModel.viewState == .loading {
+                        ProgressView("Your content is loading")
+                            .controlSize(.extraLarge)
+                    }
+                }
             }
             .defaultScrollAnchor(.top)
         }
@@ -64,7 +68,9 @@ struct CharacterListView: View {
 #Preview {
     NavigationStack {
         CharacterListView(
-            viewModel: CharacterListViewModel(listSource: MockCharacterListSource())
+            viewModel: CharacterListViewModel(
+                listSource: MockCharactersSource(),
+                action: .init(didTapCharacter: { _ in }))
         )
         .preferredColorScheme(.dark)
     }

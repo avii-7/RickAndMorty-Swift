@@ -12,58 +12,79 @@ import Networking
 /// Controllers to house tabs and root tab controllers
 final class RMTabBarViewController: UITabBarController {
     
+    enum TabbarItem: CaseIterable {
+        case characterNew
+        case character
+        case locationNew
+        case location
+        case episode
+        case settings
+        
+        var title: String {
+            switch self {
+            case .character, .characterNew: "Characters"
+            case .location, .locationNew: "Locations"
+            case .episode: "Episodes"
+            case .settings: "Settings"
+            }
+        }
+        
+        var systemIcons: String {
+            switch self {
+            case .character, .characterNew: "person"
+            case .location, .locationNew: "globe"
+            case .episode: "tv"
+            case .settings: "gear"
+            }
+        }
+    }
+    
     override func loadView() {
         super.loadView()
-        
         setUpTabs()
     }
     
     private func setUpTabs() {
-        let tabBarItemTitles = ["Characters", "Locations", "Episodes", "Settings"]
-        let tabBarIcons = ["person", "globe", "tv", "gear"]
         
-        let characterVC = UIHostingController(rootView: CharacterListNavigationView())
-        let locationVC = RMLocationViewController()
-        let episodesVC = RMEpisodeViewController()
-        let settingsVC = RMSettingsViewController()
+        let characterVCNew = UIHostingController(rootView: CharacterCoordinatorView())
+        let locationVCNew = UIHostingController(rootView: LocationsCoordinatorView())
         
-        var viewControllers: [UIViewController] = []
+        let characterVC = wrappedIntoNavigationVC(RMCharacterViewController())
+        let locationVC = wrappedIntoNavigationVC(RMLocationViewController())
+        let episodesVC = wrappedIntoNavigationVC(RMEpisodeViewController())
+        let settingsVC = wrappedIntoNavigationVC(RMSettingsViewController())
         
-        for (index, vc) in [characterVC, locationVC, episodesVC, settingsVC].enumerated() {
+        for (index, tabItem) in TabbarItem.allCases.enumerated() {
             
-            vc.navigationItem.largeTitleDisplayMode = .automatic
+            let tabBarItem = UITabBarItem(
+                title: tabItem.title,
+                image: UIImage(systemName: tabItem.systemIcons),
+                tag: index
+            )
             
-            let wrappedVC: UIViewController
-            
-            if index == 0 {
-                vc.tabBarItem = UITabBarItem(
-                    title: tabBarItemTitles[index],
-                    image: UIImage(systemName: tabBarIcons[index]), tag: index)
-                
-                wrappedVC = vc
+            switch tabItem {
+            case .characterNew:
+                characterVCNew.tabBarItem = tabBarItem
+            case .character:
+                characterVC.tabBarItem = tabBarItem
+            case .locationNew:
+                locationVCNew.tabBarItem = tabBarItem
+            case .location:
+                locationVC.tabBarItem = tabBarItem
+            case .episode:
+                episodesVC.tabBarItem = tabBarItem
+            case .settings:
+                settingsVC.tabBarItem = tabBarItem
             }
-            else {
-                let navigationVC = UINavigationController(rootViewController: vc)
-                navigationVC.navigationBar.prefersLargeTitles  = true
-                
-                navigationVC.tabBarItem = UITabBarItem(
-                    title: tabBarItemTitles[index],
-                    image: UIImage(systemName: tabBarIcons[index]), tag: index)
-                
-                wrappedVC = navigationVC
-            }
-
-            viewControllers.append(wrappedVC)
         }
         
-        setViewControllers(viewControllers, animated: true)
+        setViewControllers([characterVCNew, characterVC, locationVCNew, locationVC, episodesVC, settingsVC], animated: true)
     }
     
-    private func getCharacterListViewController() -> UIViewController {
-        let remoteSource = DefaultRemoteListSourceV2(httpClient: HTTPClient())
-        let listSource = DefaultCharacterListSource(remoteListSource: remoteSource)
-        let viewModel = CharacterListViewModel(listSource: listSource)
-        let controller = UIHostingController(rootView: CharacterListView(viewModel: viewModel))
-        return controller
+    private func wrappedIntoNavigationVC(_ vc: UIViewController) -> UINavigationController {
+        vc.navigationItem.largeTitleDisplayMode = .automatic
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.navigationBar.prefersLargeTitles = true
+        return navVC
     }
 }

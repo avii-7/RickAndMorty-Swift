@@ -7,6 +7,65 @@
 
 import Foundation
 
+enum CharacterInfoType: String, Identifiable, CaseIterable {
+    
+    var id: Self { self }
+    
+    case status = "Status"
+    case gender = "Gender"
+    case type = "Type"
+    case species = "Species"
+    case origin = "Origin"
+    case location = "Location"
+    case created = "Created"
+    case episodeCount = "Episodes Count"
+    
+    func getSystemImageName(using model: RMCharacter) -> String {
+        switch self {
+        case .status: self.getSystemImage(using: model.status)
+        case .gender: self.getSystemImage(using: model.gender)
+        case .type: "atom"
+        case .species: model.species.caseInsensitiveCompare("Human") == .orderedSame ? "person" : "circle.dotted.and.circle"
+        case .origin: "globe.americas.fill"
+        case .location: "mappin.and.ellipse"
+        case .created: "calendar"
+        case .episodeCount: "number"
+        }
+    }
+    
+    private static let unknownSystemImage = "questionmark.circle.fill"
+    
+    private func getSystemImage(using status: RMCharacterStatus) -> String {
+        switch status {
+        case .alive: "heart.fill"
+        case .dead: "heart.slash.fill"
+        case .unknown: Self.unknownSystemImage
+        }
+    }
+    
+    private func getSystemImage(using status: RMCharacterGender) -> String {
+        switch status {
+        case .male: "figure.stand"
+        case .female: "figure.stand.dress"
+        case .genderless: "figure.stand.dress.line.vertical.figure"
+        case .unknown: Self.unknownSystemImage
+        }
+    }
+    
+    func getValue(using model: RMCharacter) -> String {
+        switch self {
+        case .status: model.status.rawValue
+        case .gender: model.gender.rawValue
+        case .type: model.type
+        case .species: model.species
+        case .origin: model.origin.name
+        case .location: model.location.name
+        case .created: model.created
+        case .episodeCount: String(model.episode.count)
+        }
+    }
+}
+
 struct RMCharacter: Decodable, Identifiable {
     let id: Int
     let name: String
@@ -48,7 +107,7 @@ extension RMCharacter {
     }
 }
 
-enum RMCharacterStatus: String, Codable {
+enum RMCharacterStatus: String, Codable, Hashable {
     case alive = "Alive"
     case dead = "Dead"
     case unknown = "unknown"
@@ -63,7 +122,7 @@ enum RMCharacterStatus: String, Codable {
     }
 }
 
-enum RMCharacterGender: String, Codable {
+enum RMCharacterGender: String, Codable, Hashable {
     case female = "Female"
     case male = "Male"
     case genderless = "Genderless"
