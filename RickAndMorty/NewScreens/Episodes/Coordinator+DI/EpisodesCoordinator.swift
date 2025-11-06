@@ -19,18 +19,18 @@ final class EpisodesCoordinator: BaseCoordinator {
     var navigationPath = [NavigationRoute]()
     
     @ObservationIgnored
-    let diContainer: LocationsDIContainer
+    let diContainer: EpisodesDIContainer
     
     var rootView: some View {
-        LocationListView(
-            viewModel: LocationListViewModel(
-                source: diContainer.locationsSource(),
-                action: .init(didTapLocaton: goToDetails)
+        EpisodeListView(
+            viewModel: EpisodeListViewModel(
+                listSource: diContainer.episodesSource(),
+                action: .init(didTapEpisode: didTap(_:))
             )
         )
     }
     
-    init(diContainer: LocationsDIContainer) {
+    init(diContainer: EpisodesDIContainer) {
         self.diContainer = diContainer
     }
 

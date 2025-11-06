@@ -13,6 +13,7 @@ struct EpisodeListView: View {
     
     var body: some View {
         content
+            .navigationTitle("Episodes")
             .task {
                 if viewModel.episodes.isEmpty {
                     await viewModel.fetchInitialEpisodes()

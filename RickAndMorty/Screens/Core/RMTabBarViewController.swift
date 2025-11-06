@@ -17,6 +17,7 @@ final class RMTabBarViewController: UITabBarController {
         case character
         case locationNew
         case location
+        case episodeNew
         case episode
         case settings
         
@@ -24,7 +25,7 @@ final class RMTabBarViewController: UITabBarController {
             switch self {
             case .character, .characterNew: "Characters"
             case .location, .locationNew: "Locations"
-            case .episode: "Episodes"
+            case .episode, .episodeNew: "Episodes"
             case .settings: "Settings"
             }
         }
@@ -33,7 +34,7 @@ final class RMTabBarViewController: UITabBarController {
             switch self {
             case .character, .characterNew: "person"
             case .location, .locationNew: "globe"
-            case .episode: "tv"
+            case .episode, .episodeNew: "tv"
             case .settings: "gear"
             }
         }
@@ -48,6 +49,7 @@ final class RMTabBarViewController: UITabBarController {
         
         let characterVCNew = UIHostingController(rootView: CharacterCoordinatorView())
         let locationVCNew = UIHostingController(rootView: LocationsCoordinatorView())
+        let episodeVCNew = UIHostingController(rootView: EpisodesCoordinatorView())
         
         let characterVC = wrappedIntoNavigationVC(RMCharacterViewController())
         let locationVC = wrappedIntoNavigationVC(RMLocationViewController())
@@ -71,6 +73,8 @@ final class RMTabBarViewController: UITabBarController {
                 locationVCNew.tabBarItem = tabBarItem
             case .location:
                 locationVC.tabBarItem = tabBarItem
+            case .episodeNew:
+                episodeVCNew.tabBarItem = tabBarItem
             case .episode:
                 episodesVC.tabBarItem = tabBarItem
             case .settings:
@@ -78,7 +82,19 @@ final class RMTabBarViewController: UITabBarController {
             }
         }
         
-        setViewControllers([locationVCNew, characterVCNew, characterVC, locationVC, episodesVC, settingsVC], animated: true)
+        setViewControllers(
+            [
+                characterVCNew,
+                episodeVCNew,
+                locationVCNew,
+                settingsVC,
+                
+                characterVC,
+                locationVC,
+                episodesVC
+            ],
+            animated: true
+        )
     }
     
     private func wrappedIntoNavigationVC(_ vc: UIViewController) -> UINavigationController {
