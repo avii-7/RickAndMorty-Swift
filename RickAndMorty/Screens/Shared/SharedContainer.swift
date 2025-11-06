@@ -19,7 +19,11 @@ extension SharedContainer {
         self { DefaultLocationsSource(httpClient: self.httpClient()) }
     }
     
-    var characterListSource: Factory<CharactersSource> {
+    var charactersSource: Factory<CharactersSource> {
         self { DefaultCharactersSource(httpClient: self.httpClient()) }
+    }
+    
+    var episodesSource: Factory<EpisodesSource> {
+        self { DefaultEpisodesSource(httpClient: self.httpClient()) }
     }
 }

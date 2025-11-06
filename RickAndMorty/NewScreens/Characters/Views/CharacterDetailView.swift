@@ -62,6 +62,9 @@ struct CharacterDetailView: View {
                         LazyHStack(spacing: 10) {
                             ForEach(viewModel.episodes) { episode in
                                 getEpisodes(using: episode)
+                                    .onTapGesture {
+                                        viewModel.didTapEpisode(episode)
+                                    }
                             }
                         }
                     }
@@ -112,7 +115,8 @@ struct CharacterDetailView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(episode.name)
                 .font(.title3)
-                .lineLimit(2, reservesSpace: true)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
             
             Text(episode.episode)
                 .font(.subheadline)
@@ -122,6 +126,7 @@ struct CharacterDetailView: View {
                 .font(.footnote)
                 .foregroundStyle(Color(.secondaryLabel))
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 16)
         .padding(.horizontal, 16)
         .containerRelativeFrame(.horizontal) { length, _ in
@@ -141,7 +146,7 @@ struct CharacterDetailView: View {
     CharacterDetailView(
         viewModel: CharacterDetailViewModel(
             character: .getDefault(index: 0),
-            source: MockCharactersSource()
+            source: MockCharactersSource(), action: .init(didTapEpisode: { _ in })
         )
     )
     .preferredColorScheme(.dark)
@@ -158,9 +163,13 @@ final class CharacterDetailViewModel {
     
     var episodes: [RMEpisode] = []
     
-    init(character: RMCharacter, source: CharactersSource) {
+    @ObservationIgnored
+    private let action: Action
+    
+    init(character: RMCharacter, source: CharactersSource, action: Action) {
         self.character = character
         self.source = source
+        self.action = action
     }
     
     func fetchEpisdes() async {
@@ -181,5 +190,16 @@ final class CharacterDetailViewModel {
         catch {
             printError(error)
         }
+    }
+    
+    func didTapEpisode(_ episode: RMEpisode) {
+        action.didTapEpisode(episode)
+    }
+}
+
+extension CharacterDetailViewModel {
+    
+    struct Action {
+        let didTapEpisode: (RMEpisode) -> Void
     }
 }

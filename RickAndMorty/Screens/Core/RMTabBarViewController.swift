@@ -78,7 +78,7 @@ final class RMTabBarViewController: UITabBarController {
             }
         }
         
-        setViewControllers([characterVCNew, characterVC, locationVCNew, locationVC, episodesVC, settingsVC], animated: true)
+        setViewControllers([locationVCNew, characterVCNew, characterVC, locationVC, episodesVC, settingsVC], animated: true)
     }
     
     private func wrappedIntoNavigationVC(_ vc: UIViewController) -> UINavigationController {

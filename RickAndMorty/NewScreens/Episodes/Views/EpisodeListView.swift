@@ -1,48 +1,44 @@
 //
-//  LocationListView.swift
+//  EpisodeListView.swift
 //  RickAndMorty
 //
-//  Created by Avii 🔥 on 31/10/25.
+//  Created by Avii 🔥 on 04/11/25.
 //
 
 import SwiftUI
 
-struct LocationListView: View {
+struct EpisodeListView: View {
     
-    @State var viewModel: LocationListViewModel
+    @State var viewModel: EpisodeListViewModel
     
     var body: some View {
         content
-            .navigationTitle("Locations")
-            .background(.black)
             .task {
-                if viewModel.locations.isEmpty {
-                    await viewModel.fetchLocations()
+                if viewModel.episodes.isEmpty {
+                    await viewModel.fetchInitialEpisodes()
                 }
             }
     }
     
     private var content: some View {
         List {
-            ForEach(Array(viewModel.locations.enumerated()), id: \.offset) { index, location in
-                
+            ForEach(Array(viewModel.episodes.enumerated()), id: \.offset) { index, episode in
                 Group {
-                    if index == viewModel.locations.endIndex - 1 {
-                        getView(location)
+                    if index == viewModel.episodes.count - 1 {
+                        getEpisodeRow(episode)
                             .onAppear {
-                                print("Executing next page fetch \(index) - \(location.name)")
-                                viewModel.fetchNextPageLocations()
+                                viewModel.fetchNextPageCharacters()
                             }
                     }
                     else {
-                        getView(location)
+                        getEpisodeRow(episode)
                     }
                 }
                 .onTapGesture {
-                    viewModel.didTapLocation(location)
+                    viewModel.didTapEpisode(episode)
                 }
             }
-
+            
             if viewModel.hasMore {
                 ProgressView()
                     .controlSize(.large)
@@ -51,17 +47,17 @@ struct LocationListView: View {
         }
     }
     
-    private func getView(_ location: RMLocation) -> some View {
+    private func getEpisodeRow(_ episode: RMEpisode) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(location.name)
+            Text(episode.name)
                 .foregroundStyle(.white)
                 .font(.title3)
             
-            Text("Type: \(location.type)")
+            Text(episode.episode)
                 .foregroundStyle(.white.secondary)
                 .font(.subheadline)
             
-            Text("Dimension: \(location.dimension)")
+            Text(episode.airDate)
                 .foregroundStyle(.white)
                 .font(.body)
                 .foregroundStyle(.white.tertiary)
@@ -71,10 +67,15 @@ struct LocationListView: View {
     }
 }
 
-@Observable @MainActor
-final class LocationListViewModel {
+//#Preview {
+//    EpisodeListView()
+//}
+
+@Observable
+@MainActor
+final class EpisodeListViewModel {
     
-    var locations: [RMLocation] = []
+    var episodes: [RMEpisode] = []
     
     var viewState = ViewState.idle
     
@@ -89,26 +90,26 @@ final class LocationListViewModel {
     @ObservationIgnored
     var nextPage: Int = 1
     
-    @ObservationIgnored nonisolated
-    let source: LocationsSource
-    
     @ObservationIgnored
-    let action: Action
+    private let listSource: EpisodesSource
+
+    @ObservationIgnored
+    private let action: Action
     
-    init(source: LocationsSource, action: Action) {
-        self.source = source
+    init(listSource: EpisodesSource, action: Action) {
+        self.listSource = listSource
         self.action = action
     }
     
-    func fetchLocations() async {
+    func fetchInitialEpisodes() async {
         
         if viewState.isLoading { return }
         
         viewState = .loading
         
         do {
-            let response: RMAllLocations = try await source.fetchLocations(pageNo: nextPage)
-            self.locations = response.results
+            let response: RMAllEpisodes = try await listSource.fetchAllEpisodes(pageNo: nextPage)
+            self.episodes = response.results
             self.pageInfo = response.info
             if pageInfo?.next != nil { nextPage += 1 }
             viewState = .loaded
@@ -119,7 +120,7 @@ final class LocationListViewModel {
         }
     }
     
-    func fetchNextPageLocations() {
+    func fetchNextPageCharacters() {
         
         if paginationState.isLoading { return }
         
@@ -127,8 +128,8 @@ final class LocationListViewModel {
         
         Task {
             do {
-                let response: RMAllLocations = try await source.fetchLocations(pageNo: nextPage)
-                self.locations.append(contentsOf: response.results)
+                let response: RMAllEpisodes = try await listSource.fetchAllEpisodes(pageNo: nextPage)
+                self.episodes.append(contentsOf: response.results)
                 self.pageInfo = response.info
                 if pageInfo?.next != nil { nextPage += 1 }
                 paginationState = .loaded
@@ -140,14 +141,14 @@ final class LocationListViewModel {
         }
     }
     
-    func didTapLocation(_ location: RMLocation) {
-        action.didTapLocaton(location)
+    func didTapEpisode(_ episode: RMEpisode) {
+        action.didTapEpisode(episode)
     }
 }
 
-extension LocationListViewModel {
+extension EpisodeListViewModel {
     
     struct Action {
-        let didTapLocaton: (RMLocation) -> Void
+        let didTapEpisode: (RMEpisode) -> Void
     }
 }

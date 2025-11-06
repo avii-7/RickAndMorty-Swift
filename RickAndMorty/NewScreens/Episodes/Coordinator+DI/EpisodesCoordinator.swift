@@ -1,61 +1,43 @@
 //
-//  CharacterCoordinator.swift
+//  EpisodesCoordinator.swift
 //  RickAndMorty
 //
-//  Created by Avii 🔥 on 30/10/25.
+//  Created by Avii 🔥 on 04/11/25.
 //
 
 import SwiftUI
-import FactoryKit
-
-
-@MainActor
-protocol BaseCoordinator: AnyObject {
-    
-    associatedtype Route: Hashable
-    
-    associatedtype Body: View
-    
-    associatedtype Container: SharedContainer
-    
-    associatedtype NavigationRoute: Hashable
-    
-    var navigationPath: [Route] { get set }
-    
-    var rootView: Self.Body { get }
-    
-    var diContainer: Container { get }
-}
 
 @Observable
-final class CharacterCoordinator: BaseCoordinator {
+final class EpisodesCoordinator: BaseCoordinator {
     
     enum NavigationRoute {
-        case characterDetails(character: RMCharacter)
         case episodeDetails(episode: RMEpisode)
         case locationDetails(location: RMLocation)
+        case characterDetails(character: RMCharacter)
     }
-
-    var navigationPath: [NavigationRoute] = []
-
-    @ObservationIgnored
-    let diContainer: CharacterDIContainer
     
-    var rootView: AnyView {
-        AnyView(
-            CharacterListView(
-                viewModel: CharacterListViewModel(
-                    listSource: diContainer.charactersSource(),
-                    action: .init(didTapCharacter: didTap)
-                )
+    var navigationPath = [NavigationRoute]()
+    
+    @ObservationIgnored
+    let diContainer: LocationsDIContainer
+    
+    var rootView: some View {
+        LocationListView(
+            viewModel: LocationListViewModel(
+                source: diContainer.locationsSource(),
+                action: .init(didTapLocaton: goToDetails)
             )
         )
     }
     
-    init(diContainer: CharacterDIContainer) {
+    init(diContainer: LocationsDIContainer) {
         self.diContainer = diContainer
     }
 
+    private func goToDetails(location: RMLocation) {
+        navigationPath.append(.locationDetails(location: location))
+    }
+    
     @ViewBuilder
     func build(page: NavigationRoute) -> some View {
         switch page {
@@ -67,7 +49,6 @@ final class CharacterCoordinator: BaseCoordinator {
                     action: .init(didTapResident: didTap)
                 )
             )
-            
         case .characterDetails(let character):
             CharacterDetailView(
                 viewModel: CharacterDetailViewModel(
@@ -87,6 +68,10 @@ final class CharacterCoordinator: BaseCoordinator {
         }
     }
     
+    private func didTap(_ location: RMLocation) {
+        navigationPath.append(.locationDetails(location: location))
+    }
+    
     private func didTap(_ episode: RMEpisode) {
         navigationPath.append(.episodeDetails(episode: episode))
     }
@@ -96,13 +81,12 @@ final class CharacterCoordinator: BaseCoordinator {
     }
 }
 
-extension CharacterCoordinator.NavigationRoute: Hashable {
+extension EpisodesCoordinator.NavigationRoute: Hashable {
     
-    static func == (lhs: CharacterCoordinator.NavigationRoute, rhs: CharacterCoordinator.NavigationRoute) -> Bool {
+    static func == (lhs: EpisodesCoordinator.NavigationRoute, rhs: EpisodesCoordinator.NavigationRoute) -> Bool {
         switch (lhs, rhs) {
-        case (.characterDetails, .characterDetails): true
-        case (.episodeDetails, .episodeDetails): true
         case (.locationDetails, .locationDetails): true
+        case (.characterDetails, .characterDetails): true
         default: false
         }
     }

@@ -40,3 +40,22 @@ extension RMEpisode {
         )
     }
 }
+
+enum EpisodeInfoType: String, Identifiable, CaseIterable {
+    
+    var id: Self { self }
+    
+    case name = "Name"
+    case episode = "Episode"
+    case airDate = "Air Date"
+    case created = "Created"
+    
+    func getValue(from episode: RMEpisode) -> String {
+        switch self {
+        case .name: episode.name
+        case .episode: episode.episode
+        case .airDate: episode.airDate
+        case .created: episode.created
+        }
+    }
+}

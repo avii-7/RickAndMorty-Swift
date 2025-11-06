@@ -31,8 +31,4 @@ extension CharactersHTTPRequest: HTTPRequest {
     var httpMethod: HTTPMethod {
         .get
     }
-    
-    var baseURL: URL {
-        URL(string: NetworkConstants.baseUrl)!
-    }
 }
