@@ -41,7 +41,7 @@ final class CharacterCoordinator: BaseCoordinator {
     @ObservationIgnored
     let diContainer: CharacterDIContainer
     
-    var rootView: AnyView {
+    var rootView: some View {
         CharacterListView(
             viewModel: CharacterListViewModel(
                 listSource: diContainer.charactersSource(),
