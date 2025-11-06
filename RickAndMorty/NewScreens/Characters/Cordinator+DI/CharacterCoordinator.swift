@@ -42,12 +42,10 @@ final class CharacterCoordinator: BaseCoordinator {
     let diContainer: CharacterDIContainer
     
     var rootView: AnyView {
-        AnyView(
-            CharacterListView(
-                viewModel: CharacterListViewModel(
-                    listSource: diContainer.charactersSource(),
-                    action: .init(didTapCharacter: didTap)
-                )
+        CharacterListView(
+            viewModel: CharacterListViewModel(
+                listSource: diContainer.charactersSource(),
+                action: .init(didTapCharacter: didTap)
             )
         )
     }
