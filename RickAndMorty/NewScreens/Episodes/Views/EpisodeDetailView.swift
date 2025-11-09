@@ -27,29 +27,34 @@ struct EpisodeDetailView: View {
     }
     
     private var content: some View {
-        GeometryReader { proxy in
-            ScrollView {
-                VStack {
-                    info
-                    
-                    residents(size: proxy.size)
-                }
-                .padding(.horizontal, 16)
+        ScrollView {
+            VStack(spacing: SectionsVerticalPadding) {
+                info
+                
+                residents()
             }
         }
+        .contentMargins(.horizontal, ScreenEdgesHorizontalPadding, for: .scrollContent)
     }
 
     private var info: some View {
         VStack(spacing: 10) {
-            ForEach(EpisodeInfoType.allCases) { episode in
+            ForEach(EpisodeInfoType.allCases) { type in
                 HStack {
-                    Text("\(episode.rawValue): ")
+                    Text("\(type.rawValue): ")
                         .foregroundStyle(.primary)
                     
                     Spacer()
                     
-                    Text(episode.getValue(from: viewModel.episode))
-                        .lineLimit(1)
+                    Group {
+                        if type == .created {
+                            Text(type.getValue(from: viewModel.episode), format: .rmCustomDate)
+                        }
+                        else {
+                            Text(type.getValue(from: viewModel.episode))
+                        }
+                    }
+                    .lineLimit(1)
                 }
                 .padding(20)
                 .clipShape(.rect(cornerRadius: 12))
@@ -62,14 +67,14 @@ struct EpisodeDetailView: View {
     }
     
     @ViewBuilder
-    private func residents(size: CGSize) -> some View {
+    private func residents() -> some View {
         if viewModel.viewState.isLoading {
             loader
         }
         else {
             LazyVGrid(columns: columns, spacing: 10) {
                 ForEach(Array(viewModel.characters.enumerated()), id: \.element.id) { index, character in
-                    CharacterItemView(character: character, parentSize: size)
+                    CharacterItemView(character: character)
                         .onTapGesture {
                             viewModel.didTap(character)
                         }

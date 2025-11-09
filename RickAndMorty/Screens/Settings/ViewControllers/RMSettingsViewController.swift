@@ -50,7 +50,6 @@ class RMSettingsViewController: UIViewController {
     }
     
     private func handleTap(for option: RMSettingOption) {
-        if !Thread.current.isMainThread { return }
         
         if let url = option.targetUrl {
             let safariVC = SFSafariViewController(url: url)

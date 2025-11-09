@@ -27,29 +27,34 @@ struct LocationDetailView: View {
     }
     
     private var content: some View {
-        GeometryReader { proxy in
-            ScrollView {
-                VStack {
-                    info
-                    
-                    residents(size: proxy.size)
-                }
-                .padding(.horizontal, 16)
+        ScrollView {
+            VStack(spacing: SectionsVerticalPadding) {
+                info
+                
+                residents()
             }
         }
+        .contentMargins(.horizontal, ScreenEdgesHorizontalPadding, for: .scrollContent)
     }
 
     private var info: some View {
         VStack(spacing: 10) {
-            ForEach(LocationInfoType.allCases) { location in
+            ForEach(LocationInfoType.allCases) { type in
                 HStack {
-                    Text("\(location.rawValue): ")
+                    Text("\(type.rawValue): ")
                         .foregroundStyle(.primary)
                     
                     Spacer()
                     
-                    Text(location.getValue(from: viewModel.location))
-                        .lineLimit(1)
+                    Group {
+                        if type == .created {
+                            Text(type.getValue(from: viewModel.location), format: .rmCustomDate)
+                        }
+                        else {
+                            Text(type.getValue(from: viewModel.location))
+                        }
+                    }
+                    .lineLimit(1)
                 }
                 .padding(20)
                 .clipShape(.rect(cornerRadius: 12))
@@ -62,14 +67,14 @@ struct LocationDetailView: View {
     }
     
     @ViewBuilder
-    private func residents(size: CGSize) -> some View {
+    private func residents() -> some View {
         if viewModel.viewState.isLoading {
             loader
         }
         else {
             LazyVGrid(columns: columns, spacing: 10) {
                 ForEach(Array(viewModel.residents.enumerated()), id: \.element.id) { index, resident in
-                    CharacterItemView(character: resident, parentSize: size)
+                    CharacterItemView(character: resident)
                         .onTapGesture {
                             viewModel.didTap(resident)
                         }

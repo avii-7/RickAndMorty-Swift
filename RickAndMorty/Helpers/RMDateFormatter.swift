@@ -7,6 +7,23 @@
 
 import Foundation
 
+struct RMDateFormat: FormatStyle {
+    
+    func format(_ value: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSZ"
+        formatter.timeZone = .current
+        guard let date = formatter.date(from: value) else { return value }
+        let formattedDate = date.formatted(date: .abbreviated, time: .omitted)
+        return formattedDate
+    }
+}
+
+extension FormatStyle where Self == RMDateFormat {
+    
+    static var rmCustomDate: Self { .init() }
+}
+
 struct RMDateFormatter {
     
     private static let dateFormatter: DateFormatter = {

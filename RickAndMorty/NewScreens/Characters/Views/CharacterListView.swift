@@ -16,6 +16,7 @@ struct CharacterListView: View {
     
     var body: some View {
         content
+            .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Characters")
             .task {
                 if viewModel.characters.isEmpty {
@@ -24,43 +25,48 @@ struct CharacterListView: View {
             }
     }
     
+    @ViewBuilder
     private var content: some View {
         GeometryReader { geometry in
-            ScrollView {
-                Section {
-                    LazyVGrid(columns: columns, spacing: 10) {
-                        ForEach(Array(viewModel.characters.enumerated()), id: \.element.id) { index, character in
-                            Group {
-                                if index == viewModel.characters.endIndex - 1 {
-                                    CharacterItemView(character: character, parentSize: geometry.size)
-                                        .onAppear {
-                                            viewModel.fetchNextPageCharacters()
-                                        }
+            if viewModel.characters.isEmpty {
+                ProgressView {
+                    Text("Your content is loading...")
+                        .controlSize(.extraLarge)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            }
+            else {
+                ScrollView {
+                    Section {
+                        LazyVGrid(columns: columns, spacing: 10) {
+                            ForEach(Array(viewModel.characters.enumerated()), id: \.element.id) { index, character in
+                                Group {
+                                    if index == viewModel.characters.endIndex - 1 {
+                                        CharacterItemView(character: character)
+                                            .onAppear {
+                                                viewModel.fetchNextPageCharacters()
+                                            }
+                                    }
+                                    else {
+                                        CharacterItemView(character: character)
+                                    }
                                 }
-                                else {
-                                    CharacterItemView(character: character, parentSize: geometry.size)
+                                .onTapGesture {
+                                    viewModel.didTap(character)
                                 }
-                            }
-                            .onTapGesture {
-                                viewModel.didTap(character)
                             }
                         }
                     }
-                }
-                footer: {
-                    if viewModel.hasMore {
-                        ProgressView()
+                    footer: {
+                        if viewModel.hasMore {
+                            ProgressView("Wait we are fetching new content...")
+                                .controlSize(.regular)
+                        }
                     }
                 }
-                .padding(.horizontal, 10)
-                .overlay {
-                    if viewModel.viewState == .loading {
-                        ProgressView("Your content is loading")
-                            .controlSize(.extraLarge)
-                    }
-                }
+                .contentMargins(.horizontal, 10, for: .scrollContent)
+                .defaultScrollAnchor(.top)
             }
-            .defaultScrollAnchor(.top)
         }
     }
 }
@@ -80,22 +86,25 @@ struct CharacterItemView: View {
     
     let character: RMCharacter
     
-    let parentSize: CGSize
-    
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
             WebImage(url: URL(string: character.image)) { image in
-                image.resizable()
-            } placeholder: {
+                image
+                    .resizable()
+            }
+            placeholder: {
                 ProgressView()
                     .controlSize(.large)
                     .aspectRatio(1, contentMode: .fit)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .frame(height: parentSize.height * 0.3)
+                    .containerRelativeFrame(.vertical, { length, _ in
+                        length * 0.25
+                    })
             }
-            .aspectRatio(1, contentMode: .fit)
-            .frame(maxWidth: .infinity)
-            .frame(height: parentSize.height * 0.3)
+            .aspectRatio(1, contentMode: .fill)
+            .containerRelativeFrame(.vertical, { length, _ in
+                length * 0.25
+            })
             .clipped()
             
             VStack(alignment: .leading, spacing: 8) {

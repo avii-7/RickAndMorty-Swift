@@ -68,15 +68,18 @@ final class RMTabBarViewController: UITabBarController {
             case .characterNew:
                 characterVCNew.tabBarItem = tabBarItem
             case .character:
-                characterVC.tabBarItem = tabBarItem
+//                characterVC.tabBarItem = tabBarItem
+                break
             case .locationNew:
                 locationVCNew.tabBarItem = tabBarItem
             case .location:
-                locationVC.tabBarItem = tabBarItem
+//                locationVC.tabBarItem = tabBarItem
+                break
             case .episodeNew:
                 episodeVCNew.tabBarItem = tabBarItem
             case .episode:
-                episodesVC.tabBarItem = tabBarItem
+//                episodesVC.tabBarItem = tabBarItem
+                break
             case .settings:
                 settingsVC.tabBarItem = tabBarItem
             }
@@ -89,9 +92,9 @@ final class RMTabBarViewController: UITabBarController {
                 locationVCNew,
                 settingsVC,
                 
-                characterVC,
-                locationVC,
-                episodesVC
+//                characterVC,
+//                locationVC,
+//                episodesVC
             ],
             animated: true
         )

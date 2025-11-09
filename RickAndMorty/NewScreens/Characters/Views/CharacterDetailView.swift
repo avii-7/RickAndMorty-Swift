@@ -2,7 +2,7 @@
 //  CharacterDetailView.swift
 //  RickAndMorty
 //
-//  Created by Avii 🔥  on 28/10/25.
+//  Created by Avii 🔥 on 28/10/25.
 //
 
 import SwiftUI
@@ -22,6 +22,7 @@ struct CharacterDetailPhotoView: View {
         .containerRelativeFrame(.horizontal) { length, axis in
             axis == .horizontal ? length : 0.4
         }
+        .clipShape(.rect(cornerRadius: 10))
     }
 }
 
@@ -38,7 +39,7 @@ struct CharacterDetailView: View {
     
     private var content: some View {
         ScrollView {
-            LazyVStack(spacing: 10) {
+            LazyVStack(spacing: SectionsVerticalPadding) {
                 if let imageUrl = URL(string: viewModel.character.image) {
                     CharacterDetailPhotoView(url: imageUrl)
                 }
@@ -48,18 +49,17 @@ struct CharacterDetailView: View {
                         GridRow(alignment: .top) {
                             ForEach(row) { info in
                                 getRowContent(
-                                    title: info.rawValue,
-                                    value: info.getValue(using: viewModel.character),
-                                    systemImageName: info.getSystemImageName(using: viewModel.character))
+                                    type: info,
+                                    model: viewModel.character
+                                )
                             }
                         }
-                        
                     }
                 }
                 
                 if viewModel.character.episode.isEmpty == false {
                     ScrollView(.horizontal) {
-                        LazyHStack(spacing: 10) {
+                        LazyHStack(alignment: .top, spacing: 10) {
                             ForEach(viewModel.episodes) { episode in
                                 getEpisodes(using: episode)
                                     .onTapGesture {
@@ -76,34 +76,41 @@ struct CharacterDetailView: View {
                     }
                 }
             }
-            .padding(.horizontal, 10)
-            .padding(.bottom)
         }
+        .contentMargins(.horizontal, 10, for: .scrollContent)
     }
     
-    private func getRowContent(title: String, value: String, systemImageName: String) -> some View {
+    private func getRowContent(type: CharacterInfoType, model: RMCharacter) -> some View {
         VStack(spacing: 10) {
             
             Label {
-                Text(value)
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
+                
+                Group {
+                    if type == .created {
+                        Text(type.getValue(using: model), format: .rmCustomDate)
+                    }
+                    else {
+                        Text(type.getValue(using: model))
+                    }
+                }
+                .foregroundStyle(.secondary)
+                .font(.subheadline)
             }
             icon: {
-                Image(systemName: systemImageName)
+                Image(systemName: type.getSystemImageName(using: model))
                     .foregroundStyle(.white)
             }
             .padding(.vertical, 35)
+            .padding(.horizontal, 10)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .background(BackgroundStyle().secondary)
             
-            Text(title)
+            Text(type.rawValue)
                 .foregroundStyle(.primary)
                 .padding(.vertical, 12)
                 .frame(maxWidth: .infinity)
                 .background(.black)
         }
-        .frame(height: 150)
         .clipShape(.rect(cornerRadius: 12))
         .overlay {
             RoundedRectangle(cornerRadius: 12)
@@ -115,14 +122,14 @@ struct CharacterDetailView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(episode.name)
                 .font(.title3)
-                .lineLimit(2)
+                .lineLimit(2, reservesSpace: true)
                 .multilineTextAlignment(.leading)
             
             Text(episode.episode)
                 .font(.subheadline)
                 .lineLimit(1)
             
-            Text(episode.created)
+            Text(episode.created, format: .rmCustomDate)
                 .font(.footnote)
                 .foregroundStyle(Color(.secondaryLabel))
         }
