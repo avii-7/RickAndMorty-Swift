@@ -50,7 +50,12 @@ final class RMSearchViewViewModel: NSObject, @unchecked Sendable {
         var queryParameters = [URLQueryItem]()
         
         if !text.isEmpty {
-            queryParameters.append(.init(name: "name", value: text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)))
+            queryParameters.append(
+                .init(
+                    name: "name",
+                    value: text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+                )
+            )
         }
         
         queryParameters.append(

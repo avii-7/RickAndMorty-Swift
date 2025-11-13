@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RMAllLocations: Decodable {
+struct RMAllLocations: Decodable, RMInfoResults {
     let info: RMInfo
     let results: [RMLocation]
 }

@@ -7,7 +7,16 @@
 
 import Foundation
 
-struct RMAllCharacters: Decodable {
+protocol RMInfoResults: Decodable {
+    
+    associatedtype T: Identifiable, Decodable
+    
+    var info: RMInfo { get }
+    
+    var results: [T] { get }
+}
+
+struct RMAllCharacters: Decodable, RMInfoResults {
     
     let info: RMInfo
     let results: [RMCharacter]

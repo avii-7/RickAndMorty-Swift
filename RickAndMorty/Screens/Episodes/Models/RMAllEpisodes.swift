@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RMAllEpisodes: Decodable {
+struct RMAllEpisodes: Decodable, RMInfoResults {
     let info: RMInfo
     let results: [RMEpisode]
 }

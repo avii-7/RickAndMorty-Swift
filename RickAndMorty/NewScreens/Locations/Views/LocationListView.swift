@@ -28,14 +28,14 @@ struct LocationListView: View {
                 
                 Group {
                     if index == viewModel.locations.endIndex - 1 {
-                        getView(location)
+                        LocationItemView(location: location)
                             .onAppear {
                                 print("Executing next page fetch \(index) - \(location.name)")
                                 viewModel.fetchNextPageLocations()
                             }
                     }
                     else {
-                        getView(location)
+                        LocationItemView(location: location)
                     }
                 }
                 .onTapGesture {
@@ -50,8 +50,13 @@ struct LocationListView: View {
             }
         }
     }
+}
+
+struct LocationItemView: View {
     
-    private func getView(_ location: RMLocation) -> some View {
+    let location: RMLocation
+    
+    var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(location.name)
                 .foregroundStyle(.white)

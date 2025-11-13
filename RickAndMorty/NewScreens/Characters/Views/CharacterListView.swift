@@ -73,12 +73,12 @@ struct CharacterListView: View {
 
 #Preview {
     NavigationStack {
-        CharacterListView(
-            viewModel: CharacterListViewModel(
-                listSource: MockCharactersSource(),
-                action: .init(didTapCharacter: { _ in }))
-        )
-        .preferredColorScheme(.dark)
+//        CharacterListView(
+//            viewModel: CharacterListViewModel(
+//                listSource: MockCharactersSource(),
+//                action: .init(didTapCharacter: { _ in }))
+//        )
+//        .preferredColorScheme(.dark)
     }
 }
 

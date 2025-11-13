@@ -5,105 +5,105 @@
 //  Created by Arun on 03/06/23.
 //
 
-import UIKit
 import SwiftUI
-import Networking
 
-/// Controllers to house tabs and root tab controllers
-final class RMTabBarViewController: UITabBarController {
+enum TabbarItem: Identifiable, CaseIterable {
+
+    var id: Self { self }
     
-    enum TabbarItem: CaseIterable {
-        case characterNew
-        case character
-        case locationNew
-        case location
-        case episodeNew
-        case episode
-        case settings
-        
-        var title: String {
-            switch self {
-            case .character, .characterNew: "Characters"
-            case .location, .locationNew: "Locations"
-            case .episode, .episodeNew: "Episodes"
-            case .settings: "Settings"
-            }
+    case characters
+    case episodes
+    case locations
+    case settings
+    case search
+    
+    
+    var title: String {
+        switch self {
+        case .characters: "Characters"
+        case .locations: "Locations"
+        case .episodes: "Episodes"
+        case .settings: "Settings"
+        case .search: "Search"
         }
-        
-        var systemIcons: String {
-            switch self {
-            case .character, .characterNew: "person"
-            case .location, .locationNew: "globe"
-            case .episode, .episodeNew: "tv"
-            case .settings: "gear"
+    }
+    
+    var searchTitle: String {
+        switch self {
+        case .characters: "Search Characters"
+        case .episodes: "Search Episodes"
+        case .locations: "Search Locations"
+        default: .empty
+        }
+    }
+
+    var systemIcons: String {
+        switch self {
+        case .characters: "person"
+        case .locations: "globe"
+        case .episodes: "tv"
+        case .settings: "gear"
+        case .search: "magnifyingglass"
+        }
+    }
+    
+    static var searchTabs: [TabbarItem] {
+        [.characters, .locations, .episodes]
+    }
+}
+
+struct RMTabView: View {
+
+    @State private var selectedTab = TabbarItem.characters
+    
+    var body: some View {
+        content
+    }
+    
+    @ViewBuilder
+    private var content: some View {
+        if #available(iOS 18.0, *) {
+            tabsForAbove17
+        }
+        else {
+            tabsForBelow17
+        }
+    }
+    
+    @available(iOS 18.0, *)
+    private var tabsForAbove17: some View {
+        TabView(selection: $selectedTab) {
+            ForEach(TabbarItem.allCases) { tab in
+                Tab(tab.title, systemImage: tab.systemIcons, value: tab, role: tab == .search ? .search : nil) {
+                    switch tab {
+                    case .characters: CharacterCoordinatorView()
+                    case .episodes: EpisodesCoordinatorView()
+                    case .locations: LocationsCoordinatorView()
+                    case .settings: Text("Settings View")
+                    case .search: Text("Search View")
+                    }
+                }
             }
         }
     }
     
-    override func loadView() {
-        super.loadView()
-        setUpTabs()
-    }
-    
-    private func setUpTabs() {
-        
-        let characterVCNew = UIHostingController(rootView: CharacterCoordinatorView())
-        let locationVCNew = UIHostingController(rootView: LocationsCoordinatorView())
-        let episodeVCNew = UIHostingController(rootView: EpisodesCoordinatorView())
-        
-        let characterVC = wrappedIntoNavigationVC(RMCharacterViewController())
-        let locationVC = wrappedIntoNavigationVC(RMLocationViewController())
-        let episodesVC = wrappedIntoNavigationVC(RMEpisodeViewController())
-        let settingsVC = wrappedIntoNavigationVC(RMSettingsViewController())
-        
-        for (index, tabItem) in TabbarItem.allCases.enumerated() {
+    @ViewBuilder
+    private var tabsForBelow17: some View {
+        TabView {
+            CharacterCoordinatorView()
+                .tabItem {
+                    Label(TabbarItem.characters.title, systemImage: TabbarItem.characters.systemIcons)
+                }
             
-            let tabBarItem = UITabBarItem(
-                title: tabItem.title,
-                image: UIImage(systemName: tabItem.systemIcons),
-                tag: index
-            )
+            EpisodesCoordinatorView()
+                .tabItem {
+                    Label(TabbarItem.episodes.title, systemImage: TabbarItem.episodes.systemIcons)
+                }
             
-            switch tabItem {
-            case .characterNew:
-                characterVCNew.tabBarItem = tabBarItem
-            case .character:
-//                characterVC.tabBarItem = tabBarItem
-                break
-            case .locationNew:
-                locationVCNew.tabBarItem = tabBarItem
-            case .location:
-//                locationVC.tabBarItem = tabBarItem
-                break
-            case .episodeNew:
-                episodeVCNew.tabBarItem = tabBarItem
-            case .episode:
-//                episodesVC.tabBarItem = tabBarItem
-                break
-            case .settings:
-                settingsVC.tabBarItem = tabBarItem
-            }
+            LocationsCoordinatorView()
+                .tabItem {
+                    Label(TabbarItem.locations.title, systemImage: TabbarItem.locations.systemIcons)
+                }
         }
-        
-        setViewControllers(
-            [
-                characterVCNew,
-                episodeVCNew,
-                locationVCNew,
-                settingsVC,
-                
-//                characterVC,
-//                locationVC,
-//                episodesVC
-            ],
-            animated: true
-        )
-    }
-    
-    private func wrappedIntoNavigationVC(_ vc: UIViewController) -> UINavigationController {
-        vc.navigationItem.largeTitleDisplayMode = .automatic
-        let navVC = UINavigationController(rootViewController: vc)
-        navVC.navigationBar.prefersLargeTitles = true
-        return navVC
     }
 }

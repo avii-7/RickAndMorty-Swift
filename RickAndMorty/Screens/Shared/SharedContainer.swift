@@ -26,4 +26,8 @@ extension SharedContainer {
     var episodesSource: Factory<EpisodesSource> {
         self { DefaultEpisodesSource(httpClient: self.httpClient()) }
     }
+    
+    var searchSource: Factory<SearchSource> {
+        self { DefaultSearchSource(httpClient: self.httpClient()) }
+    }
 }
