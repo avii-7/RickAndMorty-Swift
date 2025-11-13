@@ -79,7 +79,7 @@ struct RMTabView: View {
                     case .characters: CharacterCoordinatorView()
                     case .episodes: EpisodesCoordinatorView()
                     case .locations: LocationsCoordinatorView()
-                    case .settings: Text("Settings View")
+                    case .settings: SettingView()
                     case .search: Text("Search View")
                     }
                 }
@@ -89,18 +89,23 @@ struct RMTabView: View {
     
     @ViewBuilder
     private var tabsForBelow17: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
+            
             CharacterCoordinatorView()
+                .id(TabbarItem.characters)
                 .tabItem {
                     Label(TabbarItem.characters.title, systemImage: TabbarItem.characters.systemIcons)
+                        
                 }
             
             EpisodesCoordinatorView()
+                .id(TabbarItem.episodes)
                 .tabItem {
                     Label(TabbarItem.episodes.title, systemImage: TabbarItem.episodes.systemIcons)
                 }
             
             LocationsCoordinatorView()
+                .id(TabbarItem.locations)
                 .tabItem {
                     Label(TabbarItem.locations.title, systemImage: TabbarItem.locations.systemIcons)
                 }
