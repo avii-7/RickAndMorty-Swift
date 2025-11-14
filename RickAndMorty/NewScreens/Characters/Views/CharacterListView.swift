@@ -12,8 +12,6 @@ struct CharacterListView: View {
     
     @State var viewModel: CharacterListViewModel
     
-    private let columns = Array(repeating: GridItem(.flexible(), alignment: .top), count: 2)
-    
     var body: some View {
         content
             .navigationBarTitleDisplayMode(.inline)
@@ -26,47 +24,17 @@ struct CharacterListView: View {
     }
     
     @ViewBuilder
-    private var content: some View {
-        GeometryReader { geometry in
-            if viewModel.characters.isEmpty {
-                ProgressView {
-                    Text("Your content is loading...")
-                        .controlSize(.extraLarge)
+    var content: some View {
+        if viewModel.characters.isEmpty {
+            FullScreenLoader()
+        }
+        else {
+            CharacterListScrollView(
+                characters: viewModel.characters,
+                didTapCharacter: viewModel.didTap(_:),
+                hasMore: viewModel.hasMore) {
+                    viewModel.fetchNextPageCharacters()
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            }
-            else {
-                ScrollView {
-                    Section {
-                        LazyVGrid(columns: columns, spacing: 10) {
-                            ForEach(Array(viewModel.characters.enumerated()), id: \.element.id) { index, character in
-                                Group {
-                                    if index == viewModel.characters.endIndex - 1 {
-                                        CharacterItemView(character: character)
-                                            .onAppear {
-                                                viewModel.fetchNextPageCharacters()
-                                            }
-                                    }
-                                    else {
-                                        CharacterItemView(character: character)
-                                    }
-                                }
-                                .onTapGesture {
-                                    viewModel.didTap(character)
-                                }
-                            }
-                        }
-                    }
-                    footer: {
-                        if viewModel.hasMore {
-                            ProgressView("Wait we are fetching new content...")
-                                .controlSize(.regular)
-                        }
-                    }
-                }
-                .contentMargins(.horizontal, 10, for: .scrollContent)
-                .defaultScrollAnchor(.top)
-            }
         }
     }
 }
@@ -102,9 +70,9 @@ struct CharacterItemView: View {
                     })
             }
             .aspectRatio(1, contentMode: .fill)
-            .containerRelativeFrame(.vertical, { length, _ in
+            .containerRelativeFrame(.vertical) { length, _ in
                 length * 0.25
-            })
+            }
             .clipped()
             
             VStack(alignment: .leading, spacing: 8) {

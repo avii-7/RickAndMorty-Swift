@@ -9,9 +9,9 @@ import Networking
 import Foundation
 
 enum SearchHTTPRequest {
-    case character(query: String)
-    case location(query: String)
-    case episode(query: String)
+    case character(query: String, page: Int?)
+    case location(query: String, page: Int?)
+    case episode(query: String, page: Int?)
 }
 
 extension SearchHTTPRequest: HTTPRequest {
@@ -23,12 +23,12 @@ extension SearchHTTPRequest: HTTPRequest {
         case .episode: "/episode"
         }
     }
-    
+   
     var queryParams: [URLQueryItem]? {
         switch self {
-        case .character(let query): [.init(name: "name", value: query)]
-        case .location(let query): [.init(name: "name", value: query)]
-        case .episode(let query): [.init(name: "name", value: query)]
+        case .character(let query, let page): .create(args: ("name", query), ("page", String(page)))
+        case .location(let query, let page): .create(args: ("name", query), ("page", String(page)))
+        case.episode(let query, let page): .create(args: ("name", query), ("page", String(page)))
         }
     }
     

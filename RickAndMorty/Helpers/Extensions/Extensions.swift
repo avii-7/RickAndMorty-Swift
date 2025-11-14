@@ -17,7 +17,18 @@ extension UIView {
 }
 
 extension String {
-    static let empty = "" 
+    
+    static let empty = ""
+    
+    init?(_ value: Int?) {
+        
+        if let value {
+            self.init(value)
+        }
+        else {
+            return nil
+        }
+    }
 }
 
 extension UIDevice {

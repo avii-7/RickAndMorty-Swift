@@ -27,15 +27,6 @@ enum TabbarItem: Identifiable, CaseIterable {
         case .search: "Search"
         }
     }
-    
-    var searchTitle: String {
-        switch self {
-        case .characters: "Search Characters"
-        case .episodes: "Search Episodes"
-        case .locations: "Search Locations"
-        default: .empty
-        }
-    }
 
     var systemIcons: String {
         switch self {
@@ -80,7 +71,7 @@ struct RMTabView: View {
                     case .episodes: EpisodesCoordinatorView()
                     case .locations: LocationsCoordinatorView()
                     case .settings: SettingView()
-                    case .search: Text("Search View")
+                    case .search: SearchCoordinatorView()
                     }
                 }
             }

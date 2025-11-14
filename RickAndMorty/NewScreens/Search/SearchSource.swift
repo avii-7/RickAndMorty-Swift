@@ -10,7 +10,11 @@ import Foundation
 
 protocol SearchSource: Sendable {
     
-    func search<T: RMInfoResults>(query: String, for tab: TabbarItem) async throws -> T
+    func searchCharacter(query: String, page: Int?) async throws -> RMAllCharacters
+    
+    func searchEpisode(query: String, page: Int?) async throws -> RMAllEpisodes
+
+    func searchLocation(query: String, page: Int?) async throws -> RMAllLocations
 }
 
 struct DefaultSearchSource: SearchSource {
@@ -21,27 +25,21 @@ struct DefaultSearchSource: SearchSource {
         self.httpClient = httpClient
     }
     
-    func search<T: RMInfoResults>(query: String, for tab: TabbarItem) async throws -> T {
-        
-        let request: SearchHTTPRequest = .character(query: query)
-        
-        // TODO: - Pending.
-        guard TabbarItem.searchTabs.contains(tab) else {
-            throw NSError(domain: "Invalid tab", code: .zero)
-        }
-        
-//        switch tab {
-//        case .characters:
-//            request = .character(query: query)
-//        case .episodes:
-//            request = .episode(query: query)
-//        case .locations:
-//            request = .location(query: query)
-//        case .settings:
-//            request = .character(query: query)
-//        }
-        
-        let response: T = try await httpClient.execute(httpRequest: request)
+    func searchCharacter(query: String, page: Int? = nil) async throws -> RMAllCharacters {
+        let request: SearchHTTPRequest = .character(query: query, page: page)
+        let response: RMAllCharacters = try await httpClient.execute(httpRequest: request)
+        return response
+    }
+    
+    func searchEpisode(query: String, page: Int? = nil) async throws -> RMAllEpisodes {
+        let request: SearchHTTPRequest = .character(query: query, page: page)
+        let response: RMAllEpisodes = try await httpClient.execute(httpRequest: request)
+        return response
+    }
+    
+    func searchLocation(query: String, page: Int?) async throws -> RMAllLocations {
+        let request: SearchHTTPRequest = .character(query: query, page: page)
+        let response: RMAllLocations = try await httpClient.execute(httpRequest: request)
         return response
     }
 }

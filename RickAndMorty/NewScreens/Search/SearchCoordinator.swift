@@ -1,34 +1,15 @@
 //
-//  CharacterCoordinator.swift
+//  SearchCoordinator.swift
 //  RickAndMorty
 //
-//  Created by Avii 🔥 on 30/10/25.
+//  Created by Avii 🔥  on 14/11/25.
 //
 
-import SwiftUI
 import FactoryKit
-
-
-@MainActor
-protocol BaseCoordinator: AnyObject {
-    
-    associatedtype Route: Hashable
-    
-    associatedtype Body: View
-    
-//    associatedtype Container: SharedContainer
-    
-    associatedtype NavigationRoute: Hashable
-    
-    var navigationPath: [Route] { get set }
-    
-    var rootView: Self.Body { get }
-    
-//    var diContainer: Container { get }
-}
+import SwiftUI
 
 @Observable
-final class CharacterCoordinator: BaseCoordinator {
+final class SearchCoordinator: BaseCoordinator {
     
     enum NavigationRoute {
         case characterDetails(character: RMCharacter)
@@ -37,23 +18,20 @@ final class CharacterCoordinator: BaseCoordinator {
     }
 
     var navigationPath: [NavigationRoute] = []
-
-    @ObservationIgnored
-    let diContainer: CharacterDIContainer
     
     var rootView: some View {
-        CharacterListView(
-            viewModel: CharacterListViewModel(
-                listSource: diContainer.charactersSource(),
-                action: .init(didTapCharacter: didTap)
+        SearchView(
+            viewModel: SearchViewModel(
+                listSource: Container.shared.searchSource(),
+                action: .init(
+                    didTapCharacter: didTap,
+                    didTapEpisode: didTap,
+                    didTapLocation: didTap
+                )
             )
         )
     }
     
-    init(diContainer: CharacterDIContainer) {
-        self.diContainer = diContainer
-    }
-
     @ViewBuilder
     func build(page: NavigationRoute) -> some View {
         switch page {
@@ -61,7 +39,7 @@ final class CharacterCoordinator: BaseCoordinator {
             LocationDetailView(
                 viewModel: LocationDetailViewModel(
                     location: location,
-                    source: diContainer.locationsSource(),
+                    source: Container.shared.locationsSource(),
                     action: .init(didTapResident: didTap)
                 )
             )
@@ -70,7 +48,7 @@ final class CharacterCoordinator: BaseCoordinator {
             CharacterDetailView(
                 viewModel: CharacterDetailViewModel(
                     character: character,
-                    source: diContainer.charactersSource(),
+                    source: Container.shared.charactersSource(),
                     action: .init(didTapEpisode: didTap)
                 )
             )
@@ -78,7 +56,7 @@ final class CharacterCoordinator: BaseCoordinator {
             EpisodeDetailView(
                 viewModel: EpisodeDetailViewModel(
                     episode: episode,
-                    source: diContainer.episodesSource(),
+                    source: Container.shared.episodesSource(),
                     action: .init(didTap: didTap)
                 )
             )
@@ -92,11 +70,15 @@ final class CharacterCoordinator: BaseCoordinator {
     private func didTap(_ character: RMCharacter) {
         navigationPath.append(.characterDetails(character: character))
     }
+    
+    private func didTap(_ location: RMLocation) {
+        navigationPath.append(.locationDetails(location: location))
+    }
 }
 
-extension CharacterCoordinator.NavigationRoute: Hashable {
+extension SearchCoordinator.NavigationRoute: Hashable {
     
-    static func == (lhs: CharacterCoordinator.NavigationRoute, rhs: CharacterCoordinator.NavigationRoute) -> Bool {
+    static func == (lhs: SearchCoordinator.NavigationRoute, rhs: SearchCoordinator.NavigationRoute) -> Bool {
         switch (lhs, rhs) {
         case (.characterDetails, .characterDetails): true
         case (.episodeDetails, .episodeDetails): true
