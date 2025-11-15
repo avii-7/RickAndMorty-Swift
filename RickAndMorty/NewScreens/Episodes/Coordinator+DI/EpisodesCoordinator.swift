@@ -22,7 +22,7 @@ final class EpisodesCoordinator: BaseCoordinator {
     let diContainer: EpisodesDIContainer
     
     var rootView: some View {
-        EpisodeListView(
+        EpisodesView(
             viewModel: EpisodeListViewModel(
                 listSource: diContainer.episodesSource(),
                 action: .init(didTapEpisode: didTap(_:))

@@ -38,7 +38,6 @@ struct SearchView: View {
     
     var body: some View {
         content
-            .padding(.horizontal, ScreenEdgesHorizontalPadding)
             .navigationTitle("Search")
             .searchable(text: $viewModel.searchQuery, placement: .navigationBarDrawer)
             .background(.black)
@@ -96,7 +95,12 @@ struct SearchView: View {
                         viewModel.fetchNextPage()
                     }
             case .episode:
-                EmptyView()
+                EpisodeListView(
+                    episodes: viewModel.episodes,
+                    didTap: viewModel.action.didTapEpisode,
+                    hasMore: viewModel.hasMore) {
+                        viewModel.fetchNextPage()
+                    }
             case .location:
                 EmptyView()
             }
@@ -125,27 +129,6 @@ struct SearchView: View {
             }
             else {
                 ContentUnavailableView.search
-            }
-        }
-    }
-    
-    private var characters: some View {
-        LazyVGrid(columns: columns, spacing: 10) {
-            ForEach(Array(viewModel.characters.enumerated()), id: \.element.id) { index, character in
-                Group {
-                    if index == viewModel.characters.endIndex - 1 {
-                        CharacterItemView(character: character)
-                            .onAppear {
-                                //                                viewModel.fetchNextPageCharacters()
-                            }
-                    }
-                    else {
-                        CharacterItemView(character: character)
-                    }
-                }
-                .onTapGesture {
-                    //                    viewModel.didTap(character)
-                }
             }
         }
     }
@@ -206,6 +189,8 @@ final class SearchViewModel {
     
     func fetchResults() async {
         do {
+            
+            self.reset()
             
             try await Task.sleep(for: .seconds(0.5))
             
@@ -270,6 +255,9 @@ final class SearchViewModel {
     }
     
     func reset() {
+        self.characters = []
+        self.episodes = []
+        self.locations = []
         nextPage = 1
         pageInfo = nil
         viewState = .idle

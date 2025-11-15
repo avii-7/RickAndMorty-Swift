@@ -1,5 +1,5 @@
 //
-//  EpisodeListView.swift
+//  EpisodesView.swift
 //  RickAndMorty
 //
 //  Created by Avii 🔥 on 04/11/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EpisodeListView: View {
+struct EpisodesView: View {
     
     @State var viewModel: EpisodeListViewModel
     
@@ -22,30 +22,12 @@ struct EpisodeListView: View {
     }
     
     private var content: some View {
-        List {
-            ForEach(Array(viewModel.episodes.enumerated()), id: \.offset) { index, episode in
-                Group {
-                    if index == viewModel.episodes.count - 1 {
-                        getEpisodeRow(episode)
-                            .onAppear {
-                                viewModel.fetchNextPageCharacters()
-                            }
-                    }
-                    else {
-                        getEpisodeRow(episode)
-                    }
-                }
-                .onTapGesture {
-                    viewModel.didTapEpisode(episode)
-                }
+        EpisodeListView(
+            episodes: viewModel.episodes,
+            didTap: viewModel.didTapEpisode(_:),
+            hasMore: viewModel.hasMore) {
+                viewModel.fetchNextPage()
             }
-            
-            if viewModel.hasMore {
-                ProgressView()
-                    .controlSize(.large)
-                    .frame(maxWidth: .infinity, alignment: .center)
-            }
-        }
     }
     
     private func getEpisodeRow(_ episode: RMEpisode) -> some View {
@@ -121,7 +103,7 @@ final class EpisodeListViewModel {
         }
     }
     
-    func fetchNextPageCharacters() {
+    func fetchNextPage() {
         
         if paginationState.isLoading { return }
         
@@ -151,5 +133,67 @@ extension EpisodeListViewModel {
     
     struct Action {
         let didTapEpisode: (RMEpisode) -> Void
+    }
+}
+
+struct EpisodeListView: View {
+    
+    let episodes: [RMEpisode]
+    
+    let didTap: (RMEpisode) -> Void
+    
+    let hasMore: Bool
+    
+    let onPaginationTrigger: () -> Void
+    
+    var body: some View {
+        List {
+            ForEach(Array(episodes.enumerated()), id: \.offset) { index, episode in
+                Group {
+                    if index == episodes.count - 1 {
+                        EpisodeItemView(episode: episode)
+                            .onAppear {
+                                onPaginationTrigger()
+                            }
+                    }
+                    else {
+                        EpisodeItemView(episode: episode)
+                    }
+                }
+                .onTapGesture {
+                    didTap(episode)
+                }
+            }
+            
+            if hasMore {
+                ProgressView()
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+        }
+    }
+}
+
+struct EpisodeItemView: View {
+    
+    let episode: RMEpisode
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(episode.name)
+                .foregroundStyle(.white)
+                .font(.title3)
+            
+            Text(episode.episode)
+                .foregroundStyle(.white.secondary)
+                .font(.subheadline)
+            
+            Text(episode.airDate)
+                .foregroundStyle(.white)
+                .font(.body)
+                .foregroundStyle(.white.tertiary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(.rect)
     }
 }

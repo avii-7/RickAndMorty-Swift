@@ -32,13 +32,13 @@ struct DefaultSearchSource: SearchSource {
     }
     
     func searchEpisode(query: String, page: Int? = nil) async throws -> RMAllEpisodes {
-        let request: SearchHTTPRequest = .character(query: query, page: page)
+        let request: SearchHTTPRequest = .episode(query: query, page: page)
         let response: RMAllEpisodes = try await httpClient.execute(httpRequest: request)
         return response
     }
     
     func searchLocation(query: String, page: Int?) async throws -> RMAllLocations {
-        let request: SearchHTTPRequest = .character(query: query, page: page)
+        let request: SearchHTTPRequest = .location(query: query, page: page)
         let response: RMAllLocations = try await httpClient.execute(httpRequest: request)
         return response
     }
